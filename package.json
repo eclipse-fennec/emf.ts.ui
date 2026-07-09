@@ -1,0 +1,71 @@
+{
+  "name": "@emfts/uimodel-composer",
+  "version": "0.0.1-next.1",
+  "type": "module",
+  "description": "UIModel-driven Vue 3 composer for EMF.ts models",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./diagram": {
+      "import": "./dist/diagram/index.js",
+      "types": "./dist/diagram/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "model"
+  ],
+  "scripts": {
+    "generate": "emfts-codegen generate -m model/uimodel.ecore -c model/uimodel.genconfig.xmi",
+    "generate:vega": "emfts-codegen generate -m model/uimodel-vega.ecore -c model/uimodel-vega.genconfig.xmi -d model/uimodel.ecore --import-mapping http://uimodel/1.0=..",
+    "generate:maps": "emfts-codegen generate -m model/uimodel-maps.ecore -c model/uimodel-maps.genconfig.xmi -d model/uimodel.ecore --import-mapping http://uimodel/1.0=..",
+    "build": "vue-tsc --noEmit && vite build",
+    "type-check": "vue-tsc --noEmit",
+    "test": "vitest",
+    "test:run": "vitest run"
+  },
+  "dependencies": {
+    "@emfts/core": "^0.1.1-next.7",
+    "@emfts/vue-registry": "^0.0.1-next.1",
+    "ol": "^10.9.0",
+    "vue": "^3.4.0"
+  },
+  "devDependencies": {
+    "@eclipse-daanse/tsm": "^0.0.1-next.1",
+    "@emfts/codegen": "^0.0.1-next.7",
+    "@types/node": "^20.10.0",
+    "@vitejs/plugin-vue": "^5.0.0",
+    "typescript": "^5.3.0",
+    "vega": "^6.2.0",
+    "vega-embed": "^7.1.0",
+    "vega-lite": "^6.4.3",
+    "vite": "^5.0.0",
+    "vite-plugin-dts": "^3.7.0",
+    "vitest": "^4.1.4",
+    "vue-tsc": "^3.2.4"
+  },
+  "optionalDependencies": {
+    "elkjs": "^0.11.1",
+    "tsrouter": "file:../../tsrouter"
+  },
+  "peerDependencies": {
+    "vue": "^3.4.0"
+  },
+  "keywords": [
+    "emf",
+    "ecore",
+    "vue",
+    "uimodel",
+    "model-driven",
+    "emfts"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "license": "EPL-2.0"
+}

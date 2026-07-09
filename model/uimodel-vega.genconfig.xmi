@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genconfig:GenConfig xmlns:xmi="http://www.omg.org/XMI" xmi:version="2.0"
+    xmlns:genconfig="http://www.emfts.org/genconfig/1.0">
+  <generation mode="emf" outputDir="src/generated/vega"/>
+  <package prefix="UimodelVega" basePackage=""/>
+</genconfig:GenConfig>

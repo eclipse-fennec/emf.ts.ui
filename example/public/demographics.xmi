@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<demo:DemographicDataset
+    xmlns:xmi="http://www.omg.org/XMI"
+    xmi:version="2.0"
+    xmlns:demo="http://demographic/1.0"
+    name="Zensus Deutschland 2024"
+    year="2024">
+
+  <regions name="Bayern" code="BY" population="13369393" areaSqKm="70541.57" medianAge="44.1" latitude="48.79" longitude="11.50">
+    <ageGroups label="0–14"  minAge="0"  maxAge="14" count="1872117" maleCount="961000" femaleCount="911117"/>
+    <ageGroups label="15–24" minAge="15" maxAge="24" count="1403585" maleCount="720000" femaleCount="683585"/>
+    <ageGroups label="25–44" minAge="25" maxAge="44" count="3476243" maleCount="1800000" femaleCount="1676243"/>
+    <ageGroups label="45–64" minAge="45" maxAge="64" count="3743030" maleCount="1900000" femaleCount="1843030"/>
+    <ageGroups label="65+"   minAge="65" maxAge="100" count="2874418" maleCount="1300000" femaleCount="1574418"/>
+    <history year="2000" population="12230255" birthRate="9.3" deathRate="10.1" migrationRate="2.5"/>
+    <history year="2005" population="12468726" birthRate="8.6" deathRate="10.4" migrationRate="1.8"/>
+    <history year="2010" population="12538696" birthRate="8.8" deathRate="10.8" migrationRate="3.2"/>
+    <history year="2015" population="12843514" birthRate="9.1" deathRate="11.2" migrationRate="7.5"/>
+    <history year="2020" population="13124737" birthRate="9.4" deathRate="12.1" migrationRate="3.8"/>
+    <history year="2024" population="13369393" birthRate="8.8" deathRate="12.6" migrationRate="4.1"/>
+  </regions>
+
+  <regions name="Nordrhein-Westfalen" code="NW" population="18139116" areaSqKm="34112.31" medianAge="44.7" latitude="51.43" longitude="7.66">
+    <ageGroups label="0–14"  minAge="0"  maxAge="14" count="2358485" maleCount="1210000" femaleCount="1148485"/>
+    <ageGroups label="15–24" minAge="15" maxAge="24" count="1813912" maleCount="930000" femaleCount="883912"/>
+    <ageGroups label="25–44" minAge="25" maxAge="44" count="4534779" maleCount="2350000" femaleCount="2184779"/>
+    <ageGroups label="45–64" minAge="45" maxAge="64" count="5079353" maleCount="2580000" femaleCount="2499353"/>
+    <ageGroups label="65+"   minAge="65" maxAge="100" count="4352587" maleCount="1950000" femaleCount="2402587"/>
+    <history year="2000" population="18009865" birthRate="9.6" deathRate="10.8" migrationRate="1.2"/>
+    <history year="2005" population="18058105" birthRate="8.5" deathRate="10.9" migrationRate="0.4"/>
+    <history year="2010" population="17845154" birthRate="8.3" deathRate="11.3" migrationRate="2.1"/>
+    <history year="2015" population="17865516" birthRate="8.8" deathRate="11.5" migrationRate="6.8"/>
+    <history year="2020" population="17947221" birthRate="9.1" deathRate="12.3" migrationRate="3.2"/>
+    <history year="2024" population="18139116" birthRate="8.5" deathRate="12.8" migrationRate="3.9"/>
+  </regions>
+
+  <regions name="Baden-Württemberg" code="BW" population="11280257" areaSqKm="35751.46" medianAge="43.8" latitude="48.66" longitude="9.35">
+    <ageGroups label="0–14"  minAge="0"  maxAge="14" count="1579236" maleCount="810000" femaleCount="769236"/>
+    <ageGroups label="15–24" minAge="15" maxAge="24" count="1218428" maleCount="625000" femaleCount="593428"/>
+    <ageGroups label="25–44" minAge="25" maxAge="44" count="2933667" maleCount="1520000" femaleCount="1413667"/>
+    <ageGroups label="45–64" minAge="45" maxAge="64" count="3158472" maleCount="1610000" femaleCount="1548472"/>
+    <ageGroups label="65+"   minAge="65" maxAge="100" count="2390454" maleCount="1080000" femaleCount="1310454"/>
+    <history year="2000" population="10524415" birthRate="9.8" deathRate="9.6" migrationRate="2.8"/>
+    <history year="2005" population="10735701" birthRate="8.9" deathRate="9.9" migrationRate="1.5"/>
+    <history year="2010" population="10753880" birthRate="8.7" deathRate="10.2" migrationRate="3.5"/>
+    <history year="2015" population="10879618" birthRate="9.3" deathRate="10.5" migrationRate="8.1"/>
+    <history year="2020" population="11103043" birthRate="9.5" deathRate="11.1" migrationRate="3.6"/>
+    <history year="2024" population="11280257" birthRate="8.9" deathRate="11.5" migrationRate="4.3"/>
+  </regions>
+
+  <regions name="Niedersachsen" code="NI" population="8027031" areaSqKm="47709.82" medianAge="45.2" latitude="52.64" longitude="9.85">
+    <ageGroups label="0–14"  minAge="0"  maxAge="14" count="1044514" maleCount="536000" femaleCount="508514"/>
+    <ageGroups label="15–24" minAge="15" maxAge="24" count="802703" maleCount="412000" femaleCount="390703"/>
+    <ageGroups label="25–44" minAge="25" maxAge="44" count="1926487" maleCount="1000000" femaleCount="926487"/>
+    <ageGroups label="45–64" minAge="45" maxAge="64" count="2328839" maleCount="1185000" femaleCount="1143839"/>
+    <ageGroups label="65+"   minAge="65" maxAge="100" count="1924488" maleCount="870000" femaleCount="1054488"/>
+    <history year="2000" population="7926193" birthRate="9.2" deathRate="10.3" migrationRate="1.6"/>
+    <history year="2005" population="7993946" birthRate="8.3" deathRate="10.6" migrationRate="0.9"/>
+    <history year="2010" population="7918375" birthRate="8.1" deathRate="11.0" migrationRate="2.4"/>
+    <history year="2015" population="7926599" birthRate="8.6" deathRate="11.3" migrationRate="6.2"/>
+    <history year="2020" population="7993608" birthRate="8.9" deathRate="11.9" migrationRate="3.0"/>
+    <history year="2024" population="8027031" birthRate="8.4" deathRate="12.2" migrationRate="3.5"/>
+  </regions>
+
+  <regions name="Hessen" code="HE" population="6391360" areaSqKm="21115.64" medianAge="44.5" latitude="50.65" longitude="9.16">
+    <ageGroups label="0–14"  minAge="0"  maxAge="14" count="894790" maleCount="459000" femaleCount="435790"/>
+    <ageGroups label="15–24" minAge="15" maxAge="24" count="671193" maleCount="344000" femaleCount="327193"/>
+    <ageGroups label="25–44" minAge="25" maxAge="44" count="1662154" maleCount="862000" femaleCount="800154"/>
+    <ageGroups label="45–64" minAge="45" maxAge="64" count="1789181" maleCount="910000" femaleCount="879181"/>
+    <ageGroups label="65+"   minAge="65" maxAge="100" count="1374042" maleCount="620000" femaleCount="754042"/>
+    <history year="2000" population="6068129" birthRate="9.5" deathRate="10.0" migrationRate="2.2"/>
+    <history year="2005" population="6092354" birthRate="8.7" deathRate="10.3" migrationRate="1.1"/>
+    <history year="2010" population="6067021" birthRate="8.5" deathRate="10.7" migrationRate="2.8"/>
+    <history year="2015" population="6176172" birthRate="9.0" deathRate="10.9" migrationRate="7.0"/>
+    <history year="2020" population="6293154" birthRate="9.3" deathRate="11.6" migrationRate="3.4"/>
+    <history year="2024" population="6391360" birthRate="8.7" deathRate="12.0" migrationRate="3.7"/>
+  </regions>
+
+  <regions name="Sachsen" code="SN" population="4056941" areaSqKm="18449.93" medianAge="47.8" latitude="51.10" longitude="13.20">
+    <ageGroups label="0–14"  minAge="0"  maxAge="14" count="527402" maleCount="271000" femaleCount="256402"/>
+    <ageGroups label="15–24" minAge="15" maxAge="24" count="389466" maleCount="200000" femaleCount="189466"/>
+    <ageGroups label="25–44" minAge="25" maxAge="44" count="933597" maleCount="485000" femaleCount="448597"/>
+    <ageGroups label="45–64" minAge="45" maxAge="64" count="1168399" maleCount="595000" femaleCount="573399"/>
+    <ageGroups label="65+"   minAge="65" maxAge="100" count="1038077" maleCount="460000" femaleCount="578077"/>
+    <history year="2000" population="4425581" birthRate="7.6" deathRate="11.5" migrationRate="-3.8"/>
+    <history year="2005" population="4273754" birthRate="8.0" deathRate="11.8" migrationRate="-2.5"/>
+    <history year="2010" population="4149477" birthRate="8.4" deathRate="12.5" migrationRate="1.2"/>
+    <history year="2015" population="4084851" birthRate="9.0" deathRate="12.9" migrationRate="5.5"/>
+    <history year="2020" population="4077937" birthRate="8.8" deathRate="13.8" migrationRate="2.1"/>
+    <history year="2024" population="4056941" birthRate="8.2" deathRate="14.1" migrationRate="2.8"/>
+  </regions>
+
+</demo:DemographicDataset>

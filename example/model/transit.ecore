@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmlns:xmi="http://www.omg.org/XMI" xmi:version="2.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    name="transit" nsURI="http://transit/1.0" nsPrefix="transit">
+
+  <!-- Wurzelobjekt: ein städtisches Verkehrsnetz -->
+  <eClassifiers xsi:type="ecore:EClass" name="TransitNetwork">
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="name"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="city"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" upperBound="-1"
+        eType="#//District" name="districts" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" upperBound="-1"
+        eType="#//Route" name="routes" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" upperBound="-1"
+        eType="#//Station" name="stations" containment="true"/>
+    <!-- Klick-Selektion (wird zur Laufzeit über MapSelectionBinding gesetzt) -->
+    <eStructuralFeatures xsi:type="ecore:EReference"
+        eType="#//Station" name="selectedStation"/>
+  </eClassifiers>
+
+  <!-- Stadtbezirk mit Polygon-Geometrie (WKT) für Choropleth -->
+  <eClassifiers xsi:type="ecore:EClass" name="District">
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="name"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EInt" name="population"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="areaSqKm"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="densityPerSqKm"/>
+    <!-- WKT-Polygon in EPSG:4326 (lon lat) -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="boundary"/>
+  </eClassifiers>
+
+  <!-- Linie/Route mit LineString-Geometrie (WKT) -->
+  <eClassifiers xsi:type="ecore:EClass" name="Route">
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="name"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="lineRef"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="#//RouteStatus" name="status" defaultValueLiteral="ACTIVE"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="color"/>
+    <!-- WKT-LineString in EPSG:4326 (lon lat) -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="geometry"/>
+  </eClassifiers>
+
+  <!-- Haltestelle (Punkt) -->
+  <eClassifiers xsi:type="ecore:EClass" name="Station">
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="name"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="#//StationType" name="type" defaultValueLiteral="BUS"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="longitude"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="latitude"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EInt" name="dailyPassengers"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="accessible"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EEnum" name="StationType">
+    <eLiterals name="BUS" value="0"/>
+    <eLiterals name="TRAM" value="1"/>
+    <eLiterals name="SUBWAY" value="2"/>
+    <eLiterals name="RAIL" value="3"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EEnum" name="RouteStatus">
+    <eLiterals name="ACTIVE" value="0"/>
+    <eLiterals name="PLANNED" value="1"/>
+    <eLiterals name="CONSTRUCTION" value="2"/>
+  </eClassifiers>
+
+</ecore:EPackage>
