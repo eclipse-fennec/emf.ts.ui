@@ -1,0 +1,411 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmlns:xmi="http://www.omg.org/XMI" xmi:version="2.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    name="uimodel.maps" nsURI="http://uimodel/maps/1.0" nsPrefix="uimaps">
+
+  <!-- ================================================================ -->
+  <!-- MapView — Top-Level Component (QGIS Map Canvas / Project)        -->
+  <!-- ================================================================ -->
+  <eClassifiers xsi:type="ecore:EClass" name="MapView">
+    <eSuperTypes href="http://uimodel/1.0#//Component"/>
+    <!-- Layer-Baum: erster Eintrag = unterste Ebene, letzter = oben -->
+    <eStructuralFeatures xsi:type="ecore:EReference" upperBound="-1"
+        eType="#//MapLayer" name="layers" containment="true"/>
+    <!-- Klick-Bindings zurueck ins EMF-Modell (analog Vega-Signals) -->
+    <eStructuralFeatures xsi:type="ecore:EReference" upperBound="-1"
+        eType="#//MapSelectionBinding" name="bindings" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="title"/>
+    <!-- Karten-CRS (EPSG-Code). Default Web-Mercator wie QGIS-Default. -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="crs"
+        defaultValueLiteral="EPSG:3857"/>
+    <!-- Initiales Zentrum in Laengen-/Breitengrad (EPSG:4326) -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="centerLon"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="centerLat"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="zoom"
+        defaultValueLiteral="2"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="minZoom"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="maxZoom"/>
+    <!-- Optionaler initialer Ausschnitt; ueberschreibt center/zoom -->
+    <eStructuralFeatures xsi:type="ecore:EReference"
+        eType="#//MapExtent" name="extent" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EInt" name="width"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EInt" name="height"
+        defaultValueLiteral="400"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="background"/>
+    <!-- Karten-Steuerelemente -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="showZoomControl"
+        defaultValueLiteral="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="showScaleLine"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="showAttribution"
+        defaultValueLiteral="true"/>
+  </eClassifiers>
+
+  <!-- Karten-Ausschnitt in Laengen-/Breitengrad (EPSG:4326) -->
+  <eClassifiers xsi:type="ecore:EClass" name="MapExtent">
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="minLon"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="minLat"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="maxLon"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="maxLat"/>
+  </eClassifiers>
+
+  <!-- ================================================================ -->
+  <!-- MapLayer — abstrakte Layer-Basis (QGIS Layer-Eigenschaften)      -->
+  <!-- ================================================================ -->
+  <eClassifiers xsi:type="ecore:EClass" name="MapLayer" abstract="true">
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="name"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="visible"
+        defaultValueLiteral="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="opacity"
+        defaultValueLiteral="1.0"/>
+    <!-- Zoom-abhaengige Sichtbarkeit (QGIS scale-based visibility) -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="minZoom"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="maxZoom"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="attribution"/>
+  </eClassifiers>
+
+  <!-- XYZ-Kachel-Layer (Basemap, z.B. OpenStreetMap) -->
+  <eClassifiers xsi:type="ecore:EClass" name="XYZTileLayer">
+    <eSuperTypes href="#//MapLayer"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="urlTemplate"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EInt" name="maxZoomLevel"/>
+  </eClassifiers>
+
+  <!-- WMS-Layer (OGC Web Map Service) -->
+  <eClassifiers xsi:type="ecore:EClass" name="WMSLayer">
+    <eSuperTypes href="#//MapLayer"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="url"/>
+    <!-- Komma-separierte Layer-Namen des WMS -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="layers"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="format"
+        defaultValueLiteral="image/png"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="version"
+        defaultValueLiteral="1.3.0"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="transparent"
+        defaultValueLiteral="true"/>
+  </eClassifiers>
+
+  <!-- Vektorlayer mit Datenquelle, Symbology und Beschriftung -->
+  <eClassifiers xsi:type="ecore:EClass" name="VectorLayer">
+    <eSuperTypes href="#//MapLayer"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" lowerBound="1"
+        eType="#//VectorSource" name="source" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" lowerBound="1"
+        eType="#//Renderer" name="renderer" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference"
+        eType="#//Labeling" name="labeling" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="#//GeometryType" name="geometryType" defaultValueLiteral="AUTO"/>
+    <!-- Map-Tip / Popup-Vorlage. Platzhalter {feature} werden ersetzt. -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="popupTemplate"/>
+  </eClassifiers>
+
+  <!-- ================================================================ -->
+  <!-- VectorSource — abstrakte Datenquelle                            -->
+  <!-- ================================================================ -->
+  <eClassifiers xsi:type="ecore:EClass" name="VectorSource" abstract="true">
+    <!-- CRS der Quell-Koordinaten -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="sourceCrs"
+        defaultValueLiteral="EPSG:4326"/>
+  </eClassifiers>
+
+  <!-- Features aus dem EMF-Modell (lat/lon ODER WKT/GeoJSON-Feature) -->
+  <eClassifiers xsi:type="ecore:EClass" name="EmfFeatureSource">
+    <eSuperTypes href="#//VectorSource"/>
+    <!-- Many-valued Feature des aktuellen EObjects (z.B. Region.cities) -->
+    <eStructuralFeatures xsi:type="ecore:EReference" lowerBound="1"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature" name="feature"/>
+    <eStructuralFeatures xsi:type="ecore:EReference"
+        eType="http://uimodel/1.0#//Expression" name="filterExpression" containment="true"/>
+    <!-- Variante A: Punkt-Geometrie aus lat/lon-Attributen -->
+    <eStructuralFeatures xsi:type="ecore:EReference"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature" name="longitudeFeature"/>
+    <eStructuralFeatures xsi:type="ecore:EReference"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature" name="latitudeFeature"/>
+    <!-- Variante B: Geometrie aus String-Attribut (WKT oder GeoJSON) -->
+    <eStructuralFeatures xsi:type="ecore:EReference"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature" name="geometryFeature"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="#//GeometryFormat" name="geometryFormat" defaultValueLiteral="WKT"/>
+  </eClassifiers>
+
+  <!-- Externe GeoJSON-URL -->
+  <eClassifiers xsi:type="ecore:EClass" name="GeoJSONUrlSource">
+    <eSuperTypes href="#//VectorSource"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="url"/>
+  </eClassifiers>
+
+  <!-- Statisches GeoJSON als String (Escape-Hatch) -->
+  <eClassifiers xsi:type="ecore:EClass" name="InlineGeoJSONSource">
+    <eSuperTypes href="#//VectorSource"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="geojson"/>
+  </eClassifiers>
+
+  <!-- ================================================================ -->
+  <!-- Renderer — QGIS Symbology                                       -->
+  <!-- ================================================================ -->
+  <eClassifiers xsi:type="ecore:EClass" name="Renderer" abstract="true"/>
+
+  <!-- Ein Symbol fuer alle Features -->
+  <eClassifiers xsi:type="ecore:EClass" name="SingleSymbolRenderer">
+    <eSuperTypes href="#//Renderer"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" lowerBound="1"
+        eType="#//Symbol" name="symbol" containment="true"/>
+  </eClassifiers>
+
+  <!-- Kategorisiert nach Attributwert (QGIS categorizedSymbol) -->
+  <eClassifiers xsi:type="ecore:EClass" name="CategorizedRenderer">
+    <eSuperTypes href="#//Renderer"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" lowerBound="1"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature" name="classificationFeature"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" upperBound="-1"
+        eType="#//RendererCategory" name="categories" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference"
+        eType="#//Symbol" name="defaultSymbol" containment="true"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EClass" name="RendererCategory">
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="value"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="label"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" lowerBound="1"
+        eType="#//Symbol" name="symbol" containment="true"/>
+  </eClassifiers>
+
+  <!-- Abgestuft nach numerischem Attribut (QGIS graduatedSymbol, Choropleth) -->
+  <eClassifiers xsi:type="ecore:EClass" name="GraduatedRenderer">
+    <eSuperTypes href="#//Renderer"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" lowerBound="1"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature" name="classificationFeature"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="#//ClassificationMethod" name="method" defaultValueLiteral="MANUAL"/>
+    <!-- Optionaler Farbverlauf-Name (z.B. 'Blues', 'YlOrRd') -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="colorRamp"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" upperBound="-1"
+        eType="#//GraduatedClass" name="classes" containment="true"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EClass" name="GraduatedClass">
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="lowerBound"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="upperBound"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="label"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" lowerBound="1"
+        eType="#//Symbol" name="symbol" containment="true"/>
+  </eClassifiers>
+
+  <!-- Regelbasiert ueber Ausdruecke (QGIS RuleBasedRenderer) -->
+  <eClassifiers xsi:type="ecore:EClass" name="RuleBasedRenderer">
+    <eSuperTypes href="#//Renderer"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" upperBound="-1"
+        eType="#//RendererRule" name="rules" containment="true"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EClass" name="RendererRule">
+    <!-- Bedingung; Kontext: das EObject des Features. Leer = trifft immer. -->
+    <eStructuralFeatures xsi:type="ecore:EReference"
+        eType="http://uimodel/1.0#//Expression" name="filterExpression" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="label"/>
+    <!-- Fallback-Regel, wenn keine andere zutrifft (QGIS 'ELSE') -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="elseRule"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="minZoom"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="maxZoom"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" lowerBound="1"
+        eType="#//Symbol" name="symbol" containment="true"/>
+  </eClassifiers>
+
+  <!-- ================================================================ -->
+  <!-- Symbol — QGIS Symbol-Typen                                      -->
+  <!-- ================================================================ -->
+  <eClassifiers xsi:type="ecore:EClass" name="Symbol" abstract="true">
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="opacity"
+        defaultValueLiteral="1.0"/>
+  </eClassifiers>
+
+  <!-- Punkt-Symbol -->
+  <eClassifiers xsi:type="ecore:EClass" name="MarkerSymbol">
+    <eSuperTypes href="#//Symbol"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="#//MarkerShape" name="shape" defaultValueLiteral="CIRCLE"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="size"
+        defaultValueLiteral="6.0"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="color"
+        defaultValueLiteral="#3399CC"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="strokeColor"
+        defaultValueLiteral="#ffffff"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="strokeWidth"
+        defaultValueLiteral="1.0"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="rotation"/>
+  </eClassifiers>
+
+  <!-- Linien-Symbol -->
+  <eClassifiers xsi:type="ecore:EClass" name="LineSymbol">
+    <eSuperTypes href="#//Symbol"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="color"
+        defaultValueLiteral="#3399CC"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="width"
+        defaultValueLiteral="1.5"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="#//LineStyle" name="style" defaultValueLiteral="SOLID"/>
+  </eClassifiers>
+
+  <!-- Flaechen-Symbol -->
+  <eClassifiers xsi:type="ecore:EClass" name="FillSymbol">
+    <eSuperTypes href="#//Symbol"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="fillColor"
+        defaultValueLiteral="#3399CC"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="strokeColor"
+        defaultValueLiteral="#ffffff"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="strokeWidth"
+        defaultValueLiteral="1.0"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="#//FillStyle" name="style" defaultValueLiteral="SOLID"/>
+  </eClassifiers>
+
+  <!-- ================================================================ -->
+  <!-- Labeling — Beschriftung (QGIS Labels)                           -->
+  <!-- ================================================================ -->
+  <eClassifiers xsi:type="ecore:EClass" name="Labeling">
+    <!-- Variante A: Feature liefert den Label-Text -->
+    <eStructuralFeatures xsi:type="ecore:EReference"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature" name="feature"/>
+    <!-- Variante B: Ausdruck liefert den Label-Text -->
+    <eStructuralFeatures xsi:type="ecore:EReference"
+        eType="http://uimodel/1.0#//Expression" name="expression" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="font"
+        defaultValueLiteral="12px sans-serif"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="color"
+        defaultValueLiteral="#333333"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="#//LabelPlacement" name="placement" defaultValueLiteral="OVER_POINT"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="offsetX"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="offsetY"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="haloColor"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="haloWidth"/>
+  </eClassifiers>
+
+  <!-- ================================================================ -->
+  <!-- MapSelectionBinding — Feature-Klick zurueck ins EMF-Modell       -->
+  <!-- ================================================================ -->
+  <eClassifiers xsi:type="ecore:EClass" name="MapSelectionBinding">
+    <!-- Ziel-Feature im aktuellen EObject, das beim Klick gesetzt wird -->
+    <eStructuralFeatures xsi:type="ecore:EReference" lowerBound="1"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature" name="targetFeature"/>
+    <!-- Welcher Wert geschrieben wird: das geklickte EObject oder ein Attribut davon -->
+    <eStructuralFeatures xsi:type="ecore:EReference"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature" name="sourceFeature"/>
+  </eClassifiers>
+
+  <!-- ================================================================ -->
+  <!-- Enums                                                            -->
+  <!-- ================================================================ -->
+  <eClassifiers xsi:type="ecore:EEnum" name="GeometryType">
+    <eLiterals name="AUTO" value="0"/>
+    <eLiterals name="POINT" value="1"/>
+    <eLiterals name="LINE_STRING" value="2"/>
+    <eLiterals name="POLYGON" value="3"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EEnum" name="GeometryFormat">
+    <eLiterals name="WKT" value="0"/>
+    <eLiterals name="GEOJSON" value="1"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EEnum" name="MarkerShape">
+    <eLiterals name="CIRCLE" value="0"/>
+    <eLiterals name="SQUARE" value="1"/>
+    <eLiterals name="TRIANGLE" value="2"/>
+    <eLiterals name="DIAMOND" value="3"/>
+    <eLiterals name="STAR" value="4"/>
+    <eLiterals name="CROSS" value="5"/>
+    <eLiterals name="X" value="6"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EEnum" name="LineStyle">
+    <eLiterals name="SOLID" value="0"/>
+    <eLiterals name="DASH" value="1"/>
+    <eLiterals name="DOT" value="2"/>
+    <eLiterals name="DASH_DOT" value="3"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EEnum" name="FillStyle">
+    <eLiterals name="SOLID" value="0"/>
+    <eLiterals name="NONE" value="1"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EEnum" name="ClassificationMethod">
+    <eLiterals name="MANUAL" value="0"/>
+    <eLiterals name="EQUAL_INTERVAL" value="1"/>
+    <eLiterals name="QUANTILE" value="2"/>
+    <eLiterals name="NATURAL_BREAKS" value="3"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EEnum" name="LabelPlacement">
+    <eLiterals name="OVER_POINT" value="0"/>
+    <eLiterals name="ABOVE" value="1"/>
+    <eLiterals name="BELOW" value="2"/>
+    <eLiterals name="LEFT" value="3"/>
+    <eLiterals name="RIGHT" value="4"/>
+    <eLiterals name="CENTER" value="5"/>
+  </eClassifiers>
+
+</ecore:EPackage>

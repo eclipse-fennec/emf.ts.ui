@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uimodel:UIModel
+    xmlns:xmi="http://www.omg.org/XMI"
+    xmi:version="2.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:uimodel="http://uimodel/1.0"
+    xmlns:uivega="http://uimodel/vega/1.0"
+    name="DemographicCharts">
+
+  <!-- Balkendiagramm: Bevoelkerung pro Bundesland -->
+  <components xsi:type="uivega:VegaView"
+      name="PopulationByRegion"
+      title="Bevölkerung pro Bundesland"
+      width="600"
+      height="350">
+    <dataSource feature="http://demographic/1.0#//DemographicDataset/regions"/>
+    <content xsi:type="uivega:VegaUnitSpec">
+      <mark type="BAR" cornerRadius="4" tooltip="true"/>
+      <encodings channel="X" feature="http://demographic/1.0#//Region/name" fieldType="NOMINAL" title="Bundesland">
+        <axis labelAngle="-25"/>
+      </encodings>
+      <encodings channel="Y" feature="http://demographic/1.0#//Region/population" fieldType="QUANTITATIVE" title="Einwohner">
+        <axis format=".2s"/>
+      </encodings>
+      <encodings channel="COLOR" feature="http://demographic/1.0#//Region/name" fieldType="NOMINAL">
+        <legend disable="true"/>
+      </encodings>
+    </content>
+  </components>
+
+  <!-- Balkendiagramm: Medianalter pro Bundesland -->
+  <components xsi:type="uivega:VegaView"
+      name="MedianAgeByRegion"
+      title="Medianalter pro Bundesland"
+      width="600"
+      height="300">
+    <dataSource feature="http://demographic/1.0#//DemographicDataset/regions"/>
+    <content xsi:type="uivega:VegaUnitSpec">
+      <mark type="BAR" cornerRadius="4" tooltip="true" color="#e45756"/>
+      <encodings channel="X" feature="http://demographic/1.0#//Region/name" fieldType="NOMINAL" title="Bundesland">
+        <axis labelAngle="-25"/>
+      </encodings>
+      <encodings channel="Y" feature="http://demographic/1.0#//Region/medianAge" fieldType="QUANTITATIVE" title="Medianalter (Jahre)">
+        <scale zero="false"/>
+      </encodings>
+    </content>
+  </components>
+
+</uimodel:UIModel>

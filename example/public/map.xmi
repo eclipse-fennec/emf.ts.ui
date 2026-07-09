@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uimodel:UIModel
+    xmlns:xmi="http://www.omg.org/XMI"
+    xmi:version="2.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:uimodel="http://uimodel/1.0"
+    xmlns:uimaps="http://uimodel/maps/1.0"
+    name="DemographicMap">
+
+  <!-- QGIS-orientierte Karte: Basemap + Choropleth der Bundesländer -->
+  <components xsi:type="uimaps:MapView"
+      name="PopulationMap"
+      title="Bevölkerung nach Bundesland"
+      crs="EPSG:3857"
+      centerLon="10.2" centerLat="51.0"
+      zoom="5.4"
+      minZoom="4" maxZoom="18"
+      width="820" height="540"
+      showScaleLine="true">
+
+    <!-- Basemap (XYZ-Kacheln, OpenStreetMap) -->
+    <layers xsi:type="uimaps:XYZTileLayer"
+        name="OpenStreetMap"
+        urlTemplate="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+        maxZoomLevel="19"
+        attribution="© OpenStreetMap contributors"/>
+
+    <!-- Vektorlayer: Bundesländer als abgestufte Marker (Graduated/Choropleth) -->
+    <layers xsi:type="uimaps:VectorLayer"
+        name="Bundesländer"
+        popupTemplate="&lt;b&gt;{name}&lt;/b&gt;&lt;br/&gt;{population} Einwohner · Ø {medianAge} Jahre">
+      <source xsi:type="uimaps:EmfFeatureSource"
+          feature="http://demographic/1.0#//DemographicDataset/regions"
+          longitudeFeature="http://demographic/1.0#//Region/longitude"
+          latitudeFeature="http://demographic/1.0#//Region/latitude"/>
+      <renderer xsi:type="uimaps:GraduatedRenderer"
+          classificationFeature="http://demographic/1.0#//Region/population"
+          method="MANUAL" colorRamp="Reds">
+        <classes lowerBound="0" upperBound="5000000" label="&lt; 5 Mio">
+          <symbol xsi:type="uimaps:MarkerSymbol" shape="CIRCLE" size="10"
+              color="#fee5d9" strokeColor="#a50f15" strokeWidth="1" opacity="0.85"/>
+        </classes>
+        <classes lowerBound="5000000" upperBound="10000000" label="5–10 Mio">
+          <symbol xsi:type="uimaps:MarkerSymbol" shape="CIRCLE" size="16"
+              color="#fcae91" strokeColor="#a50f15" strokeWidth="1" opacity="0.85"/>
+        </classes>
+        <classes lowerBound="10000000" upperBound="15000000" label="10–15 Mio">
+          <symbol xsi:type="uimaps:MarkerSymbol" shape="CIRCLE" size="22"
+              color="#fb6a4a" strokeColor="#a50f15" strokeWidth="1" opacity="0.85"/>
+        </classes>
+        <classes lowerBound="15000000" upperBound="25000000" label="&gt; 15 Mio">
+          <symbol xsi:type="uimaps:MarkerSymbol" shape="CIRCLE" size="30"
+              color="#de2d26" strokeColor="#a50f15" strokeWidth="1" opacity="0.85"/>
+        </classes>
+      </renderer>
+      <labeling feature="http://demographic/1.0#//Region/name"
+          placement="ABOVE" color="#222222" haloColor="#ffffff" haloWidth="3"/>
+    </layers>
+
+  </components>
+</uimodel:UIModel>

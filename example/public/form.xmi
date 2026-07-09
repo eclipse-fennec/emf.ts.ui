@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uimodel:UIModel
+    xmlns:xmi="http://www.omg.org/XMI"
+    xmi:version="2.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:uimodel="http://uimodel/1.0"
+    name="PersonForm">
+
+  <!-- Style-Katalog -->
+  <styles xsi:type="uimodel:WidgetStyle"
+      xmi:id="style-required"
+      name="required"
+      css="field--required"/>
+  <styles xsi:type="uimodel:LayoutStyle"
+      xmi:id="style-form-grid"
+      name="form-grid"
+      css="form-grid"
+      layout="GRID"/>
+
+  <!-- MasterDetail: Personenliste + Detailformular -->
+  <components xsi:type="uimodel:MasterDetail"
+      name="PersonMasterDetail"
+      group="person">
+
+    <!-- Master: Tabelle aller Personen -->
+    <master name="PersonTable">
+      <targetClasses href="https://dg.de/1.0#//Person"/>
+    </master>
+
+    <!-- Detail: Eingabeformular für die gewählte Person -->
+    <detail xsi:type="uimodel:FormView"
+        name="PersonFormView">
+
+      <fields xsi:type="uimodel:InputWidget"
+          name="firstName"
+          feature="https://dg.de/1.0#//Person/firstName"
+          label="Vorname"
+          required="true">
+        <styles href="#style-required"/>
+        <validations
+            body="self.firstName &lt;&gt; null and self.firstName.size() > 0"
+            defaultMessage="Vorname darf nicht leer sein."
+            severity="ERROR"/>
+      </fields>
+
+      <fields xsi:type="uimodel:InputWidget"
+          name="lastName"
+          feature="https://dg.de/1.0#//Person/lastName"
+          label="Nachname"
+          required="true">
+        <styles href="#style-required"/>
+        <validations
+            body="self.lastName &lt;&gt; null and self.lastName.size() > 0"
+            defaultMessage="Nachname darf nicht leer sein."
+            severity="ERROR"/>
+      </fields>
+
+      <fields xsi:type="uimodel:InputWidget"
+          name="email"
+          feature="https://dg.de/1.0#//Person/email"
+          label="E-Mail"
+          required="true">
+        <styles href="#style-required"/>
+        <validations
+            language="JS"
+            body="/^[^@]+@[^@]+\.[^@]+$/.test(self.email)"
+            defaultMessage="Ungültige E-Mail-Adresse."
+            severity="ERROR"/>
+      </fields>
+
+      <fields xsi:type="uimodel:InputWidget"
+          name="phone"
+          feature="https://dg.de/1.0#//Person/phone"
+          label="Telefon"
+          placeholder="z.B. 0364112345">
+        <validations
+            language="JS"
+            body="/^\d{10}$/.test(self.phone)"
+            defaultMessage="Telefonnummer muss genau 10 Ziffern enthalten."
+            severity="WARNING"/>
+      </fields>
+
+      <fields xsi:type="uimodel:InputWidget"
+          name="jobTitle"
+          feature="https://dg.de/1.0#//Person/jobTitle"
+          label="Berufsbezeichnung"/>
+
+    </detail>
+  </components>
+
+</uimodel:UIModel>

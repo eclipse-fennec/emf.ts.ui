@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmlns:xmi="http://www.omg.org/XMI" xmi:version="2.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    name="demographic_structure" nsURI="http://demographic/1.0" nsPrefix="demo">
+
+  <!-- Datensatz: z.B. "Zensus 2024 Deutschland" -->
+  <eClassifiers xsi:type="ecore:EClass" name="DemographicDataset">
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString" name="name"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt" name="year"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" upperBound="-1"
+        eType="#//Region" name="regions" containment="true"/>
+  </eClassifiers>
+
+  <!-- Region: Bundesland, Kreis, Stadt -->
+  <eClassifiers xsi:type="ecore:EClass" name="Region">
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString" name="name"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString" name="code"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt" name="population"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="areaSqKm"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="medianAge"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="latitude"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="longitude"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" upperBound="-1"
+        eType="#//AgeGroup" name="ageGroups" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" upperBound="-1"
+        eType="#//PopulationRecord" name="history" containment="true"/>
+  </eClassifiers>
+
+  <!-- Altersgruppe innerhalb einer Region -->
+  <eClassifiers xsi:type="ecore:EClass" name="AgeGroup">
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString" name="label"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt" name="minAge"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt" name="maxAge"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt" name="count"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt" name="maleCount"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt" name="femaleCount"/>
+  </eClassifiers>
+
+  <!-- Zeitreihe: Bevoelkerung einer Region ueber die Jahre -->
+  <eClassifiers xsi:type="ecore:EClass" name="PopulationRecord">
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt" name="year"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt" name="population"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="birthRate"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="deathRate"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="migrationRate"/>
+  </eClassifiers>
+
+</ecore:EPackage>

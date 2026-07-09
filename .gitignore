@@ -1,0 +1,32 @@
+# Dependencies
+node_modules/
+
+# Build-Output (Library und Example)
+dist/
+*.tsbuildinfo
+
+# Test / Coverage
+coverage/
+
+# IDE
+.idea/
+.vscode/
+
+# Claude Code (lokale Einstellungen)
+.claude/settings.local.json
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+
+# Diagramm-Plugin — bewusst nicht Teil des Repos
+diagram-shots/
+src/diagram/
+src/composers/DiagramViewComposer.vue
+example/src/generated/diagrammodel/
+example/public/diagrammodel.ecore
+example/public/ecore-class-diagram.xmi
+example/public/library.ecore

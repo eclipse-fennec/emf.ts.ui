@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uimodel:UIModel
+    xmlns:xmi="http://www.omg.org/XMI"
+    xmi:version="2.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:uimodel="http://uimodel/1.0"
+    xmlns:uimaps="http://uimodel/maps/1.0"
+    name="TransitMap">
+
+  <components xsi:type="uimaps:MapView"
+      name="BerlinTransit"
+      title="ÖPNV Berlin"
+      crs="EPSG:3857"
+      centerLon="13.36" centerLat="52.54"
+      zoom="10.4"
+      minZoom="9" maxZoom="18"
+      width="900" height="600"
+      showScaleLine="true">
+
+    <!-- Klick auf eine Haltestelle → ins Modell zurückschreiben -->
+    <bindings targetFeature="http://transit/1.0#//TransitNetwork/selectedStation"/>
+
+    <!-- 1) Basemap -->
+    <layers xsi:type="uimaps:XYZTileLayer"
+        name="OpenStreetMap"
+        urlTemplate="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+        maxZoomLevel="19"
+        attribution="© OpenStreetMap contributors"/>
+
+    <!-- 2) Bezirke als Choropleth (FillSymbol, Graduated nach Dichte) -->
+    <layers xsi:type="uimaps:VectorLayer"
+        name="Bezirke (Bevölkerungsdichte)"
+        opacity="0.75"
+        popupTemplate="&lt;b&gt;{name}&lt;/b&gt;&lt;br/&gt;{densityPerSqKm} Einw./km²">
+      <source xsi:type="uimaps:EmfFeatureSource"
+          feature="http://transit/1.0#//TransitNetwork/districts"
+          geometryFeature="http://transit/1.0#//District/boundary"
+          geometryFormat="WKT"/>
+      <renderer xsi:type="uimaps:GraduatedRenderer"
+          classificationFeature="http://transit/1.0#//District/densityPerSqKm"
+          method="MANUAL" colorRamp="YlOrRd">
+        <classes lowerBound="0" upperBound="4000" label="&lt; 4.000">
+          <symbol xsi:type="uimaps:FillSymbol" fillColor="#ffffb2" strokeColor="#bd6a00" strokeWidth="1"/>
+        </classes>
+        <classes lowerBound="4000" upperBound="8000" label="4.000–8.000">
+          <symbol xsi:type="uimaps:FillSymbol" fillColor="#fecc5c" strokeColor="#bd6a00" strokeWidth="1"/>
+        </classes>
+        <classes lowerBound="8000" upperBound="12000" label="8.000–12.000">
+          <symbol xsi:type="uimaps:FillSymbol" fillColor="#fd8d3c" strokeColor="#bd6a00" strokeWidth="1"/>
+        </classes>
+        <classes lowerBound="12000" upperBound="20000" label="&gt; 12.000">
+          <symbol xsi:type="uimaps:FillSymbol" fillColor="#e31a1c" strokeColor="#bd6a00" strokeWidth="1"/>
+        </classes>
+      </renderer>
+    </layers>
+
+    <!-- 3) Linien, regelbasiert nach Status (RuleBasedRenderer) -->
+    <layers xsi:type="uimaps:VectorLayer" name="Linien (nach Status)">
+      <source xsi:type="uimaps:EmfFeatureSource"
+          feature="http://transit/1.0#//TransitNetwork/routes"
+          geometryFeature="http://transit/1.0#//Route/geometry"
+          geometryFormat="WKT"/>
+      <renderer xsi:type="uimaps:RuleBasedRenderer">
+        <rules label="Im Bau">
+          <filterExpression language="JS" body="self.status === 'CONSTRUCTION'"/>
+          <symbol xsi:type="uimaps:LineSymbol" color="#e8830c" width="3" style="DASH"/>
+        </rules>
+        <rules label="Geplant">
+          <filterExpression language="JS" body="self.status === 'PLANNED'"/>
+          <symbol xsi:type="uimaps:LineSymbol" color="#888888" width="2" style="DOT"/>
+        </rules>
+        <rules label="In Betrieb" elseRule="true">
+          <symbol xsi:type="uimaps:LineSymbol" color="#1f6feb" width="4" style="SOLID"/>
+        </rules>
+      </renderer>
+    </layers>
+
+    <!-- 4) Haltestellen, kategorisiert nach Typ (CategorizedRenderer) -->
+    <layers xsi:type="uimaps:VectorLayer"
+        name="Haltestellen (nach Typ)"
+        popupTemplate="&lt;b&gt;{name}&lt;/b&gt;&lt;br/&gt;{type} · {dailyPassengers} Fahrgäste/Tag">
+      <source xsi:type="uimaps:EmfFeatureSource"
+          feature="http://transit/1.0#//TransitNetwork/stations"
+          longitudeFeature="http://transit/1.0#//Station/longitude"
+          latitudeFeature="http://transit/1.0#//Station/latitude"/>
+      <renderer xsi:type="uimaps:CategorizedRenderer"
+          classificationFeature="http://transit/1.0#//Station/type">
+        <categories value="SUBWAY" label="U-Bahn">
+          <symbol xsi:type="uimaps:MarkerSymbol" shape="TRIANGLE" size="8" color="#1f6feb" strokeColor="#ffffff" strokeWidth="1.5"/>
+        </categories>
+        <categories value="RAIL" label="Bahn/Regio">
+          <symbol xsi:type="uimaps:MarkerSymbol" shape="DIAMOND" size="9" color="#0a7d2c" strokeColor="#ffffff" strokeWidth="1.5"/>
+        </categories>
+        <categories value="TRAM" label="Tram">
+          <symbol xsi:type="uimaps:MarkerSymbol" shape="SQUARE" size="7" color="#be1414" strokeColor="#ffffff" strokeWidth="1.5"/>
+        </categories>
+        <categories value="BUS" label="Bus">
+          <symbol xsi:type="uimaps:MarkerSymbol" shape="CIRCLE" size="6" color="#e8830c" strokeColor="#ffffff" strokeWidth="1.5"/>
+        </categories>
+        <defaultSymbol xsi:type="uimaps:MarkerSymbol" shape="CIRCLE" size="5" color="#999999"/>
+      </renderer>
+      <labeling feature="http://transit/1.0#//Station/name"
+          placement="RIGHT" color="#222222" haloColor="#ffffff" haloWidth="3"/>
+    </layers>
+
+  </components>
+</uimodel:UIModel>

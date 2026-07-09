@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genconfig:GenConfig xmlns:xmi="http://www.omg.org/XMI" xmi:version="2.0"
+    xmlns:genconfig="http://www.emfts.org/genconfig/1.0">
+  <generation mode="emf" outputDir="example/src/generated/demographic"/>
+  <package prefix="DemographicStructure" basePackage=""/>
+</genconfig:GenConfig>

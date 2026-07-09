@@ -1,0 +1,930 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmlns:xmi="http://www.omg.org/XMI" xmi:version="2.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    name="uimodel.vega" nsURI="http://uimodel/vega/1.0" nsPrefix="uivega">
+
+  <!-- ================================================================ -->
+  <!-- VegaView — Top-Level Component                                   -->
+  <!-- ================================================================ -->
+  <eClassifiers xsi:type="ecore:EClass" name="VegaView">
+    <eSuperTypes href="http://uimodel/1.0#//Component"/>
+    <!-- Visualisierungsinhalt (Unit, Layer oder Composition) -->
+    <eStructuralFeatures xsi:type="ecore:EReference" lowerBound="1"
+        eType="#//VegaSpec" name="content" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" lowerBound="1"
+        eType="#//VegaDataSource" name="dataSource" containment="true"/>
+    <!-- Selection-Parameter (Point, Interval) -->
+    <eStructuralFeatures xsi:type="ecore:EReference" upperBound="-1"
+        eType="#//VegaParam" name="params" containment="true"/>
+    <!-- Signal-Bindings zurueck ins EMF-Modell -->
+    <eStructuralFeatures xsi:type="ecore:EReference" upperBound="-1"
+        eType="#//VegaSignalBinding" name="signals" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="title"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EInt" name="width"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EInt" name="height"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="#//VegaAutosize" name="autosize" defaultValueLiteral="PAD"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EInt" name="padding"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="background"/>
+    <!-- Escape-Hatch: statische Vega-Lite JSON-Spec -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="spec"/>
+    <!-- Escape-Hatch: dynamische Spec via Expression (Kontext: EObject). Vorrang vor spec. -->
+    <eStructuralFeatures xsi:type="ecore:EReference"
+        eType="http://uimodel/1.0#//Expression" name="specExpression" containment="true"/>
+  </eClassifiers>
+
+  <!-- ================================================================ -->
+  <!-- VegaSpec — Composition-Hierarchie                                -->
+  <!-- ================================================================ -->
+  <eClassifiers xsi:type="ecore:EClass" name="VegaSpec" abstract="true">
+    <!-- Transforms gelten fuer alle Spec-Typen -->
+    <eStructuralFeatures xsi:type="ecore:EReference" upperBound="-1"
+        eType="#//VegaTransform" name="transforms" containment="true"/>
+  </eClassifiers>
+
+  <!-- Einzelnes Diagramm: ein Mark + Encodings -->
+  <eClassifiers xsi:type="ecore:EClass" name="VegaUnitSpec">
+    <eSuperTypes href="#//VegaSpec"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" lowerBound="1"
+        eType="#//VegaMarkDef" name="mark" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" upperBound="-1"
+        eType="#//VegaEncoding" name="encodings" containment="true"/>
+  </eClassifiers>
+
+  <!-- Mehrere Marks uebereinander (z.B. Line + Point) -->
+  <eClassifiers xsi:type="ecore:EClass" name="VegaLayerSpec">
+    <eSuperTypes href="#//VegaSpec"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" lowerBound="1" upperBound="-1"
+        eType="#//VegaSpec" name="layers" containment="true"/>
+    <!-- Shared Encodings fuer alle Layer -->
+    <eStructuralFeatures xsi:type="ecore:EReference" upperBound="-1"
+        eType="#//VegaEncoding" name="encodings" containment="true"/>
+  </eClassifiers>
+
+  <!-- Horizontale Anordnung -->
+  <eClassifiers xsi:type="ecore:EClass" name="VegaHConcatSpec">
+    <eSuperTypes href="#//VegaSpec"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" lowerBound="1" upperBound="-1"
+        eType="#//VegaSpec" name="specs" containment="true"/>
+  </eClassifiers>
+
+  <!-- Vertikale Anordnung -->
+  <eClassifiers xsi:type="ecore:EClass" name="VegaVConcatSpec">
+    <eSuperTypes href="#//VegaSpec"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" lowerBound="1" upperBound="-1"
+        eType="#//VegaSpec" name="specs" containment="true"/>
+  </eClassifiers>
+
+  <!-- Small Multiples: aufgeteilt nach einem Feld -->
+  <eClassifiers xsi:type="ecore:EClass" name="VegaFacetSpec">
+    <eSuperTypes href="#//VegaSpec"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" lowerBound="1"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature" name="facetField"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" lowerBound="1"
+        eType="#//VegaFieldType" name="facetFieldType"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EInt" name="columns"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="#//VegaSortOrder" name="facetSort" defaultValueLiteral="ASCENDING"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" lowerBound="1"
+        eType="#//VegaSpec" name="spec" containment="true"/>
+  </eClassifiers>
+
+  <!-- Wiederholung mit verschiedenen Feldern -->
+  <eClassifiers xsi:type="ecore:EClass" name="VegaRepeatSpec">
+    <eSuperTypes href="#//VegaSpec"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" lowerBound="1" upperBound="-1"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="fields"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EInt" name="columns"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" lowerBound="1"
+        eType="#//VegaSpec" name="spec" containment="true"/>
+  </eClassifiers>
+
+  <!-- ================================================================ -->
+  <!-- VegaMarkDef — Mark-Konfiguration                                 -->
+  <!-- ================================================================ -->
+  <eClassifiers xsi:type="ecore:EClass" name="VegaMarkDef">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" lowerBound="1"
+        eType="#//VegaMarkType" name="type"/>
+    <!-- Visuelle Eigenschaften -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="opacity"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="filled"
+        defaultValueLiteral="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="color"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="fill"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="stroke"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="strokeWidth"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="cornerRadius"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="#//VegaInterpolate" name="interpolate"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="size"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="clip"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="cursor"/>
+    <!-- Line/Area-spezifisch -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="point"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="line"/>
+    <!-- Arc-spezifisch -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="innerRadius"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="outerRadius"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="padAngle"/>
+    <!-- Bar-spezifisch -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="#//VegaOrientation" name="orient"/>
+    <!-- Text-spezifisch -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="fontSize"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="fontWeight"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="font"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="#//VegaAlign" name="align"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="#//VegaBaseline" name="baseline"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="dx"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="dy"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="angle"/>
+    <!-- Tooltip -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="tooltip"/>
+  </eClassifiers>
+
+  <!-- ================================================================ -->
+  <!-- VegaEncoding — Kanal-Encoding                                    -->
+  <!-- ================================================================ -->
+  <eClassifiers xsi:type="ecore:EClass" name="VegaEncoding">
+    <!-- Welcher Kanal (x, y, color, size, ...) -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute" lowerBound="1"
+        eType="#//VegaChannel" name="channel"/>
+    <!-- Datenbindung: Feature oder Expression (expression hat Vorrang) -->
+    <eStructuralFeatures xsi:type="ecore:EReference"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature" name="feature"/>
+    <eStructuralFeatures xsi:type="ecore:EReference"
+        eType="http://uimodel/1.0#//Expression" name="expression" containment="true"/>
+    <!-- Fester Wert statt Feld-Bindung (z.B. color = "red") -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="value"/>
+    <!-- Datentyp und Aggregation -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute" lowerBound="1"
+        eType="#//VegaFieldType" name="fieldType"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="#//VegaAggregate" name="aggregate" defaultValueLiteral="NONE"/>
+    <!-- Binning -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="bin"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="binStep"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EInt" name="binMaxBins"/>
+    <!-- Zeiteinheit -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="#//VegaTimeUnit" name="timeUnit"/>
+    <!-- Beschriftung und Format -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="title"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="format"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="formatType"/>
+    <!-- Sortierung -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="#//VegaSortOrder" name="sort"/>
+    <!-- Stacking -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="#//VegaStack" name="stack"/>
+    <!-- Band-Position (0..1, fuer Band-Scales) -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="bandPosition"/>
+    <!-- Scale, Axis, Legend Konfiguration -->
+    <eStructuralFeatures xsi:type="ecore:EReference"
+        eType="#//VegaScale" name="scale" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference"
+        eType="#//VegaAxis" name="axis" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference"
+        eType="#//VegaLegend" name="legend" containment="true"/>
+    <!-- Conditional Encoding (z.B. Farbe abhaengig von Selection) -->
+    <eStructuralFeatures xsi:type="ecore:EReference"
+        eType="#//VegaCondition" name="condition" containment="true"/>
+  </eClassifiers>
+
+  <!-- ================================================================ -->
+  <!-- VegaScale                                                        -->
+  <!-- ================================================================ -->
+  <eClassifiers xsi:type="ecore:EClass" name="VegaScale">
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="#//VegaScaleType" name="type" defaultValueLiteral="LINEAR"/>
+    <!-- Domain (Eingabebereich) -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute" upperBound="-1"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="domain"/>
+    <eStructuralFeatures xsi:type="ecore:EReference"
+        eType="http://uimodel/1.0#//Expression" name="domainExpression" containment="true"/>
+    <!-- Range (Ausgabebereich) -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute" upperBound="-1"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="range"/>
+    <!-- Farbschema (z.B. "category10", "blues", "viridis") -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="scheme"/>
+    <!-- Scale-Verhalten -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="zero"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="nice"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="clamp"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="round"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="reverse"/>
+    <!-- Band/Point-Scales -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="padding"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="paddingInner"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="paddingOuter"/>
+    <!-- Log/Pow-Scales -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="exponent"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="base"/>
+    <!-- Interpolation (fuer Farbskalen) -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="interpolate"/>
+  </eClassifiers>
+
+  <!-- ================================================================ -->
+  <!-- VegaAxis                                                         -->
+  <!-- ================================================================ -->
+  <eClassifiers xsi:type="ecore:EClass" name="VegaAxis">
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="#//VegaAxisOrient" name="orient"/>
+    <!-- Titel -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="title"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="titleAngle"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="titleColor"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="titleFontSize"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="titleFont"/>
+    <!-- Labels -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="labels"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="labelAngle"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="labelColor"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="labelFontSize"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="labelFont"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="#//VegaLabelOverlap" name="labelOverlap"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="format"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="formatType"/>
+    <!-- Grid -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="grid"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="gridColor"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="gridOpacity"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="gridWidth"/>
+    <!-- Ticks -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="ticks"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EInt" name="tickCount"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="tickSize"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="tickColor"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="tickWidth"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" upperBound="-1"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="values"/>
+    <!-- Domain-Linie -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="domainLine"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="domainColor"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="domainWidth"/>
+    <!-- Layout -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="offset"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="minExtent"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="maxExtent"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EInt" name="zindex"/>
+  </eClassifiers>
+
+  <!-- ================================================================ -->
+  <!-- VegaLegend                                                       -->
+  <!-- ================================================================ -->
+  <eClassifiers xsi:type="ecore:EClass" name="VegaLegend">
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="#//VegaLegendOrient" name="orient"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="title"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="titleColor"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="titleFontSize"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="#//VegaLegendType" name="type"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="#//VegaDirection" name="direction"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="labelColor"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="labelFontSize"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="symbolSize"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="symbolType"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="padding"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="offset"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EInt" name="columns"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" upperBound="-1"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="values"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="disable"/>
+  </eClassifiers>
+
+  <!-- ================================================================ -->
+  <!-- VegaCondition — Conditional Encoding                             -->
+  <!-- ================================================================ -->
+  <eClassifiers xsi:type="ecore:EClass" name="VegaCondition">
+    <!-- Name des Selection-Parameters -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="param"/>
+    <!-- Alternativ: Praedikat-Expression -->
+    <eStructuralFeatures xsi:type="ecore:EReference"
+        eType="http://uimodel/1.0#//Expression" name="predicate" containment="true"/>
+    <!-- Wert wenn Bedingung true -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="value"/>
+    <!-- Alternativ: Feld-basiertes Encoding wenn Bedingung true -->
+    <eStructuralFeatures xsi:type="ecore:EReference"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature" name="feature"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="#//VegaFieldType" name="fieldType"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="#//VegaAggregate" name="aggregate"/>
+  </eClassifiers>
+
+  <!-- ================================================================ -->
+  <!-- VegaParam — Selection/Parameter                                  -->
+  <!-- ================================================================ -->
+  <eClassifiers xsi:type="ecore:EClass" name="VegaParam" abstract="true">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" lowerBound="1"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="name"/>
+  </eClassifiers>
+
+  <!-- Punkt-Selektion (Klick auf Datenpunkt) -->
+  <eClassifiers xsi:type="ecore:EClass" name="VegaPointParam">
+    <eSuperTypes href="#//VegaParam"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" upperBound="-1"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="fields"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="toggle"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="nearest"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="on"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="clear"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" upperBound="-1"
+        eType="#//VegaChannel" name="encodings"/>
+  </eClassifiers>
+
+  <!-- Intervall-Selektion (Brush/Zoom) -->
+  <eClassifiers xsi:type="ecore:EClass" name="VegaIntervalParam">
+    <eSuperTypes href="#//VegaParam"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" upperBound="-1"
+        eType="#//VegaChannel" name="encodings"/>
+    <eStructuralFeatures xsi:type="ecore:EReference"
+        eType="#//VegaSelectionMark" name="mark" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="on"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="clear"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="translate"
+        defaultValueLiteral="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="zoom"
+        defaultValueLiteral="true"/>
+  </eClassifiers>
+
+  <!-- Visuelles Styling der Intervall-Selektion -->
+  <eClassifiers xsi:type="ecore:EClass" name="VegaSelectionMark">
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="fill"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="fillOpacity"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="stroke"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="strokeWidth"/>
+  </eClassifiers>
+
+  <!-- ================================================================ -->
+  <!-- VegaDataSource                                                   -->
+  <!-- ================================================================ -->
+  <eClassifiers xsi:type="ecore:EClass" name="VegaDataSource">
+    <eStructuralFeatures xsi:type="ecore:EReference" lowerBound="1"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature" name="feature"/>
+    <eStructuralFeatures xsi:type="ecore:EReference"
+        eType="http://uimodel/1.0#//Expression" name="filterExpression" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" upperBound="-1"
+        eType="#//VegaTransform" name="transforms" containment="true"/>
+    <!-- Escape-Hatch: JS-Expression die EList → Array mapped. Vorrang vor transforms. -->
+    <eStructuralFeatures xsi:type="ecore:EReference"
+        eType="http://uimodel/1.0#//Expression" name="transformExpression" containment="true"/>
+  </eClassifiers>
+
+  <!-- ================================================================ -->
+  <!-- VegaSignalBinding                                                -->
+  <!-- ================================================================ -->
+  <eClassifiers xsi:type="ecore:EClass" name="VegaSignalBinding">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" lowerBound="1"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="signalName"/>
+    <eStructuralFeatures xsi:type="ecore:EReference"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature" name="targetFeature"/>
+    <eStructuralFeatures xsi:type="ecore:EReference"
+        eType="http://uimodel/1.0#//Expression" name="transform" containment="true"/>
+  </eClassifiers>
+
+  <!-- ================================================================ -->
+  <!-- VegaTransform — Datentransformationen                            -->
+  <!-- ================================================================ -->
+  <eClassifiers xsi:type="ecore:EClass" name="VegaTransform" abstract="true"/>
+
+  <!-- Wide → Long -->
+  <eClassifiers xsi:type="ecore:EClass" name="VegaFoldTransform">
+    <eSuperTypes href="#//VegaTransform"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" lowerBound="1" upperBound="-1"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="fields"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" upperBound="-1"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="as"/>
+  </eClassifiers>
+
+  <!-- Gruppierung und Aggregation -->
+  <eClassifiers xsi:type="ecore:EClass" name="VegaAggregateTransform">
+    <eSuperTypes href="#//VegaTransform"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" upperBound="-1"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature" name="groupBy"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" lowerBound="1"
+        eType="#//VegaAggregate" name="op"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" lowerBound="1"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature" name="field"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="as"/>
+  </eClassifiers>
+
+  <!-- Berechnetes Feld via Expression -->
+  <eClassifiers xsi:type="ecore:EClass" name="VegaCalculateTransform">
+    <eSuperTypes href="#//VegaTransform"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" lowerBound="1"
+        eType="http://uimodel/1.0#//Expression" name="calculate" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" lowerBound="1"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="as"/>
+  </eClassifiers>
+
+  <!-- Binning -->
+  <eClassifiers xsi:type="ecore:EClass" name="VegaBinTransform">
+    <eSuperTypes href="#//VegaTransform"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" lowerBound="1"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature" name="field"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="as"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EInt" name="maxBins"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="step"/>
+  </eClassifiers>
+
+  <!-- Zeiteinheit-Extraktion -->
+  <eClassifiers xsi:type="ecore:EClass" name="VegaTimeUnitTransform">
+    <eSuperTypes href="#//VegaTransform"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" lowerBound="1"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature" name="field"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" lowerBound="1"
+        eType="#//VegaTimeUnit" name="timeUnit"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="as"/>
+  </eClassifiers>
+
+  <!-- Filter via Expression -->
+  <eClassifiers xsi:type="ecore:EClass" name="VegaFilterTransform">
+    <eSuperTypes href="#//VegaTransform"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" lowerBound="1"
+        eType="http://uimodel/1.0#//Expression" name="filter" containment="true"/>
+  </eClassifiers>
+
+  <!-- Window-Funktionen (Rank, Running Total, etc.) -->
+  <eClassifiers xsi:type="ecore:EClass" name="VegaWindowTransform">
+    <eSuperTypes href="#//VegaTransform"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" lowerBound="1"
+        eType="#//VegaWindowOp" name="op"/>
+    <eStructuralFeatures xsi:type="ecore:EReference"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature" name="field"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" lowerBound="1"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="as"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" upperBound="-1"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature" name="groupBy"/>
+    <eStructuralFeatures xsi:type="ecore:EReference"
+        eType="#//VegaSortField" name="sort" containment="true"/>
+    <!-- Frame: [start, end] relativ zum aktuellen Datenpunkt. null = unbegrenzt -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EInt" name="frameStart"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EInt" name="frameEnd"/>
+  </eClassifiers>
+
+  <!-- Lookup (Join mit anderer Datenquelle) -->
+  <eClassifiers xsi:type="ecore:EClass" name="VegaLookupTransform">
+    <eSuperTypes href="#//VegaTransform"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" lowerBound="1"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature" name="lookup"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" lowerBound="1"
+        eType="#//VegaLookupData" name="from" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" upperBound="-1"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="as"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="default"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EClass" name="VegaLookupData">
+    <!-- Collection-Feature das als Lookup-Tabelle dient -->
+    <eStructuralFeatures xsi:type="ecore:EReference" lowerBound="1"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature" name="feature"/>
+    <!-- Schluesselfeld in der Lookup-Tabelle -->
+    <eStructuralFeatures xsi:type="ecore:EReference" lowerBound="1"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature" name="key"/>
+    <!-- Felder die uebernommen werden -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute" upperBound="-1"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="fields"/>
+  </eClassifiers>
+
+  <!-- Flatten (verschachtelte Arrays aufloesen) -->
+  <eClassifiers xsi:type="ecore:EClass" name="VegaFlattenTransform">
+    <eSuperTypes href="#//VegaTransform"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" lowerBound="1" upperBound="-1"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="fields"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" upperBound="-1"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="as"/>
+  </eClassifiers>
+
+  <!-- Pivot (Long → Wide) -->
+  <eClassifiers xsi:type="ecore:EClass" name="VegaPivotTransform">
+    <eSuperTypes href="#//VegaTransform"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" lowerBound="1"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature" name="pivot"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" lowerBound="1"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature" name="value"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" upperBound="-1"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature" name="groupBy"/>
+  </eClassifiers>
+
+  <!-- Stichprobe -->
+  <eClassifiers xsi:type="ecore:EClass" name="VegaSampleTransform">
+    <eSuperTypes href="#//VegaTransform"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" lowerBound="1"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EInt" name="sample"/>
+  </eClassifiers>
+
+  <!-- Dichteverteilung (KDE) -->
+  <eClassifiers xsi:type="ecore:EClass" name="VegaDensityTransform">
+    <eSuperTypes href="#//VegaTransform"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" lowerBound="1"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature" name="field"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="bandwidth"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EInt" name="steps"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" upperBound="-1"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="as"/>
+  </eClassifiers>
+
+  <!-- Regression -->
+  <eClassifiers xsi:type="ecore:EClass" name="VegaRegressionTransform">
+    <eSuperTypes href="#//VegaTransform"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" lowerBound="1"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature" name="on"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" lowerBound="1"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature" name="regression"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="#//VegaRegressionMethod" name="method" defaultValueLiteral="LINEAR"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" upperBound="-1"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="as"/>
+  </eClassifiers>
+
+  <!-- Imputation (fehlende Werte fuellen) -->
+  <eClassifiers xsi:type="ecore:EClass" name="VegaImputeTransform">
+    <eSuperTypes href="#//VegaTransform"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" lowerBound="1"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature" name="impute"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" lowerBound="1"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature" name="key"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="#//VegaImputeMethod" name="method" defaultValueLiteral="VALUE"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="value"/>
+  </eClassifiers>
+
+  <!-- JoinAggregate (Aggregat ohne Reduktion) -->
+  <eClassifiers xsi:type="ecore:EClass" name="VegaJoinAggregateTransform">
+    <eSuperTypes href="#//VegaTransform"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" lowerBound="1"
+        eType="#//VegaAggregate" name="op"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" lowerBound="1"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature" name="field"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" lowerBound="1"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="as"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" upperBound="-1"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature" name="groupBy"/>
+  </eClassifiers>
+
+  <!-- Sortierfeld (fuer Window-Transform) -->
+  <eClassifiers xsi:type="ecore:EClass" name="VegaSortField">
+    <eStructuralFeatures xsi:type="ecore:EReference" lowerBound="1"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature" name="field"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="#//VegaSortOrder" name="order" defaultValueLiteral="ASCENDING"/>
+  </eClassifiers>
+
+  <!-- ================================================================ -->
+  <!-- Enums                                                            -->
+  <!-- ================================================================ -->
+
+  <eClassifiers xsi:type="ecore:EEnum" name="VegaMarkType">
+    <eLiterals name="BAR" value="0"/>
+    <eLiterals name="LINE" value="1"/>
+    <eLiterals name="POINT" value="2"/>
+    <eLiterals name="ARC" value="3"/>
+    <eLiterals name="AREA" value="4"/>
+    <eLiterals name="RECT" value="5"/>
+    <eLiterals name="TEXT" value="6"/>
+    <eLiterals name="TICK" value="7"/>
+    <eLiterals name="RULE" value="8"/>
+    <eLiterals name="TRAIL" value="9"/>
+    <eLiterals name="BOXPLOT" value="10"/>
+    <eLiterals name="GEOSHAPE" value="11"/>
+    <eLiterals name="CIRCLE" value="12"/>
+    <eLiterals name="SQUARE" value="13"/>
+    <eLiterals name="IMAGE" value="14"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EEnum" name="VegaChannel">
+    <eLiterals name="X" value="0"/>
+    <eLiterals name="Y" value="1"/>
+    <eLiterals name="X2" value="2"/>
+    <eLiterals name="Y2" value="3"/>
+    <eLiterals name="X_OFFSET" value="4"/>
+    <eLiterals name="Y_OFFSET" value="5"/>
+    <eLiterals name="COLOR" value="6"/>
+    <eLiterals name="FILL" value="7"/>
+    <eLiterals name="STROKE" value="8"/>
+    <eLiterals name="OPACITY" value="9"/>
+    <eLiterals name="SIZE" value="10"/>
+    <eLiterals name="SHAPE" value="11"/>
+    <eLiterals name="STROKE_DASH" value="12"/>
+    <eLiterals name="STROKE_WIDTH" value="13"/>
+    <eLiterals name="TEXT" value="14"/>
+    <eLiterals name="TOOLTIP" value="15"/>
+    <eLiterals name="ANGLE" value="16"/>
+    <eLiterals name="THETA" value="17"/>
+    <eLiterals name="THETA2" value="18"/>
+    <eLiterals name="RADIUS" value="19"/>
+    <eLiterals name="RADIUS2" value="20"/>
+    <eLiterals name="ROW" value="21"/>
+    <eLiterals name="COLUMN" value="22"/>
+    <eLiterals name="FACET" value="23"/>
+    <eLiterals name="DETAIL" value="24"/>
+    <eLiterals name="ORDER" value="25"/>
+    <eLiterals name="HREF" value="26"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EEnum" name="VegaFieldType">
+    <eLiterals name="QUANTITATIVE" value="0"/>
+    <eLiterals name="ORDINAL" value="1"/>
+    <eLiterals name="NOMINAL" value="2"/>
+    <eLiterals name="TEMPORAL" value="3"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EEnum" name="VegaAggregate">
+    <eLiterals name="NONE" value="0"/>
+    <eLiterals name="COUNT" value="1"/>
+    <eLiterals name="SUM" value="2"/>
+    <eLiterals name="MEAN" value="3"/>
+    <eLiterals name="MIN" value="4"/>
+    <eLiterals name="MAX" value="5"/>
+    <eLiterals name="MEDIAN" value="6"/>
+    <eLiterals name="VARIANCE" value="7"/>
+    <eLiterals name="STDEV" value="8"/>
+    <eLiterals name="STDERR" value="9"/>
+    <eLiterals name="Q1" value="10"/>
+    <eLiterals name="Q3" value="11"/>
+    <eLiterals name="CI0" value="12"/>
+    <eLiterals name="CI1" value="13"/>
+    <eLiterals name="DISTINCT" value="14"/>
+    <eLiterals name="VALID" value="15"/>
+    <eLiterals name="MISSING" value="16"/>
+    <eLiterals name="ARGMIN" value="17"/>
+    <eLiterals name="ARGMAX" value="18"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EEnum" name="VegaScaleType">
+    <eLiterals name="LINEAR" value="0"/>
+    <eLiterals name="LOG" value="1"/>
+    <eLiterals name="POW" value="2"/>
+    <eLiterals name="SQRT" value="3"/>
+    <eLiterals name="SYMLOG" value="4"/>
+    <eLiterals name="TIME" value="5"/>
+    <eLiterals name="UTC" value="6"/>
+    <eLiterals name="BAND" value="7"/>
+    <eLiterals name="POINT" value="8"/>
+    <eLiterals name="ORDINAL" value="9"/>
+    <eLiterals name="QUANTILE" value="10"/>
+    <eLiterals name="QUANTIZE" value="11"/>
+    <eLiterals name="THRESHOLD" value="12"/>
+    <eLiterals name="BIN_ORDINAL" value="13"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EEnum" name="VegaInterpolate">
+    <eLiterals name="LINEAR" value="0"/>
+    <eLiterals name="STEP" value="1"/>
+    <eLiterals name="STEP_BEFORE" value="2"/>
+    <eLiterals name="STEP_AFTER" value="3"/>
+    <eLiterals name="BASIS" value="4"/>
+    <eLiterals name="CARDINAL" value="5"/>
+    <eLiterals name="MONOTONE" value="6"/>
+    <eLiterals name="BUNDLE" value="7"/>
+    <eLiterals name="NATURAL" value="8"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EEnum" name="VegaTimeUnit">
+    <eLiterals name="YEAR" value="0"/>
+    <eLiterals name="QUARTER" value="1"/>
+    <eLiterals name="MONTH" value="2"/>
+    <eLiterals name="WEEK" value="3"/>
+    <eLiterals name="DAY" value="4"/>
+    <eLiterals name="DAYOFYEAR" value="5"/>
+    <eLiterals name="DATE" value="6"/>
+    <eLiterals name="HOURS" value="7"/>
+    <eLiterals name="MINUTES" value="8"/>
+    <eLiterals name="SECONDS" value="9"/>
+    <eLiterals name="MILLISECONDS" value="10"/>
+    <eLiterals name="YEARMONTH" value="11"/>
+    <eLiterals name="YEARMONTHDATE" value="12"/>
+    <eLiterals name="MONTHDATE" value="13"/>
+    <eLiterals name="HOURSMINUTES" value="14"/>
+    <eLiterals name="HOURSMINUTESSECONDS" value="15"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EEnum" name="VegaOrientation">
+    <eLiterals name="VERTICAL" value="0"/>
+    <eLiterals name="HORIZONTAL" value="1"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EEnum" name="VegaAxisOrient">
+    <eLiterals name="TOP" value="0"/>
+    <eLiterals name="BOTTOM" value="1"/>
+    <eLiterals name="LEFT" value="2"/>
+    <eLiterals name="RIGHT" value="3"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EEnum" name="VegaLegendOrient">
+    <eLiterals name="LEFT" value="0"/>
+    <eLiterals name="RIGHT" value="1"/>
+    <eLiterals name="TOP" value="2"/>
+    <eLiterals name="BOTTOM" value="3"/>
+    <eLiterals name="TOP_LEFT" value="4"/>
+    <eLiterals name="TOP_RIGHT" value="5"/>
+    <eLiterals name="BOTTOM_LEFT" value="6"/>
+    <eLiterals name="BOTTOM_RIGHT" value="7"/>
+    <eLiterals name="NONE" value="8"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EEnum" name="VegaLegendType">
+    <eLiterals name="SYMBOL" value="0"/>
+    <eLiterals name="GRADIENT" value="1"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EEnum" name="VegaDirection">
+    <eLiterals name="VERTICAL" value="0"/>
+    <eLiterals name="HORIZONTAL" value="1"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EEnum" name="VegaSortOrder">
+    <eLiterals name="ASCENDING" value="0"/>
+    <eLiterals name="DESCENDING" value="1"/>
+    <eLiterals name="NONE" value="2"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EEnum" name="VegaStack">
+    <eLiterals name="ZERO" value="0"/>
+    <eLiterals name="NORMALIZE" value="1"/>
+    <eLiterals name="CENTER" value="2"/>
+    <eLiterals name="NONE" value="3"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EEnum" name="VegaAutosize">
+    <eLiterals name="PAD" value="0"/>
+    <eLiterals name="FIT" value="1"/>
+    <eLiterals name="FIT_X" value="2"/>
+    <eLiterals name="FIT_Y" value="3"/>
+    <eLiterals name="NONE" value="4"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EEnum" name="VegaAlign">
+    <eLiterals name="LEFT" value="0"/>
+    <eLiterals name="CENTER" value="1"/>
+    <eLiterals name="RIGHT" value="2"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EEnum" name="VegaBaseline">
+    <eLiterals name="TOP" value="0"/>
+    <eLiterals name="MIDDLE" value="1"/>
+    <eLiterals name="BOTTOM" value="2"/>
+    <eLiterals name="ALPHABETIC" value="3"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EEnum" name="VegaLabelOverlap">
+    <eLiterals name="TRUE" value="0"/>
+    <eLiterals name="FALSE" value="1"/>
+    <eLiterals name="GREEDY" value="2"/>
+    <eLiterals name="PARITY" value="3"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EEnum" name="VegaWindowOp">
+    <eLiterals name="ROW_NUMBER" value="0"/>
+    <eLiterals name="RANK" value="1"/>
+    <eLiterals name="DENSE_RANK" value="2"/>
+    <eLiterals name="PERCENT_RANK" value="3"/>
+    <eLiterals name="CUME_DIST" value="4"/>
+    <eLiterals name="NTILE" value="5"/>
+    <eLiterals name="LAG" value="6"/>
+    <eLiterals name="LEAD" value="7"/>
+    <eLiterals name="FIRST_VALUE" value="8"/>
+    <eLiterals name="LAST_VALUE" value="9"/>
+    <eLiterals name="NTH_VALUE" value="10"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EEnum" name="VegaRegressionMethod">
+    <eLiterals name="LINEAR" value="0"/>
+    <eLiterals name="LOG" value="1"/>
+    <eLiterals name="EXP" value="2"/>
+    <eLiterals name="POW" value="3"/>
+    <eLiterals name="QUAD" value="4"/>
+    <eLiterals name="POLY" value="5"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EEnum" name="VegaImputeMethod">
+    <eLiterals name="VALUE" value="0"/>
+    <eLiterals name="MEAN" value="1"/>
+    <eLiterals name="MEDIAN" value="2"/>
+    <eLiterals name="MAX" value="3"/>
+    <eLiterals name="MIN" value="4"/>
+  </eClassifiers>
+
+</ecore:EPackage>
