@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uimodel:UIModel
+    xmlns:xmi="http://www.omg.org/XMI"
+    xmi:version="2.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:uimodel="http://uimodel/1.0"
+    name="PersonEditorForm">
+
+  <targetClasses href="https://dg.de/1.0#//Person"/>
+
+  <components xsi:type="uimodel:FormView"
+      name="PersonFormView">
+
+    <fields xsi:type="uimodel:InputWidget"
+        name="firstName"
+        feature="https://dg.de/1.0#//Person/firstName"
+        label="Vorname"
+        placeholder="Vorname eingeben"
+        required="true"/>
+
+    <fields xsi:type="uimodel:InputWidget"
+        name="lastName"
+        feature="https://dg.de/1.0#//Person/lastName"
+        label="Nachname"
+        required="true"/>
+
+    <!-- GroupWidget (Issue #6): Kontaktdaten als horizontale Gruppe -->
+    <fields xsi:type="uimodel:GroupWidget" name="contact" layout="HORIZONTAL">
+      <fields xsi:type="uimodel:InputWidget"
+          name="email"
+          feature="https://dg.de/1.0#//Person/email"
+          label="E-Mail"
+          placeholder="name@firma.de">
+        <styles href="styles.xmi#s-accent"/>
+      </fields>
+      <fields xsi:type="uimodel:InputWidget"
+          name="phone"
+          feature="https://dg.de/1.0#//Person/phone"
+          label="Telefon"/>
+    </fields>
+
+    <!-- Conditional (Issue #6): Senior-Positionen mit Auszeichnung,
+         sonst normales Feld — condition auf dem Domänenobjekt -->
+    <fields xsi:type="uimodel:Conditional" name="position">
+      <condition language="JS"
+          body="self.jobTitle != null &amp;&amp; String(self.jobTitle).toLowerCase().indexOf('senior') >= 0"/>
+      <then xsi:type="uimodel:InputWidget"
+          name="jobTitle"
+          feature="https://dg.de/1.0#//Person/jobTitle"
+          label="Position ★ Senior"
+          readOnly="true"/>
+      <else xsi:type="uimodel:InputWidget"
+          name="jobTitle"
+          feature="https://dg.de/1.0#//Person/jobTitle"
+          label="Position"/>
+    </fields>
+
+    <!-- ForEach (Issue #6): Iterator über eine Instanz-Collection;
+         im body ist self/model das Element (hier: die Kollegen) -->
+    <fields xsi:type="uimodel:ForEach" name="colleagues"
+        emptyText="Keine Kollegen gefunden.">
+      <items language="JS" body="self.company?.employees"/>
+      <body xsi:type="uimodel:GroupWidget" name="colleague-row" layout="HORIZONTAL">
+        <fields xsi:type="uimodel:InputWidget"
+            name="firstName"
+            feature="https://dg.de/1.0#//Person/firstName"
+            label="Kollege"
+            readOnly="true"/>
+        <fields xsi:type="uimodel:InputWidget"
+            name="jobTitle"
+            feature="https://dg.de/1.0#//Person/jobTitle"
+            label="Rolle"
+            readOnly="true"/>
+      </body>
+    </fields>
+  </components>
+</uimodel:UIModel>

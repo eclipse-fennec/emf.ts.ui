@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dge:Company
+    xmi:id="c1"
+    xmlns:xmi="http://www.omg.org/XMI"
+    xmi:version="2.0"
+    xmlns:dge="https://dg.de/1.0"
+    name="Data In Motion GmbH"
+    industry="Software"
+    url="https://data-in-motion.biz">
+  <address
+      street="Leutragraben 1"
+      city="Jena"
+      zipCode="07743"
+      country="Deutschland"/>
+  <employees
+      xmi:id="p1"
+      company="c1"
+      firstName="Lena"
+      lastName="Fischer"
+      email="lena.fischer@dim.de"
+      phone="0364112345"
+      jobTitle="Software Architect"/>
+  <employees
+      xmi:id="p2"
+      company="c1"
+      firstName="Markus"
+      lastName="Hoffmann"
+      email="markus.hoffmann@dim.de"
+      phone="0364123456"
+      jobTitle="Senior Developer"/>
+  <employees
+      xmi:id="p3"
+      company="c1"
+      firstName="Anna"
+      lastName="Schmidt"
+      email="anna.schmidt@dim.de"
+      phone="0364134567"
+      jobTitle="UX Designer"/>
+  <employees
+      xmi:id="p4"
+      company="c1"
+      firstName="Jonas"
+      lastName="Weber"
+      email="jonas.weber@dim.de"
+      phone="0364145678"
+      jobTitle="DevOps Engineer"/>
+</dge:Company>

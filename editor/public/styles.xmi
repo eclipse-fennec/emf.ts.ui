@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uicss:StyleSheet
+    xmlns:xmi="http://www.omg.org/XMI"
+    xmi:version="2.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:uicss="http://uimodel/css/1.0"
+    xmlns:uimodel="http://uimodel/1.0"
+    name="person-editor">
+
+  <!-- ── Design-Tokens (→ CSS Custom Properties mit uic-Prefix) ──── -->
+  <tokens xmi:id="t-color-primary" name="color-primary" value="#5b5fd6"
+      description="Akzent-/Markenfarbe"/>
+  <tokens xmi:id="t-color-surface" name="color-surface" value="#ffffff"
+      description="Kartenhintergrund"/>
+  <tokens xmi:id="t-color-text"    name="color-text"    value="#1a1a2e"/>
+  <tokens xmi:id="t-color-muted"   name="color-muted"   value="#66708a"/>
+  <tokens xmi:id="t-color-border"  name="color-border"  value="#ccccdd"/>
+  <tokens xmi:id="t-color-danger"  name="color-danger"  value="#d03050"/>
+  <tokens xmi:id="t-spacing-1"     name="spacing-1"     value="0.25rem"/>
+  <tokens xmi:id="t-spacing-2"     name="spacing-2"     value="0.5rem"/>
+  <tokens xmi:id="t-spacing-3"     name="spacing-3"     value="1rem"/>
+  <tokens xmi:id="t-radius"        name="radius"        value="8px"/>
+
+  <!-- ── Dark-Theme: Token-Overrides ──────────────────────────────── -->
+  <themes name="dark" dark="true">
+    <overrides value="#8f93ff"><token href="#t-color-primary"/></overrides>
+    <overrides value="#23232f"><token href="#t-color-surface"/></overrides>
+    <overrides value="#e6e6f0"><token href="#t-color-text"/></overrides>
+    <overrides value="#9aa2bd"><token href="#t-color-muted"/></overrides>
+    <overrides value="#3d3d4f"><token href="#t-color-border"/></overrides>
+  </themes>
+
+  <!-- ── Benannte Styles (.uic-*) — aus Component.styles referenzierbar ── -->
+  <styles xmi:id="s-card" name="card">
+    <declarations property="background"    value="token(color-surface)"/>
+    <declarations property="border"        value="1px solid token(color-border)"/>
+    <declarations property="border-radius" value="token(radius)"/>
+    <declarations property="padding"       value="token(spacing-3)"/>
+    <declarations property="color"         value="token(color-text)"/>
+  </styles>
+
+  <styles xmi:id="s-accent" name="accent">
+    <extends href="#s-card"/>
+    <declarations property="border-left" value="4px solid token(color-primary)"/>
+    <states state="HOVER">
+      <declarations property="box-shadow" value="0 2px 8px rgba(91, 95, 214, 0.25)"/>
+    </states>
+  </styles>
+
+  <!-- ── Selektorbasierte Regeln (CSS-Analogon) ──────────────────── -->
+  <!-- Alle Widgets: Grundabstand + Textfarbe -->
+  <rules name="widget-base">
+    <targetClass href="http://uimodel/1.0#//WidgetComponent"/>
+    <declarations property="margin-bottom" value="token(spacing-2)"/>
+    <declarations property="color"         value="token(color-text)"/>
+  </rules>
+
+  <!-- Formulare als Karte -->
+  <rules name="form-card">
+    <targetClass href="http://uimodel/1.0#//FormView"/>
+    <declarations property="background"    value="token(color-surface)"/>
+    <declarations property="border"        value="1px solid token(color-border)"/>
+    <declarations property="border-radius" value="token(radius)"/>
+    <declarations property="padding"       value="token(spacing-3)"/>
+    <declarations property="max-width"     value="560px"/>
+  </rules>
+
+  <!-- Pflichtfelder markieren (Zustand REQUIRED wird vom Composer gestempelt) -->
+  <rules name="required-marker" priority="10">
+    <targetClass href="http://uimodel/1.0#//WidgetComponent"/>
+    <states state="REQUIRED">
+      <declarations property="border-left"  value="3px solid token(color-primary)"/>
+      <declarations property="padding-left" value="token(spacing-2)"/>
+    </states>
+  </rules>
+
+  <!-- Dynamische Regel: Senior-Mitarbeiter hervorheben (condition auf dem Domänenobjekt) -->
+  <rules name="senior-highlight" priority="20">
+    <targetClass href="http://uimodel/1.0#//WidgetComponent"/>
+    <condition language="JS"
+        body="self.jobTitle != null &amp;&amp; String(self.jobTitle).toLowerCase().indexOf('senior') >= 0"/>
+    <declarations property="background" value="rgba(91, 95, 214, 0.08)"/>
+    <declarations property="border-radius" value="token(radius)"/>
+  </rules>
+</uicss:StyleSheet>
