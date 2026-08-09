@@ -8,6 +8,7 @@
  */
 import { computed, ref, shallowRef, type ComputedRef, type InjectionKey, type Ref, type ShallowRef } from 'vue';
 import { BasicCommandStack, BasicEditingDomain, type Command } from '@emfts/command';
+import { bumpExpressionTick } from '@emfts/uimodel-composer';
 import type { EClass, EObject, EStructuralFeature, XMIResource } from '@emfts/core';
 import type { LoadedEditorData } from '../emf/loadEditorResources';
 import { containmentFeatures } from './reflect';
@@ -117,6 +118,9 @@ export function createEditor(data: LoadedEditorData): EditorContext {
     commandStackChanged: () => {
       version.value++;
       dirty.value = true;
+      // Struktur-/Attributänderungen am UIModel selbst sieht der
+      // Model-Adapter des Composers nicht — explizit bumpen (Issue #7)
+      bumpExpressionTick();
     },
   });
 

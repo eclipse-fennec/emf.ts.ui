@@ -11,6 +11,7 @@ import {
   widgetStateClasses,
 } from '../css/componentClasses';
 import { STYLE_SHEETS_KEY } from '../css/useStyleSheets';
+import { trackExpressionTick } from '../utils/reactivity';
 
 const props = defineProps<{
   widget: WidgetComponent;
@@ -56,6 +57,7 @@ const uiContext = computed(() => ({
 const styleSheets = inject(STYLE_SHEETS_KEY, undefined);
 
 const cssClasses = computed(() => {
+  trackExpressionTick();
   void styleSheets?.version.value;
   return [
     ...componentCssClasses(props.widget, {

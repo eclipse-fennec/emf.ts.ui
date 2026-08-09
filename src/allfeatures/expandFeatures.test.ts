@@ -280,6 +280,43 @@ describe('expandFeatures', () => {
   });
 });
 
+describe('required aus lowerBound (Issue #3/#7)', () => {
+  it('leitet required ab und generiert die Required-Validation', () => {
+    const ecore = getEcorePackage();
+    const mandatory = new BasicEAttribute();
+    mandatory.setName('code');
+    mandatory.setEType(ecore.getEString());
+    mandatory.setLowerBound(1);
+    const cls = new BasicEClass();
+    cls.setName('Thing');
+    cls.getEStructuralFeatures().add(mandatory);
+
+    const b = blockWithDefault({ name: 'attrs', filterJs: 'true' });
+    const [widget] = expandFeatures(cls, b);
+    expect(widget.required).toBe(true);
+    expect(widget.validations).toHaveLength(1);
+    expect(widget.validations[0].defaultMessage).toBe('Code ist erforderlich.');
+    expect(widget.validations[0].body).toContain('self.code');
+  });
+
+  it('explizites required=false am Block gewinnt, keine Validation', () => {
+    const ecore = getEcorePackage();
+    const mandatory = new BasicEAttribute();
+    mandatory.setName('code');
+    mandatory.setEType(ecore.getEString());
+    mandatory.setLowerBound(1);
+    const cls = new BasicEClass();
+    cls.setName('Thing');
+    cls.getEStructuralFeatures().add(mandatory);
+
+    const b = blockWithDefault({ name: 'attrs', filterJs: 'true' });
+    b.required = false;
+    const [widget] = expandFeatures(cls, b);
+    expect(widget.required).toBe(false);
+    expect(widget.validations ?? []).toHaveLength(0);
+  });
+});
+
 describe('Block-Level-Bindings', () => {
   function labelBinding(body: string) {
     const factory = UimodelFactory.eINSTANCE;

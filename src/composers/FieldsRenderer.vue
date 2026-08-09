@@ -10,6 +10,7 @@ import type { EObject } from '@emfts/core';
 import type { WidgetComponent } from '../generated/WidgetComponent';
 import { resolveStructure } from '../allfeatures/resolveStructure';
 import { EXPANSION_CONTEXT_KEY } from '../allfeatures/context';
+import { trackExpressionTick } from '../utils/reactivity';
 import { componentCssClasses, componentDataAttrs } from '../css/componentClasses';
 import { STYLE_SHEETS_KEY } from '../css/useStyleSheets';
 import { resolveStyleList } from '../utils/resolveStyleChain';
@@ -24,6 +25,7 @@ const expansionContext = inject(EXPANSION_CONTEXT_KEY, undefined);
 const styleSheets = inject(STYLE_SHEETS_KEY, undefined);
 
 const entries = computed(() => {
+  trackExpressionTick();
   void styleSheets?.version.value;
   return resolveStructure(props.fields, props.model, expansionContext?.value);
 });

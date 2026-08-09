@@ -94,8 +94,10 @@ const highlightCss = computed(() => {
 
     <div v-if="view === 'preview'" :class="scopeClasses">
       <component :is="'style'">{{ highlightCss }}</component>
+      <!-- Kein Version-Remount mehr: Modelländerungen propagieren über
+           den Expression-Tick (Issue #7) live in die Composer. -->
       <UIModelComposer
-        :key="`${uiModelIndex}-${editor.version.value}`"
+        :key="uiModelIndex"
         :ui-model="activeUiModel"
         :model="persons[personIndex]"
         :style-sheets="sheets"

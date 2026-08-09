@@ -3,6 +3,7 @@ import type { EObject, EStructuralFeature } from '@emfts/core';
 import type { WidgetComponent } from '../generated/WidgetComponent';
 import { resolveStyleList } from '../utils/resolveStyleChain';
 import { resolveBindings } from '../utils/resolveBindings';
+import { trackExpressionTick } from '../utils/reactivity';
 import type { ResolvedStyle } from '../types/ResolvedStyle';
 
 /** ResolvedStyle plus feature-Binding-Ergebnis (Issue #3). */
@@ -24,6 +25,7 @@ export function useWidgetConfig(
   model?: MaybeRefOrGetter<EObject | undefined>
 ): ComputedRef<WidgetConfig> {
   return computed(() => {
+    trackExpressionTick();
     const w = toValue(widget);
     const fromStyles = resolveStyleList(w.styles);
 

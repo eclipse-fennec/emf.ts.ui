@@ -123,9 +123,12 @@ die Default-Konfiguration jedes Treffers:
   im mitgelieferten generischen Default-Modell und ist damit lesbar und
   überschreibbar.
 - **API**: purer Kern `expandFeatures(eClass, block, context)` +
-  `collectExpansionContext(uiModel)`; Expansion im `FormViewComposer`.
-  Der `AllFeaturesComposer` (Top-Level-Variante mit eigenem Markup) ist
-  **deprecated** und bleibt nur für den Übergang registriert.
+  `collectExpansionContext(uiModel)`; Expansion im `FormViewComposer`
+  (der frühere `AllFeaturesComposer` ist entfernt, #7).
+- **required**: wird aus der Multiplizität abgeleitet (`lowerBound >= 1`,
+  explizites `required` am Prototyp/Block gewinnt); dabei wird eine
+  Required-`ValidationExpression` generiert, sofern der Prototyp keine
+  eigenen Validations mitbringt (dokumentierte Konvention, #7).
 
 Kanonisches Beispiel: [`model/templates/generic-default.uimodel.xmi`](model/templates/generic-default.uimodel.xmi)
 (ID → Attribute → Referenzen → Derived, klassenunabhängig) — im Editor über die
@@ -200,6 +203,21 @@ vom `FieldsRenderer` (kein Markup über das Nötigste hinaus):
   </body>
 </fields>
 ```
+
+## Live-Reaktivität (Expression-Tick)
+
+EObjects sind keine Vue-Reactive-Sources — Expression-Ergebnisse
+(Bindings, Visibility, Validierung, `Conditional`/`ForEach`,
+condition-StyleRules) hängen deshalb am globalen **Expression-Tick**
+([#7](https://github.com/eclipse-fennec/emf.ts.ui/issues/7)):
+
+- Der `UIModelComposer` hängt automatisch einen `EContentAdapter` an das
+  übergebene Domänenobjekt (`useModelTick`) — Widget-Edits und
+  programmatische `eSet`-Aufrufe wirken sofort.
+- Für Änderungen, die der Adapter nicht sieht (andere Resources,
+  Struktur-Änderungen am UIModel selbst), rufen Konsumenten
+  `bumpExpressionTick()`; eigene expression-abhängige computeds lesen
+  `trackExpressionTick()`.
 
 ## CSS-Styling-Modell (`http://uimodel/css/1.0`)
 

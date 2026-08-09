@@ -18,6 +18,7 @@
 import type { EClass, EObject, EReference, EStructuralFeature } from '@emfts/core';
 import type { AllFeatures } from '../generated/AllFeatures';
 import type { WidgetComponent } from '../generated/WidgetComponent';
+import { UimodelFactory } from '../generated/UimodelFactory';
 import { evaluateBoolean, evaluateValue } from '../utils/evaluateExpression';
 import { eNum } from '../css/cssEngine';
 
@@ -238,6 +239,16 @@ function bindFeatureDeep(widget: WidgetComponent, feature: EStructuralFeature): 
   }
 }
 
+/** Generierte Required-Validation für abgeleitete Pflichtfelder (Issue #7). */
+function requiredValidationFor(featureName: string, label: string | undefined) {
+  const validation = UimodelFactory.eINSTANCE.createValidationExpression();
+  validation.language = 'JS';
+  validation.body = `self.${featureName} !== null && self.${featureName} !== undefined && String(self.${featureName}).length > 0`;
+  validation.defaultMessage = `${label ?? featureName} ist erforderlich.`;
+  validation.severity = 'ERROR' as never;
+  return validation;
+}
+
 /** Label-Ableitung aus dem Feature-Namen: "firstName" → "First Name". */
 export function deriveLabel(featureName: string): string {
   const spaced = featureName
@@ -291,9 +302,15 @@ export function expandFeatures(
     if (!widget.label) widget.label = deriveLabel(featureName);
     if (!widget.group && block.group) widget.group = block.group;
     // required aus der Multiplizität ableiten (lowerBound >= 1),
-    // sofern der Prototyp nichts vorgibt (Issue #3, Randnotiz)
+    // sofern der Prototyp nichts vorgibt (Issue #3/#7). Dokumentierte
+    // Konvention: dabei wird eine Required-ValidationExpression
+    // generiert, wenn der Prototyp keine eigenen Validations mitbringt —
+    // Konsumenten müssen die Pflichtfeld-Prüfung nicht synthetisieren.
     if (widget.required === undefined && eNum(feature.getLowerBound?.()) >= 1) {
       widget.required = true;
+      if ((widget.validations?.length ?? 0) === 0) {
+        widget.validations = [requiredValidationFor(featureName, widget.label)];
+      }
     }
     // Block-Level-Bindings auf jedes erzeugte Widget kopieren —
     // unabhängig vom Erzeugungspfad (Template-Klon oder Typ-Mapping);

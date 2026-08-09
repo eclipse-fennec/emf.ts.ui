@@ -6,6 +6,7 @@ import { useComposerRegistry } from '../composables/useComposerRegistry';
 import { componentCssClasses, componentDataAttrs } from '../css/componentClasses';
 import { STYLE_SHEETS_KEY } from '../css/useStyleSheets';
 import { resolveStyleList } from '../utils/resolveStyleChain';
+import { trackExpressionTick } from '../utils/reactivity';
 
 const props = defineProps<{
   component: UiComponent;
@@ -28,6 +29,7 @@ const composer = computed(() => {
 const styleSheets = inject(STYLE_SHEETS_KEY, undefined);
 
 const cssClasses = computed(() => {
+  trackExpressionTick();
   void styleSheets?.version.value;
   return componentCssClasses(props.component, {
     model: props.model,

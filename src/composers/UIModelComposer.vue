@@ -12,8 +12,8 @@ import { STYLE_SHEETS_KEY, useStyleSheetInjection } from '../css/useStyleSheets'
 import { collectExpansionContext } from '../allfeatures/expandFeatures';
 import { EXPANSION_CONTEXT_KEY } from '../allfeatures/context';
 import { evaluateBoolean } from '../utils/evaluateExpression';
+import { trackExpressionTick, useModelTick } from '../utils/reactivity';
 import ComponentDispatcher from './ComponentDispatcher.vue';
-import AllFeaturesComposer from './AllFeaturesComposer.vue';
 import FormViewComposer from './FormViewComposer.vue';
 import SectionViewComposer from './SectionViewComposer.vue';
 import TabViewComposer from './TabViewComposer.vue';
@@ -45,11 +45,19 @@ const sheets = computed<readonly StyleSheet[]>(() => props.styleSheets ?? []);
 const { version: styleVersion } = useStyleSheetInjection(sheets);
 provide(STYLE_SHEETS_KEY, { sheets, version: styleVersion });
 
+// Live-Reaktivität (Issue #7): EContentAdapter am Domänenobjekt bumpt
+// den Expression-Tick — Bindings/Visibility/Validierung/Strukturen und
+// condition-StyleRules reagieren damit sofort auf eSet-Änderungen.
+useModelTick(() => props.model);
+
 // AllFeatures: Dedup-Kontext pro UIModel (Geschwister-Blöcke +
 // explizit gebundene Widgets) für die Zuordnungs-Semantik.
 provide(
   EXPANSION_CONTEXT_KEY,
-  computed(() => collectExpansionContext(props.uiModel as unknown as EObject))
+  computed(() => {
+    trackExpressionTick();
+    return collectExpansionContext(props.uiModel as unknown as EObject);
+  })
 );
 
 // Build and provide the ComposerRegistry for this subtree
@@ -62,7 +70,6 @@ const registry =
     SummaryView: SummaryViewComposer,
     TableView: TableViewComposer,
     MasterDetail: MasterDetailComposer,
-    AllFeatures: AllFeaturesComposer,
     VegaView: VegaViewComposer,
     MapView: MapViewComposer,
   });

@@ -15,7 +15,6 @@ export { default as MasterDetailComposer } from './composers/MasterDetailCompose
 export { default as WidgetComposer } from './composers/WidgetComposer.vue';
 export { default as VegaViewComposer } from './composers/VegaViewComposer.vue';
 export { default as MapViewComposer } from './composers/MapViewComposer.vue';
-export { default as AllFeaturesComposer } from './composers/AllFeaturesComposer.vue';
 export { default as FieldsRenderer } from './composers/FieldsRenderer.vue';
 export { default as ComponentDispatcher } from './composers/ComponentDispatcher.vue';
 
@@ -59,6 +58,7 @@ export type { MapSelectionHandler } from './composables/useMapSelection';
 // Utilities
 export { resolveStyleChain, resolveStyleList } from './utils/resolveStyleChain';
 export { evaluateBoolean, evaluateValue, registerOclEvaluator } from './utils/evaluateExpression';
+export { bumpExpressionTick, trackExpressionTick, useModelTick } from './utils/reactivity';
 export type { ExpressionExtras } from './utils/evaluateExpression';
 export { resolveBindings } from './utils/resolveBindings';
 export type { ResolvedBindings } from './utils/resolveBindings';

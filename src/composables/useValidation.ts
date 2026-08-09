@@ -2,6 +2,7 @@ import { computed, type ComputedRef, type MaybeRefOrGetter, toValue } from 'vue'
 import type { EObject } from '@emfts/core';
 import type { ValidationExpression } from '../generated/ValidationExpression';
 import { evaluateBoolean } from '../utils/evaluateExpression';
+import { trackExpressionTick } from '../utils/reactivity';
 
 export type Severity = 'INFO' | 'WARNING' | 'ERROR' | 'FATAL';
 
@@ -20,6 +21,7 @@ export function useValidation(
   context: MaybeRefOrGetter<EObject>
 ): ComputedRef<ValidationResult | null> {
   return computed(() => {
+    trackExpressionTick();
     const ctx = toValue(context);
     for (const v of toValue(validations)) {
       try {

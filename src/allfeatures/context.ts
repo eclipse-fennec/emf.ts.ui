@@ -1,6 +1,6 @@
 /**
  * Injection-Key für den AllFeatures-Expansionskontext (Dedup pro UIModel).
- * Wird vom UIModelComposer bereitgestellt; AllFeaturesComposer injiziert
+ * Wird vom UIModelComposer bereitgestellt; der FieldsRenderer injiziert
  * ihn, damit Geschwister-Blöcke und explizit gebundene Widgets bei der
  * Zuordnung berücksichtigt werden.
  */
