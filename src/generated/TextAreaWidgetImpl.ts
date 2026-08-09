@@ -17,9 +17,9 @@ import { UimodelPackage } from './UimodelPackage';
  */
 export class TextAreaWidgetImpl extends WidgetComponentImpl implements TextAreaWidget {
   // Feature ID Constants (eLiterals)
-  static readonly ROWS: number = 13;
-  static readonly MAX_LENGTH: number = 14;
-  static readonly VALUE: number = 15;
+  static readonly ROWS: number = 14;
+  static readonly MAX_LENGTH: number = 15;
+  static readonly VALUE: number = 16;
 
   // Private fields
   private _rows: number = 4;

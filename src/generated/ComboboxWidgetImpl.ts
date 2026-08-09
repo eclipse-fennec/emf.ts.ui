@@ -18,9 +18,9 @@ import { UimodelPackage } from './UimodelPackage';
  */
 export class ComboboxWidgetImpl extends WidgetComponentImpl implements ComboboxWidget {
   // Feature ID Constants (eLiterals)
-  static readonly OPTION_LABEL: number = 13;
-  static readonly MIN_SEARCH_LENGTH: number = 14;
-  static readonly MULTI_SELECT: number = 15;
+  static readonly OPTION_LABEL: number = 14;
+  static readonly MIN_SEARCH_LENGTH: number = 15;
+  static readonly MULTI_SELECT: number = 16;
 
   // Private fields
   private _optionLabel?: Expression;

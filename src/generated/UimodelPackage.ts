@@ -38,6 +38,7 @@ export class UimodelPackage extends BasicEPackage {
     U_I_MODEL__PRIORITY: null as unknown as EAttribute | EReference,
     U_I_MODEL__FILTER_EXPRESSION: null as unknown as EAttribute | EReference,
     U_I_MODEL__STYLES: null as unknown as EAttribute | EReference,
+    U_I_MODEL__TEMPLATES: null as unknown as EAttribute | EReference,
     U_I_MODEL__COMPONENTS: null as unknown as EAttribute | EReference,
     COMPONENT: null as unknown as EClass,
     COMPONENT__NAME: null as unknown as EAttribute | EReference,
@@ -70,6 +71,10 @@ export class UimodelPackage extends BasicEPackage {
     WIDGET_COMPONENT__VISIBILITY_CONDITION: null as unknown as EAttribute | EReference,
     WIDGET_COMPONENT__VALIDATIONS: null as unknown as EAttribute | EReference,
     WIDGET_COMPONENT__VALIDATION_MAPPERS: null as unknown as EAttribute | EReference,
+    WIDGET_COMPONENT__BINDINGS: null as unknown as EAttribute | EReference,
+    PROPERTY_BINDING: null as unknown as EClass,
+    PROPERTY_BINDING__PROPERTY: null as unknown as EAttribute | EReference,
+    PROPERTY_BINDING__EXPRESSION: null as unknown as EAttribute | EReference,
     INPUT_WIDGET: null as unknown as EClass,
     INPUT_WIDGET__MAX_LENGTH: null as unknown as EAttribute | EReference,
     INPUT_WIDGET__VALUE: null as unknown as EAttribute | EReference,
@@ -100,6 +105,27 @@ export class UimodelPackage extends BasicEPackage {
     SELECT_WIDGET__MULTI_SELECT: null as unknown as EAttribute | EReference,
     SELECT_WIDGET__AS_BUTTON_GROUP: null as unknown as EAttribute | EReference,
     SELECT_WIDGET__VALUES: null as unknown as EAttribute | EReference,
+    ALL_FEATURES: null as unknown as EClass,
+    ALL_FEATURES__WITH: null as unknown as EAttribute | EReference,
+    ALL_FEATURES__E_TYPE: null as unknown as EAttribute | EReference,
+    ALL_FEATURES__FILTER: null as unknown as EAttribute | EReference,
+    ALL_FEATURES__TEMPLATE: null as unknown as EAttribute | EReference,
+    ALL_FEATURES__CASES: null as unknown as EAttribute | EReference,
+    ALL_FEATURES__PRIORITY: null as unknown as EAttribute | EReference,
+    TEMPLATE_CASE: null as unknown as EClass,
+    TEMPLATE_CASE__WHEN: null as unknown as EAttribute | EReference,
+    TEMPLATE_CASE__WIDGET: null as unknown as EAttribute | EReference,
+    GROUP_WIDGET: null as unknown as EClass,
+    GROUP_WIDGET__FIELDS: null as unknown as EAttribute | EReference,
+    GROUP_WIDGET__LAYOUT: null as unknown as EAttribute | EReference,
+    CONDITIONAL: null as unknown as EClass,
+    CONDITIONAL__CONDITION: null as unknown as EAttribute | EReference,
+    CONDITIONAL__THEN: null as unknown as EAttribute | EReference,
+    CONDITIONAL__ELSE: null as unknown as EAttribute | EReference,
+    FOR_EACH: null as unknown as EClass,
+    FOR_EACH__ITEMS: null as unknown as EAttribute | EReference,
+    FOR_EACH__BODY: null as unknown as EAttribute | EReference,
+    FOR_EACH__EMPTY_TEXT: null as unknown as EAttribute | EReference,
     REFERENCE_LINK_WIDGET: null as unknown as EClass,
     REFERENCE_LINK_WIDGET__DISPLAY_EXPRESSION: null as unknown as EAttribute | EReference,
     REFERENCE_LINK_WIDGET__TARGET_ROUTE: null as unknown as EAttribute | EReference,
@@ -200,6 +226,15 @@ export class UimodelPackage extends BasicEPackage {
     uIModel_styles.setUpperBound(-1);
     uIModelClass.getEStructuralFeatures().push(uIModel_styles);
     UimodelPackage.Literals.U_I_MODEL__STYLES = uIModel_styles;
+
+    // Create templates feature
+    const uIModel_templates = new BasicEReference();
+    uIModel_templates.setContainment(true);
+    uIModel_templates.setName('templates');
+    uIModel_templates.setLowerBound(0);
+    uIModel_templates.setUpperBound(-1);
+    uIModelClass.getEStructuralFeatures().push(uIModel_templates);
+    UimodelPackage.Literals.U_I_MODEL__TEMPLATES = uIModel_templates;
 
     // Create components feature
     const uIModel_components = new BasicEReference();
@@ -418,7 +453,7 @@ export class UimodelPackage extends BasicEPackage {
     const widgetComponent_feature = new BasicEReference();
     widgetComponent_feature.setContainment(false);
     widgetComponent_feature.setName('feature');
-    widgetComponent_feature.setLowerBound(1);
+    widgetComponent_feature.setLowerBound(0);
     widgetComponent_feature.setUpperBound(1);
     widgetComponentClass.getEStructuralFeatures().push(widgetComponent_feature);
     UimodelPackage.Literals.WIDGET_COMPONENT__FEATURE = widgetComponent_feature;
@@ -481,6 +516,41 @@ export class UimodelPackage extends BasicEPackage {
     widgetComponent_validationMappers.setUpperBound(-1);
     widgetComponentClass.getEStructuralFeatures().push(widgetComponent_validationMappers);
     UimodelPackage.Literals.WIDGET_COMPONENT__VALIDATION_MAPPERS = widgetComponent_validationMappers;
+
+    // Create bindings feature
+    const widgetComponent_bindings = new BasicEReference();
+    widgetComponent_bindings.setContainment(true);
+    widgetComponent_bindings.setName('bindings');
+    widgetComponent_bindings.setLowerBound(0);
+    widgetComponent_bindings.setUpperBound(-1);
+    widgetComponentClass.getEStructuralFeatures().push(widgetComponent_bindings);
+    UimodelPackage.Literals.WIDGET_COMPONENT__BINDINGS = widgetComponent_bindings;
+
+    // Create PropertyBinding class
+    const propertyBindingClass = new BasicEClass();
+    propertyBindingClass.setName('PropertyBinding');
+    propertyBindingClass.setAbstract(false);
+    propertyBindingClass.setInterface(false);
+    this.getEClassifiers().push(propertyBindingClass);
+    propertyBindingClass.setEPackage(this);
+    UimodelPackage.Literals.PROPERTY_BINDING = propertyBindingClass;
+
+    // Create property feature
+    const propertyBinding_property = new BasicEAttribute();
+    propertyBinding_property.setName('property');
+    propertyBinding_property.setLowerBound(1);
+    propertyBinding_property.setUpperBound(1);
+    propertyBindingClass.getEStructuralFeatures().push(propertyBinding_property);
+    UimodelPackage.Literals.PROPERTY_BINDING__PROPERTY = propertyBinding_property;
+
+    // Create expression feature
+    const propertyBinding_expression = new BasicEReference();
+    propertyBinding_expression.setContainment(true);
+    propertyBinding_expression.setName('expression');
+    propertyBinding_expression.setLowerBound(1);
+    propertyBinding_expression.setUpperBound(1);
+    propertyBindingClass.getEStructuralFeatures().push(propertyBinding_expression);
+    UimodelPackage.Literals.PROPERTY_BINDING__EXPRESSION = propertyBinding_expression;
 
     // Create InputWidget class
     const inputWidgetClass = new BasicEClass();
@@ -731,6 +801,192 @@ export class UimodelPackage extends BasicEPackage {
     selectWidget_values.setUpperBound(-1);
     selectWidgetClass.getEStructuralFeatures().push(selectWidget_values);
     UimodelPackage.Literals.SELECT_WIDGET__VALUES = selectWidget_values;
+
+    // Create AllFeatures class
+    const allFeaturesClass = new BasicEClass();
+    allFeaturesClass.setName('AllFeatures');
+    allFeaturesClass.setAbstract(false);
+    allFeaturesClass.setInterface(false);
+    this.getEClassifiers().push(allFeaturesClass);
+    allFeaturesClass.setEPackage(this);
+    UimodelPackage.Literals.ALL_FEATURES = allFeaturesClass;
+
+    // Create with feature
+    const allFeatures_with = new BasicEReference();
+    allFeatures_with.setContainment(false);
+    allFeatures_with.setName('with');
+    allFeatures_with.setLowerBound(0);
+    allFeatures_with.setUpperBound(-1);
+    allFeaturesClass.getEStructuralFeatures().push(allFeatures_with);
+    UimodelPackage.Literals.ALL_FEATURES__WITH = allFeatures_with;
+
+    // Create eType feature
+    const allFeatures_eType = new BasicEReference();
+    allFeatures_eType.setContainment(false);
+    allFeatures_eType.setName('eType');
+    allFeatures_eType.setLowerBound(0);
+    allFeatures_eType.setUpperBound(-1);
+    allFeaturesClass.getEStructuralFeatures().push(allFeatures_eType);
+    UimodelPackage.Literals.ALL_FEATURES__E_TYPE = allFeatures_eType;
+
+    // Create filter feature
+    const allFeatures_filter = new BasicEReference();
+    allFeatures_filter.setContainment(true);
+    allFeatures_filter.setName('filter');
+    allFeatures_filter.setLowerBound(0);
+    allFeatures_filter.setUpperBound(1);
+    allFeaturesClass.getEStructuralFeatures().push(allFeatures_filter);
+    UimodelPackage.Literals.ALL_FEATURES__FILTER = allFeatures_filter;
+
+    // Create template feature
+    const allFeatures_template = new BasicEReference();
+    allFeatures_template.setContainment(false);
+    allFeatures_template.setName('template');
+    allFeatures_template.setLowerBound(0);
+    allFeatures_template.setUpperBound(1);
+    allFeaturesClass.getEStructuralFeatures().push(allFeatures_template);
+    UimodelPackage.Literals.ALL_FEATURES__TEMPLATE = allFeatures_template;
+
+    // Create cases feature
+    const allFeatures_cases = new BasicEReference();
+    allFeatures_cases.setContainment(true);
+    allFeatures_cases.setName('cases');
+    allFeatures_cases.setLowerBound(0);
+    allFeatures_cases.setUpperBound(-1);
+    allFeaturesClass.getEStructuralFeatures().push(allFeatures_cases);
+    UimodelPackage.Literals.ALL_FEATURES__CASES = allFeatures_cases;
+
+    // Create priority feature
+    const allFeatures_priority = new BasicEAttribute();
+    allFeatures_priority.setName('priority');
+    allFeatures_priority.setLowerBound(0);
+    allFeatures_priority.setUpperBound(1);
+    allFeaturesClass.getEStructuralFeatures().push(allFeatures_priority);
+    UimodelPackage.Literals.ALL_FEATURES__PRIORITY = allFeatures_priority;
+
+    // Create TemplateCase class
+    const templateCaseClass = new BasicEClass();
+    templateCaseClass.setName('TemplateCase');
+    templateCaseClass.setAbstract(false);
+    templateCaseClass.setInterface(false);
+    this.getEClassifiers().push(templateCaseClass);
+    templateCaseClass.setEPackage(this);
+    UimodelPackage.Literals.TEMPLATE_CASE = templateCaseClass;
+
+    // Create when feature
+    const templateCase_when = new BasicEReference();
+    templateCase_when.setContainment(true);
+    templateCase_when.setName('when');
+    templateCase_when.setLowerBound(0);
+    templateCase_when.setUpperBound(1);
+    templateCaseClass.getEStructuralFeatures().push(templateCase_when);
+    UimodelPackage.Literals.TEMPLATE_CASE__WHEN = templateCase_when;
+
+    // Create widget feature
+    const templateCase_widget = new BasicEReference();
+    templateCase_widget.setContainment(false);
+    templateCase_widget.setName('widget');
+    templateCase_widget.setLowerBound(1);
+    templateCase_widget.setUpperBound(1);
+    templateCaseClass.getEStructuralFeatures().push(templateCase_widget);
+    UimodelPackage.Literals.TEMPLATE_CASE__WIDGET = templateCase_widget;
+
+    // Create GroupWidget class
+    const groupWidgetClass = new BasicEClass();
+    groupWidgetClass.setName('GroupWidget');
+    groupWidgetClass.setAbstract(false);
+    groupWidgetClass.setInterface(false);
+    this.getEClassifiers().push(groupWidgetClass);
+    groupWidgetClass.setEPackage(this);
+    UimodelPackage.Literals.GROUP_WIDGET = groupWidgetClass;
+
+    // Create fields feature
+    const groupWidget_fields = new BasicEReference();
+    groupWidget_fields.setContainment(true);
+    groupWidget_fields.setName('fields');
+    groupWidget_fields.setLowerBound(0);
+    groupWidget_fields.setUpperBound(-1);
+    groupWidgetClass.getEStructuralFeatures().push(groupWidget_fields);
+    UimodelPackage.Literals.GROUP_WIDGET__FIELDS = groupWidget_fields;
+
+    // Create layout feature
+    const groupWidget_layout = new BasicEAttribute();
+    groupWidget_layout.setName('layout');
+    groupWidget_layout.setLowerBound(0);
+    groupWidget_layout.setUpperBound(1);
+    groupWidgetClass.getEStructuralFeatures().push(groupWidget_layout);
+    UimodelPackage.Literals.GROUP_WIDGET__LAYOUT = groupWidget_layout;
+
+    // Create Conditional class
+    const conditionalClass = new BasicEClass();
+    conditionalClass.setName('Conditional');
+    conditionalClass.setAbstract(false);
+    conditionalClass.setInterface(false);
+    this.getEClassifiers().push(conditionalClass);
+    conditionalClass.setEPackage(this);
+    UimodelPackage.Literals.CONDITIONAL = conditionalClass;
+
+    // Create condition feature
+    const conditional_condition = new BasicEReference();
+    conditional_condition.setContainment(true);
+    conditional_condition.setName('condition');
+    conditional_condition.setLowerBound(1);
+    conditional_condition.setUpperBound(1);
+    conditionalClass.getEStructuralFeatures().push(conditional_condition);
+    UimodelPackage.Literals.CONDITIONAL__CONDITION = conditional_condition;
+
+    // Create then feature
+    const conditional_then = new BasicEReference();
+    conditional_then.setContainment(true);
+    conditional_then.setName('then');
+    conditional_then.setLowerBound(0);
+    conditional_then.setUpperBound(-1);
+    conditionalClass.getEStructuralFeatures().push(conditional_then);
+    UimodelPackage.Literals.CONDITIONAL__THEN = conditional_then;
+
+    // Create else feature
+    const conditional_else = new BasicEReference();
+    conditional_else.setContainment(true);
+    conditional_else.setName('else');
+    conditional_else.setLowerBound(0);
+    conditional_else.setUpperBound(-1);
+    conditionalClass.getEStructuralFeatures().push(conditional_else);
+    UimodelPackage.Literals.CONDITIONAL__ELSE = conditional_else;
+
+    // Create ForEach class
+    const forEachClass = new BasicEClass();
+    forEachClass.setName('ForEach');
+    forEachClass.setAbstract(false);
+    forEachClass.setInterface(false);
+    this.getEClassifiers().push(forEachClass);
+    forEachClass.setEPackage(this);
+    UimodelPackage.Literals.FOR_EACH = forEachClass;
+
+    // Create items feature
+    const forEach_items = new BasicEReference();
+    forEach_items.setContainment(true);
+    forEach_items.setName('items');
+    forEach_items.setLowerBound(1);
+    forEach_items.setUpperBound(1);
+    forEachClass.getEStructuralFeatures().push(forEach_items);
+    UimodelPackage.Literals.FOR_EACH__ITEMS = forEach_items;
+
+    // Create body feature
+    const forEach_body = new BasicEReference();
+    forEach_body.setContainment(true);
+    forEach_body.setName('body');
+    forEach_body.setLowerBound(0);
+    forEach_body.setUpperBound(-1);
+    forEachClass.getEStructuralFeatures().push(forEach_body);
+    UimodelPackage.Literals.FOR_EACH__BODY = forEach_body;
+
+    // Create emptyText feature
+    const forEach_emptyText = new BasicEAttribute();
+    forEach_emptyText.setName('emptyText');
+    forEach_emptyText.setLowerBound(0);
+    forEach_emptyText.setUpperBound(1);
+    forEachClass.getEStructuralFeatures().push(forEach_emptyText);
+    UimodelPackage.Literals.FOR_EACH__EMPTY_TEXT = forEach_emptyText;
 
     // Create ReferenceLinkWidget class
     const referenceLinkWidgetClass = new BasicEClass();
@@ -1054,6 +1310,10 @@ export class UimodelPackage extends BasicEPackage {
     (UimodelPackage.Literals.DATE_WIDGET as BasicEClass).getESuperTypes().push(UimodelPackage.Literals.WIDGET_COMPONENT);
     (UimodelPackage.Literals.COMBOBOX_WIDGET as BasicEClass).getESuperTypes().push(UimodelPackage.Literals.WIDGET_COMPONENT);
     (UimodelPackage.Literals.SELECT_WIDGET as BasicEClass).getESuperTypes().push(UimodelPackage.Literals.WIDGET_COMPONENT);
+    (UimodelPackage.Literals.ALL_FEATURES as BasicEClass).getESuperTypes().push(UimodelPackage.Literals.WIDGET_COMPONENT);
+    (UimodelPackage.Literals.GROUP_WIDGET as BasicEClass).getESuperTypes().push(UimodelPackage.Literals.WIDGET_COMPONENT);
+    (UimodelPackage.Literals.CONDITIONAL as BasicEClass).getESuperTypes().push(UimodelPackage.Literals.WIDGET_COMPONENT);
+    (UimodelPackage.Literals.FOR_EACH as BasicEClass).getESuperTypes().push(UimodelPackage.Literals.WIDGET_COMPONENT);
     (UimodelPackage.Literals.REFERENCE_LINK_WIDGET as BasicEClass).getESuperTypes().push(UimodelPackage.Literals.WIDGET_COMPONENT);
     (UimodelPackage.Literals.BASE_STYLE as BasicEClass).getESuperTypes().push(UimodelPackage.Literals.STYLE);
     (UimodelPackage.Literals.LAYOUT_STYLE as BasicEClass).getESuperTypes().push(UimodelPackage.Literals.BASE_STYLE);
@@ -1064,11 +1324,12 @@ export class UimodelPackage extends BasicEPackage {
     // ============================================
     // Set ETypes for EReferences (must be done after all classes are created)
     // ============================================
-    (UimodelPackage.Literals.U_I_MODEL__TARGET_CLASSES as BasicEReference).setEType(getEcorePackage().getEClassClass());
+    (UimodelPackage.Literals.U_I_MODEL__TARGET_CLASSES as BasicEReference).setEType(getEcorePackage().getEClassifier('EClass')!);
     (UimodelPackage.Literals.U_I_MODEL__FILTER_EXPRESSION as BasicEReference).setEType(UimodelPackage.Literals.EXPRESSION);
     (UimodelPackage.Literals.U_I_MODEL__STYLES as BasicEReference).setEType(UimodelPackage.Literals.BASE_STYLE);
+    (UimodelPackage.Literals.U_I_MODEL__TEMPLATES as BasicEReference).setEType(UimodelPackage.Literals.WIDGET_COMPONENT);
     (UimodelPackage.Literals.U_I_MODEL__COMPONENTS as BasicEReference).setEType(UimodelPackage.Literals.COMPONENT);
-    (UimodelPackage.Literals.COMPONENT__TARGET_CLASSES as BasicEReference).setEType(getEcorePackage().getEClassClass());
+    (UimodelPackage.Literals.COMPONENT__TARGET_CLASSES as BasicEReference).setEType(getEcorePackage().getEClassifier('EClass')!);
     (UimodelPackage.Literals.COMPONENT__STYLES as BasicEReference).setEType(UimodelPackage.Literals.BASE_STYLE);
     (UimodelPackage.Literals.COMPONENT__CHILDREN as BasicEReference).setEType(UimodelPackage.Literals.COMPONENT);
     (UimodelPackage.Literals.FORM_VIEW__FIELDS as BasicEReference).setEType(UimodelPackage.Literals.WIDGET_COMPONENT);
@@ -1080,17 +1341,32 @@ export class UimodelPackage extends BasicEPackage {
     (UimodelPackage.Literals.SUMMARY_VIEW__SUMMARY_FIELDS as BasicEReference).setEType(UimodelPackage.Literals.WIDGET_COMPONENT);
     (UimodelPackage.Literals.MASTER_DETAIL__MASTER as BasicEReference).setEType(UimodelPackage.Literals.TABLE_VIEW);
     (UimodelPackage.Literals.MASTER_DETAIL__DETAIL as BasicEReference).setEType(UimodelPackage.Literals.COMPONENT);
-    (UimodelPackage.Literals.WIDGET_COMPONENT__FEATURE as BasicEReference).setEType(getEcorePackage().getEStructuralFeatureClass());
+    (UimodelPackage.Literals.WIDGET_COMPONENT__FEATURE as BasicEReference).setEType(getEcorePackage().getEClassifier('EStructuralFeature')!);
     (UimodelPackage.Literals.WIDGET_COMPONENT__VISIBILITY_CONDITION as BasicEReference).setEType(UimodelPackage.Literals.EXPRESSION);
     (UimodelPackage.Literals.WIDGET_COMPONENT__VALIDATIONS as BasicEReference).setEType(UimodelPackage.Literals.VALIDATION_EXPRESSION);
     (UimodelPackage.Literals.WIDGET_COMPONENT__VALIDATION_MAPPERS as BasicEReference).setEType(UimodelPackage.Literals.VALIDATION_MESSAGE_MAPPER);
+    (UimodelPackage.Literals.WIDGET_COMPONENT__BINDINGS as BasicEReference).setEType(UimodelPackage.Literals.PROPERTY_BINDING);
+    (UimodelPackage.Literals.PROPERTY_BINDING__EXPRESSION as BasicEReference).setEType(UimodelPackage.Literals.EXPRESSION);
     (UimodelPackage.Literals.DATE_WIDGET__CONSTRAINS as BasicEReference).setEType(UimodelPackage.Literals.EXPRESSION);
     (UimodelPackage.Literals.COMBOBOX_WIDGET__OPTION_LABEL as BasicEReference).setEType(UimodelPackage.Literals.EXPRESSION);
     (UimodelPackage.Literals.SELECT_WIDGET__OPTION_LABEL as BasicEReference).setEType(UimodelPackage.Literals.EXPRESSION);
+    (UimodelPackage.Literals.ALL_FEATURES__WITH as BasicEReference).setEType(getEcorePackage().getEClassifier('EStructuralFeature')!);
+    (UimodelPackage.Literals.ALL_FEATURES__E_TYPE as BasicEReference).setEType(getEcorePackage().getEClassifier('EClassifier')!);
+    (UimodelPackage.Literals.ALL_FEATURES__FILTER as BasicEReference).setEType(UimodelPackage.Literals.EXPRESSION);
+    (UimodelPackage.Literals.ALL_FEATURES__TEMPLATE as BasicEReference).setEType(UimodelPackage.Literals.WIDGET_COMPONENT);
+    (UimodelPackage.Literals.ALL_FEATURES__CASES as BasicEReference).setEType(UimodelPackage.Literals.TEMPLATE_CASE);
+    (UimodelPackage.Literals.TEMPLATE_CASE__WHEN as BasicEReference).setEType(UimodelPackage.Literals.EXPRESSION);
+    (UimodelPackage.Literals.TEMPLATE_CASE__WIDGET as BasicEReference).setEType(UimodelPackage.Literals.WIDGET_COMPONENT);
+    (UimodelPackage.Literals.GROUP_WIDGET__FIELDS as BasicEReference).setEType(UimodelPackage.Literals.WIDGET_COMPONENT);
+    (UimodelPackage.Literals.CONDITIONAL__CONDITION as BasicEReference).setEType(UimodelPackage.Literals.EXPRESSION);
+    (UimodelPackage.Literals.CONDITIONAL__THEN as BasicEReference).setEType(UimodelPackage.Literals.WIDGET_COMPONENT);
+    (UimodelPackage.Literals.CONDITIONAL__ELSE as BasicEReference).setEType(UimodelPackage.Literals.WIDGET_COMPONENT);
+    (UimodelPackage.Literals.FOR_EACH__ITEMS as BasicEReference).setEType(UimodelPackage.Literals.EXPRESSION);
+    (UimodelPackage.Literals.FOR_EACH__BODY as BasicEReference).setEType(UimodelPackage.Literals.WIDGET_COMPONENT);
     (UimodelPackage.Literals.REFERENCE_LINK_WIDGET__DISPLAY_EXPRESSION as BasicEReference).setEType(UimodelPackage.Literals.EXPRESSION);
     (UimodelPackage.Literals.BASE_STYLE__EXTENDS as BasicEReference).setEType(UimodelPackage.Literals.BASE_STYLE);
     (UimodelPackage.Literals.BASE_STYLE__VISIBILITY_CONDITION as BasicEReference).setEType(UimodelPackage.Literals.EXPRESSION);
-    (UimodelPackage.Literals.WIDGET_STYLE__FEATURE as BasicEReference).setEType(getEcorePackage().getEStructuralFeatureClass());
+    (UimodelPackage.Literals.WIDGET_STYLE__FEATURE as BasicEReference).setEType(getEcorePackage().getEClassifier('EStructuralFeature')!);
     (UimodelPackage.Literals.TABLE_STYLE__COLUMNS as BasicEReference).setEType(UimodelPackage.Literals.WIDGET_STYLE);
     (UimodelPackage.Literals.VALIDATION_MESSAGE_MAPPER__MATCH_EXPRESSION as BasicEReference).setEType(UimodelPackage.Literals.EXPRESSION);
     (UimodelPackage.Literals.VALIDATION_MESSAGE_MAPPER__MAPPED_TEXT_EXPRESSION as BasicEReference).setEType(UimodelPackage.Literals.EXPRESSION);

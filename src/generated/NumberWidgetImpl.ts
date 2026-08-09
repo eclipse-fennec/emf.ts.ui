@@ -17,10 +17,10 @@ import { UimodelPackage } from './UimodelPackage';
  */
 export class NumberWidgetImpl extends WidgetComponentImpl implements NumberWidget {
   // Feature ID Constants (eLiterals)
-  static readonly MIN: number = 13;
-  static readonly MAX: number = 14;
-  static readonly STEP: number = 15;
-  static readonly VALUE: number = 16;
+  static readonly MIN: number = 14;
+  static readonly MAX: number = 15;
+  static readonly STEP: number = 16;
+  static readonly VALUE: number = 17;
 
   // Private fields
   private _min?: number;

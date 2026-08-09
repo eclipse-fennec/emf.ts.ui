@@ -15,11 +15,36 @@ export { default as MasterDetailComposer } from './composers/MasterDetailCompose
 export { default as WidgetComposer } from './composers/WidgetComposer.vue';
 export { default as VegaViewComposer } from './composers/VegaViewComposer.vue';
 export { default as MapViewComposer } from './composers/MapViewComposer.vue';
+export { default as AllFeaturesComposer } from './composers/AllFeaturesComposer.vue';
+export { default as FieldsRenderer } from './composers/FieldsRenderer.vue';
 export { default as ComponentDispatcher } from './composers/ComponentDispatcher.vue';
+
+// AllFeatures — generische Feature-Platzhalter (Issue #2)
+export {
+  expandFeatures,
+  assignFeatures,
+  candidateFeatures,
+  collectExpansionContext,
+  widgetPrototypeFor,
+  cloneComponent,
+  deriveLabel,
+  isAllFeatures,
+} from './allfeatures/expandFeatures';
+export type { ExpansionContext } from './allfeatures/expandFeatures';
+export { EXPANSION_CONTEXT_KEY } from './allfeatures/context';
+export {
+  resolveStructure,
+  isStructural,
+  isGroupWidget,
+  isConditional,
+  isForEach,
+} from './allfeatures/resolveStructure';
+export type { ResolvedEntry } from './allfeatures/resolveStructure';
 
 // Composables
 export { useVisibility } from './composables/useVisibility';
 export { useWidgetConfig } from './composables/useWidgetConfig';
+export type { WidgetConfig } from './composables/useWidgetConfig';
 export { useValidation } from './composables/useValidation';
 export type { ValidationResult } from './composables/useValidation';
 export {
@@ -33,7 +58,41 @@ export type { MapSelectionHandler } from './composables/useMapSelection';
 
 // Utilities
 export { resolveStyleChain, resolveStyleList } from './utils/resolveStyleChain';
-export { evaluateBoolean, registerOclEvaluator } from './utils/evaluateExpression';
+export { evaluateBoolean, evaluateValue, registerOclEvaluator } from './utils/evaluateExpression';
+export type { ExpressionExtras } from './utils/evaluateExpression';
+export { resolveBindings } from './utils/resolveBindings';
+export type { ResolvedBindings } from './utils/resolveBindings';
+export { resolveCrossResourceProxies } from './utils/resolveProxies';
+
+// CSS-Engine (Modell → CSS). Nur type-Imports auf generierte CSS-Klassen —
+// das CSS-EPackage selbst kommt über das Sub-Entry '@emfts/uimodel-composer/css'.
+export {
+  generateCss,
+  generateCssForSheets,
+  resolveValue,
+  ruleSelector,
+  styleClass,
+  themeClass,
+  conditionClass,
+  tokenVar,
+  slug,
+  TOKEN_PREFIX,
+} from './css/cssEngine';
+export {
+  componentCssClasses,
+  componentDataAttrs,
+  widgetStateClasses,
+  referencedStyleClasses,
+  ruleMatchesComponent,
+  eClassHierarchyNames,
+} from './css/componentClasses';
+export type { ComponentClassOptions } from './css/componentClasses';
+export {
+  STYLE_SHEETS_KEY,
+  useStyleSheetCss,
+  useStyleSheetInjection,
+} from './css/useStyleSheets';
+export type { StyleSheetContext } from './css/useStyleSheets';
 
 // Types
 export type { ResolvedStyle } from './types/ResolvedStyle';
@@ -57,6 +116,12 @@ export type { DateWidget } from './generated/DateWidget';
 export type { ComboboxWidget } from './generated/ComboboxWidget';
 export type { SelectWidget } from './generated/SelectWidget';
 export type { ReferenceLinkWidget } from './generated/ReferenceLinkWidget';
+export type { AllFeatures } from './generated/AllFeatures';
+export type { PropertyBinding } from './generated/PropertyBinding';
+export type { TemplateCase } from './generated/TemplateCase';
+export type { GroupWidget } from './generated/GroupWidget';
+export type { Conditional } from './generated/Conditional';
+export type { ForEach } from './generated/ForEach';
 export type { Expression } from './generated/Expression';
 export type { ValidationExpression } from './generated/ValidationExpression';
 export type { ValidationMessageMapper } from './generated/ValidationMessageMapper';

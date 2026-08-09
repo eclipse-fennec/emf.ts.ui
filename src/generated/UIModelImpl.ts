@@ -9,6 +9,7 @@ import { BasicEObject } from '@emfts/core';
 import type { EClass, EStructuralFeature } from '@emfts/core';
 import type { Expression } from './Expression';
 import type { BaseStyle } from './BaseStyle';
+import type { WidgetComponent } from './WidgetComponent';
 import type { Component } from './Component';
 import type { UIModel } from './UIModel';
 import { UimodelPackage } from './UimodelPackage';
@@ -24,7 +25,8 @@ export class UIModelImpl extends BasicEObject implements UIModel {
   static readonly PRIORITY: number = 2;
   static readonly FILTER_EXPRESSION: number = 3;
   static readonly STYLES: number = 4;
-  static readonly COMPONENTS: number = 5;
+  static readonly TEMPLATES: number = 5;
+  static readonly COMPONENTS: number = 6;
 
   // Private fields
   private _name?: string;
@@ -32,6 +34,7 @@ export class UIModelImpl extends BasicEObject implements UIModel {
   private _priority: number = 0;
   private _filterExpression?: Expression;
   private _styles: BaseStyle[] = [];
+  private _templates: WidgetComponent[] = [];
   private _components: Component[] = [];
 
   /**
@@ -162,6 +165,30 @@ export class UIModelImpl extends BasicEObject implements UIModel {
     }
   }
 
+  get templates(): WidgetComponent[] {
+    return this._templates;
+  }
+
+  set templates(value: WidgetComponent[]) {
+    const oldValue = this._templates;
+    this._templates = value;
+    if (this.eDeliver()) {
+      this.eNotify({
+        getNotifier: () => this,
+        getEventType: () => 1, // SET
+        getFeature: () => this.eClass().getEStructuralFeature(UIModelImpl.TEMPLATES),
+        getOldValue: () => oldValue,
+        getNewValue: () => value,
+        getPosition: () => -1,
+        wasSet: () => true,
+        isTouch: () => false,
+        isReset: () => false,
+        getFeatureID: () => UIModelImpl.TEMPLATES,
+        merge: () => false
+      });
+    }
+  }
+
   get components(): Component[] {
     return this._components;
   }
@@ -204,6 +231,8 @@ export class UIModelImpl extends BasicEObject implements UIModel {
         return this.filterExpression;
       case UIModelImpl.STYLES:
         return this.styles;
+      case UIModelImpl.TEMPLATES:
+        return this.templates;
       case UIModelImpl.COMPONENTS:
         return this.components;
       default:
@@ -237,6 +266,10 @@ export class UIModelImpl extends BasicEObject implements UIModel {
         this.styles = newValue as BaseStyle[];
         super.eSet(feature, newValue);
         break;
+      case UIModelImpl.TEMPLATES:
+        this.templates = newValue as WidgetComponent[];
+        super.eSet(feature, newValue);
+        break;
       case UIModelImpl.COMPONENTS:
         this.components = newValue as Component[];
         super.eSet(feature, newValue);
@@ -262,6 +295,8 @@ export class UIModelImpl extends BasicEObject implements UIModel {
         return this._filterExpression !== undefined;
       case UIModelImpl.STYLES:
         return this._styles !== undefined && this._styles.length > 0;
+      case UIModelImpl.TEMPLATES:
+        return this._templates !== undefined && this._templates.length > 0;
       case UIModelImpl.COMPONENTS:
         return this._components !== undefined && this._components.length > 0;
       default:
@@ -289,6 +324,9 @@ export class UIModelImpl extends BasicEObject implements UIModel {
         return;
       case UIModelImpl.STYLES:
         this._styles = [];
+        return;
+      case UIModelImpl.TEMPLATES:
+        this._templates = [];
         return;
       case UIModelImpl.COMPONENTS:
         this._components = [];

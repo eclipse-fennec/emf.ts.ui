@@ -5,10 +5,10 @@
  * @generated
  */
 
+import { BasicEObject } from '@emfts/core';
 import type { EClass, EStructuralFeature } from '@emfts/core';
 import type { Style } from './Style';
 import type { Expression } from './Expression';
-import { StyleImpl } from './StyleImpl';
 import type { BaseStyle } from './BaseStyle';
 import { UimodelPackage } from './UimodelPackage';
 
@@ -16,18 +16,22 @@ import { UimodelPackage } from './UimodelPackage';
  * Implementation of BaseStyle
  * @generated
  */
-export abstract class BaseStyleImpl extends StyleImpl implements BaseStyle {
+export abstract class BaseStyleImpl extends BasicEObject implements BaseStyle {
   // Feature ID Constants (eLiterals)
   static readonly EXTENDS: number = 2;
   static readonly CSS: number = 3;
   static readonly VUE_COMPONENT: number = 4;
   static readonly VISIBILITY_CONDITION: number = 5;
+  static readonly NAME: number = 0;
+  static readonly GROUP: number = 1;
 
   // Private fields
   private _extends?: BaseStyle;
   private _css?: string;
   private _vueComponent?: string;
   private _visibilityCondition?: Expression;
+  private _name?: string;
+  private _group?: string;
 
   /**
    * Returns the EClass of this object
@@ -133,6 +137,22 @@ export abstract class BaseStyleImpl extends StyleImpl implements BaseStyle {
     }
   }
 
+  get name(): string {
+    return this._name!;
+  }
+
+  set name(value: string) {
+    this._name = value;
+  }
+
+  get group(): string {
+    return this._group!;
+  }
+
+  set group(value: string) {
+    this._group = value;
+  }
+
   // Reflective API
 
   /**
@@ -149,6 +169,10 @@ export abstract class BaseStyleImpl extends StyleImpl implements BaseStyle {
         return this.vueComponent;
       case BaseStyleImpl.VISIBILITY_CONDITION:
         return this.visibilityCondition;
+      case BaseStyleImpl.NAME:
+        return this.name;
+      case BaseStyleImpl.GROUP:
+        return this.group;
       default:
         return super.eGet(feature);
     }
@@ -176,6 +200,14 @@ export abstract class BaseStyleImpl extends StyleImpl implements BaseStyle {
         this.visibilityCondition = newValue as Expression;
         super.eSet(feature, newValue);
         break;
+      case BaseStyleImpl.NAME:
+        this.name = newValue as string;
+        super.eSet(feature, newValue);
+        break;
+      case BaseStyleImpl.GROUP:
+        this.group = newValue as string;
+        super.eSet(feature, newValue);
+        break;
       default:
         super.eSet(feature, newValue);
     }
@@ -195,6 +227,10 @@ export abstract class BaseStyleImpl extends StyleImpl implements BaseStyle {
         return this._vueComponent !== undefined;
       case BaseStyleImpl.VISIBILITY_CONDITION:
         return this._visibilityCondition !== undefined;
+      case BaseStyleImpl.NAME:
+        return this._name !== undefined;
+      case BaseStyleImpl.GROUP:
+        return this._group !== undefined;
       default:
         return super.eIsSet(feature);
     }
@@ -217,6 +253,12 @@ export abstract class BaseStyleImpl extends StyleImpl implements BaseStyle {
         return;
       case BaseStyleImpl.VISIBILITY_CONDITION:
         this._visibilityCondition = undefined;
+        return;
+      case BaseStyleImpl.NAME:
+        this._name = undefined;
+        return;
+      case BaseStyleImpl.GROUP:
+        this._group = undefined;
         return;
       default:
         super.eUnset(feature);

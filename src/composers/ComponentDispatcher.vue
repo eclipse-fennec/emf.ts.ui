@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, inject } from 'vue';
 import type { EObject } from '@emfts/core';
 import type { Component as UiComponent } from '../generated/Component';
 import { useComposerRegistry } from '../composables/useComposerRegistry';
+import { componentCssClasses, componentDataAttrs } from '../css/componentClasses';
+import { STYLE_SHEETS_KEY } from '../css/useStyleSheets';
+import { resolveStyleList } from '../utils/resolveStyleChain';
 
 const props = defineProps<{
   component: UiComponent;
@@ -19,6 +22,21 @@ const composer = computed(() => {
   }
   return found ?? null;
 });
+
+// CSS-Stamping: Klassen + data-Attribute fallen auf das Root-Element
+// des jeweiligen Composers durch (attribute fallthrough).
+const styleSheets = inject(STYLE_SHEETS_KEY, undefined);
+
+const cssClasses = computed(() => {
+  void styleSheets?.version.value;
+  return componentCssClasses(props.component, {
+    model: props.model,
+    sheets: styleSheets?.sheets.value,
+    resolvedCss: resolveStyleList(props.component.styles ?? []).css,
+  });
+});
+
+const dataAttrs = computed(() => componentDataAttrs(props.component));
 </script>
 
 <template>
@@ -27,5 +45,7 @@ const composer = computed(() => {
     v-if="composer"
     :component="component"
     :model="model"
+    :class="cssClasses"
+    v-bind="dataAttrs"
   />
 </template>

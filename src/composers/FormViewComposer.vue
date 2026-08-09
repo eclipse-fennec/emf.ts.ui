@@ -1,7 +1,13 @@
 <script setup lang="ts">
+/**
+ * Rendert eine FormView. Strukturelle Platzhalter in fields —
+ * AllFeatures (Issue #4), Conditional/ForEach/GroupWidget (Issue #6) —
+ * löst der FieldsRenderer auf; Layout/Überschriften gehören der
+ * FormView bzw. dem Konsumenten.
+ */
 import type { EObject } from '@emfts/core';
 import type { FormView } from '../generated/FormView';
-import WidgetComposer from './WidgetComposer.vue';
+import FieldsRenderer from './FieldsRenderer.vue';
 
 defineProps<{
   component: FormView;
@@ -11,11 +17,6 @@ defineProps<{
 
 <template>
   <div class="uimodel-form-view">
-    <WidgetComposer
-      v-for="field in component.fields"
-      :key="field.name"
-      :widget="field"
-      :model="model"
-    />
+    <FieldsRenderer :fields="component.fields" :model="model" />
   </div>
 </template>

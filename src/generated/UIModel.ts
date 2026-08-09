@@ -5,9 +5,10 @@
  * @generated
  */
 
-import type { EObject, EClass } from '@emfts/core';
+import type { EObject, EClass, BasicEObject, EStructuralFeature } from '@emfts/core';
 import type { Expression } from './Expression';
 import type { BaseStyle } from './BaseStyle';
+import type { WidgetComponent } from './WidgetComponent';
 import type { Component } from './Component';
 
 /**
@@ -20,6 +21,7 @@ export interface UIModel extends EObject {
   priority?: number;
   filterExpression?: Expression;
   styles: BaseStyle[];
+  templates: WidgetComponent[];
   components: Component[];
 
 }

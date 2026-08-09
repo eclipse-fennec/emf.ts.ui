@@ -17,8 +17,8 @@ import { UimodelPackage } from './UimodelPackage';
  */
 export class CheckboxWidgetImpl extends WidgetComponentImpl implements CheckboxWidget {
   // Feature ID Constants (eLiterals)
-  static readonly AS_TOGGLE: number = 13;
-  static readonly VALUE: number = 14;
+  static readonly AS_TOGGLE: number = 14;
+  static readonly VALUE: number = 15;
 
   // Private fields
   private _asToggle?: boolean;

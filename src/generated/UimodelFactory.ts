@@ -22,6 +22,8 @@ import type { SummaryView } from './SummaryView';
 import { SummaryViewImpl } from './SummaryViewImpl';
 import type { MasterDetail } from './MasterDetail';
 import { MasterDetailImpl } from './MasterDetailImpl';
+import type { PropertyBinding } from './PropertyBinding';
+import { PropertyBindingImpl } from './PropertyBindingImpl';
 import type { InputWidget } from './InputWidget';
 import { InputWidgetImpl } from './InputWidgetImpl';
 import type { TextAreaWidget } from './TextAreaWidget';
@@ -36,6 +38,16 @@ import type { ComboboxWidget } from './ComboboxWidget';
 import { ComboboxWidgetImpl } from './ComboboxWidgetImpl';
 import type { SelectWidget } from './SelectWidget';
 import { SelectWidgetImpl } from './SelectWidgetImpl';
+import type { AllFeatures } from './AllFeatures';
+import { AllFeaturesImpl } from './AllFeaturesImpl';
+import type { TemplateCase } from './TemplateCase';
+import { TemplateCaseImpl } from './TemplateCaseImpl';
+import type { GroupWidget } from './GroupWidget';
+import { GroupWidgetImpl } from './GroupWidgetImpl';
+import type { Conditional } from './Conditional';
+import { ConditionalImpl } from './ConditionalImpl';
+import type { ForEach } from './ForEach';
+import { ForEachImpl } from './ForEachImpl';
 import type { ReferenceLinkWidget } from './ReferenceLinkWidget';
 import { ReferenceLinkWidgetImpl } from './ReferenceLinkWidgetImpl';
 import type { LayoutStyle } from './LayoutStyle';
@@ -56,8 +68,15 @@ import { ValidationMessageMapperImpl } from './ValidationMessageMapperImpl';
  * @generated
  */
 export class UimodelFactory extends BasicEFactory {
-  // Singleton instance
-  static readonly eINSTANCE = new UimodelFactory();
+  // Lazy singleton instance
+  private static _instance: UimodelFactory;
+
+  static get eINSTANCE(): UimodelFactory {
+    if (!this._instance) {
+      this._instance = new UimodelFactory();
+    }
+    return this._instance;
+  }
 
   private constructor() {
     super();
@@ -114,6 +133,13 @@ export class UimodelFactory extends BasicEFactory {
   }
 
   /**
+   * Create a new PropertyBinding instance
+   */
+  createPropertyBinding(): PropertyBinding {
+    return new PropertyBindingImpl();
+  }
+
+  /**
    * Create a new InputWidget instance
    */
   createInputWidget(): InputWidget {
@@ -160,6 +186,41 @@ export class UimodelFactory extends BasicEFactory {
    */
   createSelectWidget(): SelectWidget {
     return new SelectWidgetImpl();
+  }
+
+  /**
+   * Create a new AllFeatures instance
+   */
+  createAllFeatures(): AllFeatures {
+    return new AllFeaturesImpl();
+  }
+
+  /**
+   * Create a new TemplateCase instance
+   */
+  createTemplateCase(): TemplateCase {
+    return new TemplateCaseImpl();
+  }
+
+  /**
+   * Create a new GroupWidget instance
+   */
+  createGroupWidget(): GroupWidget {
+    return new GroupWidgetImpl();
+  }
+
+  /**
+   * Create a new Conditional instance
+   */
+  createConditional(): Conditional {
+    return new ConditionalImpl();
+  }
+
+  /**
+   * Create a new ForEach instance
+   */
+  createForEach(): ForEach {
+    return new ForEachImpl();
   }
 
   /**
@@ -230,6 +291,8 @@ export class UimodelFactory extends BasicEFactory {
         return this.createSummaryView();
       case 'MasterDetail':
         return this.createMasterDetail();
+      case 'PropertyBinding':
+        return this.createPropertyBinding();
       case 'InputWidget':
         return this.createInputWidget();
       case 'TextAreaWidget':
@@ -244,6 +307,16 @@ export class UimodelFactory extends BasicEFactory {
         return this.createComboboxWidget();
       case 'SelectWidget':
         return this.createSelectWidget();
+      case 'AllFeatures':
+        return this.createAllFeatures();
+      case 'TemplateCase':
+        return this.createTemplateCase();
+      case 'GroupWidget':
+        return this.createGroupWidget();
+      case 'Conditional':
+        return this.createConditional();
+      case 'ForEach':
+        return this.createForEach();
       case 'ReferenceLinkWidget':
         return this.createReferenceLinkWidget();
       case 'LayoutStyle':

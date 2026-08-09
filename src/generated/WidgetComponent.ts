@@ -5,18 +5,19 @@
  * @generated
  */
 
-import type { EObject, EStructuralFeature } from '@emfts/core';
+import type { EObject, EStructuralFeature, BasicEObject, EClass } from '@emfts/core';
 import type { Component } from './Component';
 import type { Expression } from './Expression';
 import type { ValidationExpression } from './ValidationExpression';
 import type { ValidationMessageMapper } from './ValidationMessageMapper';
+import type { PropertyBinding } from './PropertyBinding';
 
 /**
  * WidgetComponent
  * @generated
  */
 export interface WidgetComponent extends Component {
-  feature: EStructuralFeature;
+  feature?: EStructuralFeature;
   label?: string;
   placeholder?: string;
   readOnly?: boolean;
@@ -24,5 +25,6 @@ export interface WidgetComponent extends Component {
   visibilityCondition?: Expression;
   validations: ValidationExpression[];
   validationMappers: ValidationMessageMapper[];
+  bindings: PropertyBinding[];
 
 }

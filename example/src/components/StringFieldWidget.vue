@@ -29,11 +29,18 @@ const validationResult = useValidation(
   () => props.eObject!
 );
 
-const label      = computed(() => props.custom?.rawWidget?.label ?? props.feature?.getName?.() ?? '');
-const placeholder = computed(() => props.custom?.rawWidget?.placeholder ?? '');
-const readOnly   = computed(() => props.custom?.rawWidget?.readOnly ?? false);
-const required   = computed(() => props.custom?.rawWidget?.required ?? false);
-const cssClass   = computed(() => props.custom?.resolvedStyle?.css ?? '');
+// resolvedStyle enthält die Binding-aufgelösten Werte
+// (Binding > statisch > Style-Kette); rawWidget nur als Fallback.
+const resolved   = computed(() => props.custom?.resolvedStyle ?? {});
+const label      = computed(() => resolved.value.label ?? props.custom?.rawWidget?.label ?? props.feature?.getName?.() ?? '');
+const placeholder = computed(() => resolved.value.placeholder ?? props.custom?.rawWidget?.placeholder ?? '');
+const readOnly   = computed(() => toBool(resolved.value.readOnly ?? props.custom?.rawWidget?.readOnly));
+const required   = computed(() => toBool(resolved.value.required ?? props.custom?.rawWidget?.required));
+const cssClass   = computed(() => resolved.value.css ?? '');
+
+function toBool(v: unknown): boolean {
+  return v === true || v === 'true';
+}
 
 // Read the current value from the domain object
 const currentValue = computed(() =>

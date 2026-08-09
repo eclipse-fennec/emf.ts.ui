@@ -10,6 +10,7 @@ import type { Component } from './Component';
 import type { Expression } from './Expression';
 import type { ValidationExpression } from './ValidationExpression';
 import type { ValidationMessageMapper } from './ValidationMessageMapper';
+import type { PropertyBinding } from './PropertyBinding';
 import { ComponentImpl } from './ComponentImpl';
 import type { WidgetComponent } from './WidgetComponent';
 import { UimodelPackage } from './UimodelPackage';
@@ -28,6 +29,7 @@ export abstract class WidgetComponentImpl extends ComponentImpl implements Widge
   static readonly VISIBILITY_CONDITION: number = 10;
   static readonly VALIDATIONS: number = 11;
   static readonly VALIDATION_MAPPERS: number = 12;
+  static readonly BINDINGS: number = 13;
 
   // Private fields
   private _feature?: EStructuralFeature;
@@ -38,6 +40,7 @@ export abstract class WidgetComponentImpl extends ComponentImpl implements Widge
   private _visibilityCondition?: Expression;
   private _validations: ValidationExpression[] = [];
   private _validationMappers: ValidationMessageMapper[] = [];
+  private _bindings: PropertyBinding[] = [];
 
   /**
    * Returns the EClass of this object
@@ -239,6 +242,30 @@ export abstract class WidgetComponentImpl extends ComponentImpl implements Widge
     }
   }
 
+  get bindings(): PropertyBinding[] {
+    return this._bindings;
+  }
+
+  set bindings(value: PropertyBinding[]) {
+    const oldValue = this._bindings;
+    this._bindings = value;
+    if (this.eDeliver()) {
+      this.eNotify({
+        getNotifier: () => this,
+        getEventType: () => 1, // SET
+        getFeature: () => this.eClass().getEStructuralFeature(WidgetComponentImpl.BINDINGS),
+        getOldValue: () => oldValue,
+        getNewValue: () => value,
+        getPosition: () => -1,
+        wasSet: () => true,
+        isTouch: () => false,
+        isReset: () => false,
+        getFeatureID: () => WidgetComponentImpl.BINDINGS,
+        merge: () => false
+      });
+    }
+  }
+
   // Reflective API
 
   /**
@@ -263,6 +290,8 @@ export abstract class WidgetComponentImpl extends ComponentImpl implements Widge
         return this.validations;
       case WidgetComponentImpl.VALIDATION_MAPPERS:
         return this.validationMappers;
+      case WidgetComponentImpl.BINDINGS:
+        return this.bindings;
       default:
         return super.eGet(feature);
     }
@@ -306,6 +335,10 @@ export abstract class WidgetComponentImpl extends ComponentImpl implements Widge
         this.validationMappers = newValue as ValidationMessageMapper[];
         super.eSet(feature, newValue);
         break;
+      case WidgetComponentImpl.BINDINGS:
+        this.bindings = newValue as PropertyBinding[];
+        super.eSet(feature, newValue);
+        break;
       default:
         super.eSet(feature, newValue);
     }
@@ -333,6 +366,8 @@ export abstract class WidgetComponentImpl extends ComponentImpl implements Widge
         return this._validations !== undefined && this._validations.length > 0;
       case WidgetComponentImpl.VALIDATION_MAPPERS:
         return this._validationMappers !== undefined && this._validationMappers.length > 0;
+      case WidgetComponentImpl.BINDINGS:
+        return this._bindings !== undefined && this._bindings.length > 0;
       default:
         return super.eIsSet(feature);
     }
@@ -367,6 +402,9 @@ export abstract class WidgetComponentImpl extends ComponentImpl implements Widge
         return;
       case WidgetComponentImpl.VALIDATION_MAPPERS:
         this._validationMappers = [];
+        return;
+      case WidgetComponentImpl.BINDINGS:
+        this._bindings = [];
         return;
       default:
         super.eUnset(feature);

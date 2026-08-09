@@ -18,8 +18,8 @@ import { UimodelPackage } from './UimodelPackage';
  */
 export class ReferenceLinkWidgetImpl extends WidgetComponentImpl implements ReferenceLinkWidget {
   // Feature ID Constants (eLiterals)
-  static readonly DISPLAY_EXPRESSION: number = 13;
-  static readonly TARGET_ROUTE: number = 14;
+  static readonly DISPLAY_EXPRESSION: number = 14;
+  static readonly TARGET_ROUTE: number = 15;
 
   // Private fields
   private _displayExpression?: Expression;

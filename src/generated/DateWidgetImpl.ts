@@ -18,10 +18,10 @@ import { UimodelPackage } from './UimodelPackage';
  */
 export class DateWidgetImpl extends WidgetComponentImpl implements DateWidget {
   // Feature ID Constants (eLiterals)
-  static readonly WITH_TIME: number = 13;
-  static readonly FORMAT: number = 14;
-  static readonly CONSTRAINS: number = 15;
-  static readonly VALUE: number = 16;
+  static readonly WITH_TIME: number = 14;
+  static readonly FORMAT: number = 15;
+  static readonly CONSTRAINS: number = 16;
+  static readonly VALUE: number = 17;
 
   // Private fields
   private _withTime?: boolean;

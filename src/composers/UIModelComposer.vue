@@ -1,14 +1,19 @@
 <script setup lang="ts">
-import { provide } from 'vue';
+import { computed, provide } from 'vue';
 import type { EObject } from '@emfts/core';
 import type { UIModel } from '../generated/UIModel';
+import type { StyleSheet } from '../generated/css/StyleSheet';
 import {
   COMPOSER_REGISTRY_KEY,
   createComposerRegistry,
   type ComposerRegistry,
 } from '../composables/useComposerRegistry';
+import { STYLE_SHEETS_KEY, useStyleSheetInjection } from '../css/useStyleSheets';
+import { collectExpansionContext } from '../allfeatures/expandFeatures';
+import { EXPANSION_CONTEXT_KEY } from '../allfeatures/context';
 import { evaluateBoolean } from '../utils/evaluateExpression';
 import ComponentDispatcher from './ComponentDispatcher.vue';
+import AllFeaturesComposer from './AllFeaturesComposer.vue';
 import FormViewComposer from './FormViewComposer.vue';
 import SectionViewComposer from './SectionViewComposer.vue';
 import TabViewComposer from './TabViewComposer.vue';
@@ -28,7 +33,24 @@ const props = defineProps<{
    * If omitted, the default registry (FormView, TableView, …) is used.
    */
   composerRegistry?: ComposerRegistry;
+  /**
+   * Optionale CSS-StyleSheets (uimodel-css). Werden als <style>-Element
+   * injiziert; Selektor-Regeln und uic-Klassen wirken auf die von den
+   * Composern gestempelten uim-*-Klassen.
+   */
+  styleSheets?: StyleSheet[];
 }>();
+
+const sheets = computed<readonly StyleSheet[]>(() => props.styleSheets ?? []);
+const { version: styleVersion } = useStyleSheetInjection(sheets);
+provide(STYLE_SHEETS_KEY, { sheets, version: styleVersion });
+
+// AllFeatures: Dedup-Kontext pro UIModel (Geschwister-Blöcke +
+// explizit gebundene Widgets) für die Zuordnungs-Semantik.
+provide(
+  EXPANSION_CONTEXT_KEY,
+  computed(() => collectExpansionContext(props.uiModel as unknown as EObject))
+);
 
 // Build and provide the ComposerRegistry for this subtree
 const registry =
@@ -40,6 +62,7 @@ const registry =
     SummaryView: SummaryViewComposer,
     TableView: TableViewComposer,
     MasterDetail: MasterDetailComposer,
+    AllFeatures: AllFeaturesComposer,
     VegaView: VegaViewComposer,
     MapView: MapViewComposer,
   });

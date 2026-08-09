@@ -17,6 +17,10 @@
     <eStructuralFeatures xsi:type="ecore:EReference"
         eType="http://uimodel/1.0#//Expression" name="filterExpression" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" upperBound="-1" eType="http://uimodel/1.0#//BaseStyle" name="styles" containment="true"/>
+    <!-- Katalog für Widget-Prototypen (AllFeatures.template referenziert
+         hierher oder per href in eine Vorlagen-Datei). Prototypen haben
+         kein gebundenes feature und werden nicht direkt gerendert. -->
+    <eStructuralFeatures xsi:type="ecore:EReference" upperBound="-1" eType="http://uimodel/1.0#//WidgetComponent" name="templates" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" lowerBound="1" upperBound="-1" eType="http://uimodel/1.0#//Component" name="components" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Component" abstract="true">
@@ -71,11 +75,15 @@
     <eStructuralFeatures xsi:type="ecore:EReference" lowerBound="1" eType="http://uimodel/1.0#//Component" name="detail" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="WidgetComponent" abstract="true">
+    <!-- featureBelongsToTargetClasses gilt nur für gebundene Widgets;
+         unboundOnlyAsPrototype: feature darf nur fehlen, wenn das Widget
+         als AllFeatures-Prototyp (template) dient. -->
     <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
-      <details key="constraints" value="featureBelongsToTargetClasses"/>
+      <details key="constraints" value="featureBelongsToTargetClasses unboundOnlyAsPrototype"/>
     </eAnnotations>
     <eSuperTypes href="http://uimodel/1.0#//Component"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" lowerBound="1" eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature" name="feature"/>
+    <!-- [0..1]: ungebunden nur als Prototyp erlaubt (siehe AllFeatures.template) -->
+    <eStructuralFeatures xsi:type="ecore:EReference" eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature" name="feature"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="label"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="placeholder"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="readOnly"/>
@@ -88,6 +96,24 @@
          (sofern mapperOrder=FIELD_THEN_FORM, was der Default ist) -->
     <eStructuralFeatures xsi:type="ecore:EReference" upperBound="-1"
         eType="http://uimodel/1.0#//ValidationMessageMapper" name="validationMappers" containment="true"/>
+    <!-- Expression-fähige Widget-Parameter (Issue #3).
+         Auflösung: Binding-Ergebnis > statischer Wert > Ableitung. -->
+    <eStructuralFeatures xsi:type="ecore:EReference" upperBound="-1"
+        eType="http://uimodel/1.0#//PropertyBinding" name="bindings" containment="true"/>
+  </eClassifiers>
+
+  <!-- Bindet einen Widget-Parameter (property: "label", "placeholder",
+       "readOnly", "required", auch "feature") an eine Expression.
+       Kontext: self = Domänenobjekt (wie visibilityCondition), zusätzlich
+       feature (gebundenes EStructuralFeature, Meta-Ebene) und eClass.
+       Auswertung reaktiv zur Renderzeit; Ergebnis wird auf den
+       Parametertyp koerziert. property="feature": null → Widget wird
+       nicht gerendert. -->
+  <eClassifiers xsi:type="ecore:EClass" name="PropertyBinding">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" lowerBound="1"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="property"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" lowerBound="1"
+        eType="http://uimodel/1.0#//Expression" name="expression" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="InputWidget">
     <eSuperTypes href="http://uimodel/1.0#//WidgetComponent"/>
@@ -133,6 +159,116 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="multiSelect"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="asButtonGroup"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" upperBound="-1" eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="values"/>
+  </eClassifiers>
+  <!-- Parametrisierter Feature-Platzhalter in FormView.fields (Issue #2/#4):
+       expandiert zur Renderzeit gegen die EClass des Domänenobjekts.
+       Auswahl: with (explizit, definierte Reihenfolge) ODER Grundmenge
+       (alle Features inkl. geerbte) zugeschnitten durch eType und filter
+       (UND-verknüpft). filter ist ein Meta-Ausdruck: self = EStructuralFeature.
+       Konflikt bei mehreren Blöcken: priority (höher gewinnt) → Spezifität
+       (with > gefiltert) → Dokument-Reihenfolge; Dedup pro UIModel.
+       template: WidgetComponent-Prototyp OHNE gebundenes feature (href in
+       Vorlagen-Datei möglich); ohne template greift das Typ-Mapping.
+       Erbt von WidgetComponent: die geerbten Eigenschaften (label,
+       readOnly, required, styles, bindings, …) sind die DEFAULT-
+       Konfiguration jedes expandierten Widgets; das eigene feature bleibt
+       ungesetzt (featureMustBeUnset). Kein eigenes Layout — die Expansion
+       rendert inline in der umgebenden FormView. -->
+  <eClassifiers xsi:type="ecore:EClass" name="AllFeatures">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="templateMustBeUnbound featureMustBeUnset"/>
+    </eAnnotations>
+    <eSuperTypes href="http://uimodel/1.0#//WidgetComponent"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" upperBound="-1"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature" name="with"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" upperBound="-1"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EClassifier" name="eType"/>
+    <eStructuralFeatures xsi:type="ecore:EReference"
+        eType="http://uimodel/1.0#//Expression" name="filter" containment="true"/>
+    <!-- Kurzform (T1 in Issue #5): ein Default-Fall ohne when; wird NACH
+         den cases geprüft. -->
+    <eStructuralFeatures xsi:type="ecore:EReference"
+        eType="http://uimodel/1.0#//WidgetComponent" name="template"/>
+    <!-- Widget-Wahl als geordnete Fallunterscheidung (Issue #5):
+         erster treffender Case gewinnt; trifft keiner (und kein template),
+         ist das ein Validierungs-/Renderfehler — es gibt KEIN eingebautes
+         Code-Mapping mehr. Name "cases" statt "templates" wegen
+         UIModel.templates (T2). -->
+    <eStructuralFeatures xsi:type="ecore:EReference" upperBound="-1"
+        eType="http://uimodel/1.0#//TemplateCase" name="cases" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EInt" name="priority"
+        defaultValueLiteral="0"/>
+  </eClassifiers>
+
+  <!-- Ein Fall der Widget-Wahl: when ist ein Meta-Ausdruck
+       (self = EStructuralFeature), FAIL-CLOSED — Fehler/undefined ⇒ kein
+       Treffer. Fehlt when, ist es der Default-Fall. widget ist bewusst
+       eine REFERENZ (kein Containment): Prototypen leben im
+       UIModel.templates-Katalog oder in einer Vorlagen-Datei (href) und
+       werden von beliebig vielen Cases wiederverwendet. -->
+  <eClassifiers xsi:type="ecore:EClass" name="TemplateCase">
+    <eStructuralFeatures xsi:type="ecore:EReference"
+        eType="http://uimodel/1.0#//Expression" name="when" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" lowerBound="1"
+        eType="http://uimodel/1.0#//WidgetComponent" name="widget"/>
+  </eClassifiers>
+
+  <!-- ============================================================== -->
+  <!-- Strukturelle Platzhalter in fields (Issue #6):                 -->
+  <!-- GroupWidget (Container/komplexe Templates), Conditional        -->
+  <!-- (if/else), ForEach (Iterator über Instanz-Collections).        -->
+  <!-- Alle drei: feature bleibt ungesetzt (featureMustBeUnset),      -->
+  <!-- frei komponierbar.                                             -->
+  <!-- ============================================================== -->
+
+  <!-- Container-Widget: gruppiert fields mit Layout. Als Prototyp im
+       templates-Katalog ergibt es komplexe Templates — cloneComponent
+       klont die ganze Gruppe; Nachfahren ohne eigenes feature erben bei
+       der Expansion das gebundene Feature. -->
+  <eClassifiers xsi:type="ecore:EClass" name="GroupWidget">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="featureMustBeUnset"/>
+    </eAnnotations>
+    <eSuperTypes href="http://uimodel/1.0#//WidgetComponent"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" upperBound="-1"
+        eType="http://uimodel/1.0#//WidgetComponent" name="fields" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://uimodel/1.0#//LayoutType" name="layout"
+        defaultValueLiteral="VERTICAL"/>
+  </eClassifiers>
+
+  <!-- Kontrollstruktur: condition (self = Domänenobjekt, fail-open wie
+       visibility) wählt then- oder else-Zweig; die Zweige werden inline
+       gerendert (kein eigenes Markup). -->
+  <eClassifiers xsi:type="ecore:EClass" name="Conditional">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="featureMustBeUnset"/>
+    </eAnnotations>
+    <eSuperTypes href="http://uimodel/1.0#//WidgetComponent"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" lowerBound="1"
+        eType="http://uimodel/1.0#//Expression" name="condition" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" upperBound="-1"
+        eType="http://uimodel/1.0#//WidgetComponent" name="then" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" upperBound="-1"
+        eType="http://uimodel/1.0#//WidgetComponent" name="else" containment="true"/>
+  </eClassifiers>
+
+  <!-- Iterator: items (self = Domänenobjekt) liefert eine Collection von
+       EObjects; body wird PRO Element gerendert — self/model im Body ist
+       das Element (Widget-features referenzieren die Element-Klasse).
+       emptyText: optionaler Hinweis bei leerer Collection. -->
+  <eClassifiers xsi:type="ecore:EClass" name="ForEach">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="featureMustBeUnset"/>
+    </eAnnotations>
+    <eSuperTypes href="http://uimodel/1.0#//WidgetComponent"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" lowerBound="1"
+        eType="http://uimodel/1.0#//Expression" name="items" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" upperBound="-1"
+        eType="http://uimodel/1.0#//WidgetComponent" name="body" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="emptyText"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ReferenceLinkWidget">
     <eSuperTypes href="http://uimodel/1.0#//WidgetComponent"/>

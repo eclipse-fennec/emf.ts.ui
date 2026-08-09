@@ -18,10 +18,10 @@ import { UimodelPackage } from './UimodelPackage';
  */
 export class SelectWidgetImpl extends WidgetComponentImpl implements SelectWidget {
   // Feature ID Constants (eLiterals)
-  static readonly OPTION_LABEL: number = 13;
-  static readonly MULTI_SELECT: number = 14;
-  static readonly AS_BUTTON_GROUP: number = 15;
-  static readonly VALUES: number = 16;
+  static readonly OPTION_LABEL: number = 14;
+  static readonly MULTI_SELECT: number = 15;
+  static readonly AS_BUTTON_GROUP: number = 16;
+  static readonly VALUES: number = 17;
 
   // Private fields
   private _optionLabel?: Expression;

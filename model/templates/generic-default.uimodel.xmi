@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generisches Default-Layout (Issue #2/#4/#5): klassenunabhängig, keine
+     targetClasses. Struktur ist gleichförmig zu autorierten Modellen:
+     FormView pro Sektion (group = Überschrift, gerendert vom Konsumenten),
+     AllFeatures als fields-Platzhalter.
+     Jede Rendering-Entscheidung steht im Modell:
+       Struktur (FormView) → Auswahl (filter) → Widget-Wahl (cases,
+       erster Treffer gewinnt) → Prototyp (templates-Katalog) →
+       Parameter (bindings).
+     Filter/when sind JS-Metaausdrücke: self = EStructuralFeature. -->
+<uimodel:UIModel
+    xmlns:xmi="http://www.omg.org/XMI"
+    xmi:version="2.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:uimodel="http://uimodel/1.0"
+    name="generic-default">
+
+  <!-- Prototypen-Katalog: einmal definiert, von allen Cases wiederverwendet
+       (alternativ per href aus einer geteilten Vorlagen-Datei). -->
+  <templates xsi:type="uimodel:CheckboxWidget"      xmi:id="t-checkbox" name="checkbox"/>
+  <templates xsi:type="uimodel:NumberWidget"        xmi:id="t-number"   name="number"/>
+  <templates xsi:type="uimodel:DateWidget"          xmi:id="t-date"     name="date"/>
+  <templates xsi:type="uimodel:SelectWidget"        xmi:id="t-select"   name="select"/>
+  <templates xsi:type="uimodel:ReferenceLinkWidget" xmi:id="t-ref"      name="reference"/>
+  <templates xsi:type="uimodel:InputWidget"         xmi:id="t-input"    name="input"/>
+
+  <components xsi:type="uimodel:FormView" name="identification" group="Identification">
+    <fields xsi:type="uimodel:AllFeatures" name="id">
+      <filter language="JS" body="self.iD === true"/>
+      <cases><widget href="#t-input"/></cases>
+    </fields>
+  </components>
+
+  <!-- Geerbte Widget-Eigenschaften des Platzhalters (bindings, styles,
+       readOnly, …) sind die Default-Konfiguration jedes Treffers.
+       Label-Binding: EAnnotation am Feature (source http://uimodel/1.0,
+       key "label") vor Namens-Ableitung. Die Widget-Wahl ist die
+       explizite Fallliste (ehemals defaultWidgetFor). -->
+  <components xsi:type="uimodel:FormView" name="attributes" group="Attributes">
+    <fields xsi:type="uimodel:AllFeatures" name="attribute">
+      <filter language="JS"
+          body="self.eClass().getName() === 'EAttribute' &amp;&amp; !self.derived"/>
+      <bindings property="label">
+        <expression language="JS"
+            body="feature.getEAnnotation('http://uimodel/1.0')?.getDetails()?.get('label') ?? feature.name.replace(/([a-z0-9])([A-Z])/g, '$1 $2').replace(/^./, function(c) { return c.toUpperCase(); })"/>
+      </bindings>
+      <cases>
+        <when language="JS" body="['EBoolean','EBooleanObject'].includes(self.eType?.name)"/>
+        <widget href="#t-checkbox"/>
+      </cases>
+      <cases>
+        <when language="JS"
+            body="['EInt','ELong','EShort','EFloat','EDouble','EBigDecimal','EBigInteger'].includes(self.eType?.name)"/>
+        <widget href="#t-number"/>
+      </cases>
+      <cases>
+        <when language="JS" body="self.eType?.name === 'EDate'"/>
+        <widget href="#t-date"/>
+      </cases>
+      <cases>
+        <when language="JS" body="self.eType?.eClass().getName() === 'EEnum'"/>
+        <widget href="#t-select"/>
+      </cases>
+      <!-- Default-Fall, explizit -->
+      <cases><widget href="#t-input"/></cases>
+    </fields>
+  </components>
+
+  <components xsi:type="uimodel:FormView" name="references" group="References">
+    <fields xsi:type="uimodel:AllFeatures" name="reference">
+      <filter language="JS"
+          body="self.eClass().getName() === 'EReference' &amp;&amp; !self.derived"/>
+      <cases><widget href="#t-ref"/></cases>
+    </fields>
+  </components>
+
+  <components xsi:type="uimodel:FormView" name="derived" group="Derived Values">
+    <fields xsi:type="uimodel:AllFeatures" name="derived" readOnly="true">
+      <filter language="JS" body="self.derived === true"/>
+      <cases><widget href="#t-input"/></cases>
+    </fields>
+  </components>
+</uimodel:UIModel>

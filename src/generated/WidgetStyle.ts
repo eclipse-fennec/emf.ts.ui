@@ -5,7 +5,7 @@
  * @generated
  */
 
-import type { EObject, EStructuralFeature } from '@emfts/core';
+import type { EObject, EStructuralFeature, BasicEObject, EClass } from '@emfts/core';
 import type { BaseStyle } from './BaseStyle';
 import type { WidgetType } from './WidgetType';
 

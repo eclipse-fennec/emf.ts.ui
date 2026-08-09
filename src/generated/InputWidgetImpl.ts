@@ -17,9 +17,9 @@ import { UimodelPackage } from './UimodelPackage';
  */
 export class InputWidgetImpl extends WidgetComponentImpl implements InputWidget {
   // Feature ID Constants (eLiterals)
-  static readonly MAX_LENGTH: number = 13;
-  static readonly VALUE: number = 14;
-  static readonly PASSWORD: number = 15;
+  static readonly MAX_LENGTH: number = 14;
+  static readonly VALUE: number = 15;
+  static readonly PASSWORD: number = 16;
 
   // Private fields
   private _maxLength?: number;
