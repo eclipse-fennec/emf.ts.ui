@@ -21,6 +21,7 @@ export default defineConfig({
       entry: {
         index: resolve(__dirname, 'src/index.ts'),
         'diagram/index': resolve(__dirname, 'src/diagram/index.ts'),
+        'css/index': resolve(__dirname, 'src/css/index.ts'),
       },
       formats: ['es'],
     },

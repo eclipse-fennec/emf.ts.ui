@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmlns:xmi="http://www.omg.org/XMI" xmi:version="2.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    name="uimodel.css" nsURI="http://uimodel/css/1.0" nsPrefix="uicss">
+
+  <!-- ================================================================ -->
+  <!-- StyleSheet — Wurzel des CSS-Styling-Modells.                     -->
+  <!-- Wird als eigene Resource (styles.xmi) neben dem UIModel gehalten;-->
+  <!-- Components referenzieren CssStyles via href (Component.styles). -->
+  <!-- ================================================================ -->
+  <eClassifiers xsi:type="ecore:EClass" name="StyleSheet">
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="name"/>
+    <!-- Design-Tokens → CSS Custom Properties (uic-Prefix) auf :root -->
+    <eStructuralFeatures xsi:type="ecore:EReference" upperBound="-1"
+        eType="#//DesignToken" name="tokens" containment="true"/>
+    <!-- Themes überschreiben Token-Werte (z. B. dark) -->
+    <eStructuralFeatures xsi:type="ecore:EReference" upperBound="-1"
+        eType="#//Theme" name="themes" containment="true"/>
+    <!-- Benannte, wiederverwendbare Styles (CSS-Klassen-Analogon).
+         CssStyle erweitert uimodel BaseStyle und kann daher aus
+         Component.styles heraus referenziert werden. -->
+    <eStructuralFeatures xsi:type="ecore:EReference" upperBound="-1"
+        eType="#//CssStyle" name="styles" containment="true"/>
+    <!-- Selektorbasierte Regeln (CSS-Rule-Analogon): treffen Komponenten
+         über EClass/Name/Group/Condition statt über explizite Referenz. -->
+    <eStructuralFeatures xsi:type="ecore:EReference" upperBound="-1"
+        eType="#//StyleRule" name="rules" containment="true"/>
+  </eClassifiers>
+
+  <!-- Design-Token: name "color-primary" wird zur Custom Property
+       "uic-color-primary" (mit Doppelstrich-Prefix). In Declaration-Values
+       per token(color-primary) referenzierbar. -->
+  <eClassifiers xsi:type="ecore:EClass" name="DesignToken">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" lowerBound="1"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="name"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" lowerBound="1"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="value"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="description"/>
+  </eClassifiers>
+
+  <!-- Theme: benannter Satz von Token-Overrides.
+       Aktivierung über Klasse uicss-theme-<name> an einem Vorfahren. -->
+  <eClassifiers xsi:type="ecore:EClass" name="Theme">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" lowerBound="1"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="name"/>
+    <!-- true → color-scheme: dark wird mitgeneriert -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="dark"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" upperBound="-1"
+        eType="#//TokenOverride" name="overrides" containment="true"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EClass" name="TokenOverride">
+    <eStructuralFeatures xsi:type="ecore:EReference" lowerBound="1"
+        eType="#//DesignToken" name="token"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" lowerBound="1"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="value"/>
+  </eClassifiers>
+
+  <!-- Eine CSS-Deklaration: property "background-color", value "#fff"
+       bzw. "token(color-surface)" für Token-Referenzen. -->
+  <eClassifiers xsi:type="ecore:EClass" name="CssDeclaration">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" lowerBound="1"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="property"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" lowerBound="1"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="value"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="important"/>
+  </eClassifiers>
+
+  <!-- Pseudo-Klassen-Block: Deklarationen, die nur in einem
+       Interaktions-/Widget-Zustand gelten. -->
+  <eClassifiers xsi:type="ecore:EClass" name="CssState">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" lowerBound="1"
+        eType="#//PseudoState" name="state"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" upperBound="-1"
+        eType="#//CssDeclaration" name="declarations" containment="true"/>
+  </eClassifiers>
+
+  <!-- Benannter Style = CSS-Klasse .uic-<name>.
+       Erbt von uimodel BaseStyle: dadurch aus Component.styles
+       referenzierbar und in der bestehenden extends-Kaskade nutzbar. -->
+  <eClassifiers xsi:type="ecore:EClass" name="CssStyle">
+    <eSuperTypes href="http://uimodel/1.0#//BaseStyle"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" upperBound="-1"
+        eType="#//CssDeclaration" name="declarations" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" upperBound="-1"
+        eType="#//CssState" name="states" containment="true"/>
+  </eClassifiers>
+
+  <!-- Selektorbasierte Regel (CSS-Selektor-Analogon).
+       Selektor-Kriterien (AND-verknüpft, nur gesetzte zählen):
+         targetClass     — EClass der UI-Komponente (z. B. InputWidget);
+                           includeSubtypes=true matcht auch Subtypen
+         componentName   — Component.name
+         group           — Component.group
+         condition       — dynamischer Feinfilter (OCL/JS) auf dem
+                           Domänenobjekt; wird zur Laufzeit ausgewertet
+       priority: höhere Regeln gewinnen (CSS-Reihenfolge).
+       media: optionale rohe Media-Query ("(max-width: 600px)"). -->
+  <eClassifiers xsi:type="ecore:EClass" name="StyleRule">
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="name"/>
+    <eStructuralFeatures xsi:type="ecore:EReference"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EClass" name="targetClass"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" defaultValueLiteral="true"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="includeSubtypes"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="componentName"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="group"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" defaultValueLiteral="0"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EInt" name="priority"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="media"/>
+    <eStructuralFeatures xsi:type="ecore:EReference"
+        eType="http://uimodel/1.0#//Expression" name="condition" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" upperBound="-1"
+        eType="#//CssDeclaration" name="declarations" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" upperBound="-1"
+        eType="#//CssState" name="states" containment="true"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EEnum" name="PseudoState">
+    <eLiterals name="HOVER"/>
+    <eLiterals name="FOCUS" value="1"/>
+    <eLiterals name="FOCUS_WITHIN" value="2"/>
+    <eLiterals name="ACTIVE" value="3"/>
+    <eLiterals name="DISABLED" value="4"/>
+    <eLiterals name="READONLY" value="5"/>
+    <eLiterals name="INVALID" value="6"/>
+    <eLiterals name="REQUIRED" value="7"/>
+  </eClassifiers>
+</ecore:EPackage>

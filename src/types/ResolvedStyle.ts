@@ -15,4 +15,7 @@ export interface ResolvedStyle {
   widgetType?: WidgetType;
   label?: string;
   readOnly?: boolean;
+  // Widget-Statics/Bindings (Issue #3): Binding > statisch > Ableitung
+  placeholder?: string;
+  required?: boolean;
 }
