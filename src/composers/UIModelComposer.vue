@@ -9,7 +9,8 @@ import {
   type ComposerRegistry,
 } from '../composables/useComposerRegistry';
 import { STYLE_SHEETS_KEY, useStyleSheetInjection } from '../css/useStyleSheets';
-import { collectExpansionContext } from '../allfeatures/expandFeatures';
+import { collectExpansionContext, collectOverlayCases } from '../allfeatures/expandFeatures';
+import type { UIModelOverlay } from '../generated/UIModelOverlay';
 import { EXPANSION_CONTEXT_KEY } from '../allfeatures/context';
 import { evaluateBoolean } from '../utils/evaluateExpression';
 import { trackExpressionTick, useModelTick } from '../utils/reactivity';
@@ -39,6 +40,13 @@ const props = defineProps<{
    * Composern gestempelten uim-*-Klassen.
    */
   styleSheets?: StyleSheet[];
+  /**
+   * Workspace-Overlays (Issue #8): TemplateCases daraus übersteuern die
+   * Widget-Wahl der AllFeatures-Expansion (vor lokalen cases geprüft).
+   * Der Composer lädt nichts selbst — Sammeln/Priorisieren übernimmt
+   * der Konsument (hier nur die Reihung via collectOverlayCases).
+   */
+  overlays?: UIModelOverlay[];
 }>();
 
 const sheets = computed<readonly StyleSheet[]>(() => props.styleSheets ?? []);
@@ -56,7 +64,10 @@ provide(
   EXPANSION_CONTEXT_KEY,
   computed(() => {
     trackExpressionTick();
-    return collectExpansionContext(props.uiModel as unknown as EObject);
+    return {
+      ...collectExpansionContext(props.uiModel as unknown as EObject),
+      overlayCases: collectOverlayCases(props.overlays ?? []),
+    };
   })
 );
 

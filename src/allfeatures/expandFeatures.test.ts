@@ -18,6 +18,7 @@ import {
   candidateFeatures,
   cloneComponent,
   collectExpansionContext,
+  collectOverlayCases,
   deriveLabel,
   expandFeatures,
   widgetPrototypeFor,
@@ -365,6 +366,67 @@ describe('Block-Level-Bindings', () => {
     const byProp = Object.fromEntries(widget.bindings.map((x) => [x.property, x.expression?.body]));
     expect(byProp.label).toBe("'vom Template'");
     expect(byProp.placeholder).toBe("'aus Block'");
+  });
+});
+
+describe('UIModelOverlay (Issue #8)', () => {
+  function overlay(name: string, priority: number, whenJs: string | undefined, widget: import('../generated/WidgetComponent').WidgetComponent) {
+    const factory = UimodelFactory.eINSTANCE;
+    const o = factory.createUIModelOverlay();
+    o.name = name;
+    o.priority = priority;
+    o.templates = [widget];
+    const c = factory.createTemplateCase();
+    c.widget = widget;
+    if (whenJs) {
+      const expr = factory.createExpression();
+      expr.language = 'JS';
+      expr.body = whenJs;
+      c.when = expr;
+    }
+    o.cases = [c];
+    return o;
+  }
+
+  it('overlayCases übersteuern lokale cases; ohne Treffer greift der Block', () => {
+    const factory = UimodelFactory.eINSTANCE;
+    const b = blockWithDefault({ name: 'attrs', filterJs: 'true' });
+    const textarea = factory.createTextAreaWidget();
+    const ctx: ExpansionContext = {
+      blocks: [b],
+      boundFeatures: new Set(),
+      overlayCases: collectOverlayCases([
+        overlay('ws', 100, "self.name === 'firstName'", textarea),
+      ]),
+    };
+    expect(widgetPrototypeFor(b, f.firstName, ctx)).toBe(textarea);
+    // kein Overlay-Treffer → lokaler Default-Case
+    expect(widgetPrototypeFor(b, f.age, ctx)!.eClass().getName()).toBe('InputWidget');
+    // Ende-zu-Ende: Expansion nutzt den Overlay-Prototyp
+    const widgets = expandFeatures(person, b, ctx);
+    expect(widgets.find((w) => w.name === 'firstName')!.eClass().getName()).toBe('TextAreaWidget');
+  });
+
+  it('collectOverlayCases: priority absteigend, stabil', () => {
+    const factory = UimodelFactory.eINSTANCE;
+    const low = overlay('low', 0, undefined, factory.createInputWidget());
+    const high = overlay('high', 100, undefined, factory.createTextAreaWidget());
+    const cases = collectOverlayCases([low, high]);
+    expect(cases[0].widget.eClass().getName()).toBe('TextAreaWidget');
+    expect(cases[1].widget.eClass().getName()).toBe('InputWidget');
+  });
+
+  it('when in Overlay-Cases bleibt fail-closed', () => {
+    const factory = UimodelFactory.eINSTANCE;
+    const b = blockWithDefault({ name: 'attrs', filterJs: 'true' });
+    const ctx: ExpansionContext = {
+      blocks: [b],
+      boundFeatures: new Set(),
+      overlayCases: collectOverlayCases([
+        overlay('broken', 100, 'kaputt(', factory.createTextAreaWidget()),
+      ]),
+    };
+    expect(widgetPrototypeFor(b, f.firstName, ctx)!.eClass().getName()).toBe('InputWidget');
   });
 });
 

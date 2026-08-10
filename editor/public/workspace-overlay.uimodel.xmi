@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Workspace-Overlay (Issue #8): punktuelle Widget-Wahl-Overrides für
+     die AllFeatures-Expansion — ohne das generische UIModel zu kopieren.
+     Wird VOR den lokalen cases der Blöcke geprüft (priority reiht
+     mehrere Overlays); explizit gebundene Widgets sind nie betroffen. -->
+<uimodel:UIModelOverlay
+    xmlns:xmi="http://www.omg.org/XMI"
+    xmi:version="2.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:uimodel="http://uimodel/1.0"
+    name="workspace-overrides"
+    priority="100">
+
+  <templates xsi:type="uimodel:TextAreaWidget" xmi:id="t-textarea" name="textarea" rows="3"/>
+
+  <!-- jobTitle (EString) workspace-weit als Multiline-Editor -->
+  <cases>
+    <when language="JS" body="self.name === 'jobTitle' &amp;&amp; self.eType?.name === 'EString'"/>
+    <widget href="#t-textarea"/>
+  </cases>
+</uimodel:UIModelOverlay>

@@ -18,6 +18,7 @@ import {
   UimodelFactory,
   resolveCrossResourceProxies,
   type UIModel,
+  type UIModelOverlay,
 } from '@emfts/uimodel-composer';
 import type { StyleSheet } from '@emfts/uimodel-composer/css';
 import { DgePackage } from './DgePackage';
@@ -31,9 +32,12 @@ export interface LoadedEditorData {
   formResource: XMIResource;
   stylesResource: XMIResource;
   genericResource: XMIResource;
+  overlayResource: XMIResource;
   uiModel: UIModel;
   /** Generisches AllFeatures-Default-Layout (model/templates/). */
   genericModel: UIModel;
+  /** Workspace-Widget-Wahl-Overrides (Issue #8). */
+  overlay: UIModelOverlay;
   styleSheet: StyleSheet;
   persons: EObject[];
   personClass: EClass;
@@ -74,10 +78,11 @@ export async function loadEditorResources(): Promise<LoadedEditorData> {
   const rs = new BasicResourceSet();
   rs.getResourceFactoryRegistry().getExtensionToFactoryMap().set('xmi', new XMIResourceFactory());
 
-  const [stylesXml, formXml, personsXml] = await Promise.all([
+  const [stylesXml, formXml, personsXml, overlayXml] = await Promise.all([
     fetchXml('/styles.xmi'),
     fetchXml('/person-form.xmi'),
     fetchXml('/persons.xmi'),
+    fetchXml('/workspace-overlay.uimodel.xmi'),
   ]);
 
   // styles.xmi zuerst, damit person-form.xmi-Referenzen auflösbar sind
@@ -97,6 +102,12 @@ export async function loadEditorResources(): Promise<LoadedEditorData> {
   if (genericResource.getContents().size() === 0) throw new Error('generic-default.uimodel.xmi konnte nicht geladen werden');
   const genericModel = genericResource.getContents().get(0) as UIModel;
 
+  const overlayResource = rs.createResource(URI.createURI('/workspace-overlay.uimodel.xmi')) as XMIResource;
+  overlayResource.loadFromString(overlayXml);
+  if (overlayResource.getContents().size() === 0) throw new Error('workspace-overlay.uimodel.xmi konnte nicht geladen werden');
+  const overlay = overlayResource.getContents().get(0) as UIModelOverlay;
+  resolveCrossResourceProxies(overlayResource);
+
   const personsResource = rs.createResource(URI.createURI('/persons.xmi')) as XMIResource;
   personsResource.loadFromString(personsXml);
   if (personsResource.getContents().size() === 0) throw new Error('persons.xmi konnte nicht geladen werden');
@@ -109,8 +120,10 @@ export async function loadEditorResources(): Promise<LoadedEditorData> {
     formResource,
     stylesResource,
     genericResource,
+    overlayResource,
     uiModel,
     genericModel,
+    overlay,
     styleSheet,
     persons,
     personClass: dge.personClass,

@@ -18,6 +18,8 @@
 import type { EClass, EObject, EReference, EStructuralFeature } from '@emfts/core';
 import type { AllFeatures } from '../generated/AllFeatures';
 import type { WidgetComponent } from '../generated/WidgetComponent';
+import type { TemplateCase } from '../generated/TemplateCase';
+import type { UIModelOverlay } from '../generated/UIModelOverlay';
 import { UimodelFactory } from '../generated/UimodelFactory';
 import { evaluateBoolean, evaluateValue } from '../utils/evaluateExpression';
 import { eNum } from '../css/cssEngine';
@@ -28,6 +30,24 @@ export interface ExpansionContext {
   blocks: AllFeatures[];
   /** Features, die bereits von explizit autorierten Widgets gebunden sind. */
   boundFeatures: Set<EStructuralFeature>;
+  /**
+   * Workspace-Overrides der Widget-Wahl (Issue #8): TemplateCases aus
+   * UIModelOverlays, vom Konsumenten befüllt (collectOverlayCases) —
+   * werden VOR den lokalen cases eines Blocks geprüft.
+   */
+  overlayCases?: TemplateCase[];
+}
+
+/**
+ * Sammelt die cases mehrerer UIModelOverlays für den ExpansionContext:
+ * Overlays nach priority absteigend (stabil), innerhalb eines Overlays
+ * Dokument-Reihenfolge.
+ */
+export function collectOverlayCases(overlays: readonly UIModelOverlay[]): TemplateCase[] {
+  return overlays
+    .map((overlay, index) => ({ overlay, index }))
+    .sort((a, b) => eNum(b.overlay.priority) - eNum(a.overlay.priority) || a.index - b.index)
+    .flatMap(({ overlay }) => [...(overlay.cases ?? [])]);
 }
 
 export function isAllFeatures(obj: EObject): obj is AllFeatures {
@@ -156,20 +176,11 @@ export function assignFeatures(
   return result;
 }
 
-/**
- * Widget-Wahl als geordnete Fallunterscheidung (Issue #5): erster
- * treffender Case gewinnt; `when` ist ein Meta-Ausdruck
- * (self = EStructuralFeature) und FAIL-CLOSED — Fehler/undefined ⇒ kein
- * Treffer. Fehlt `when`, ist es der Default-Fall. `template` bleibt als
- * Kurzform (T1) und wird NACH den cases geprüft. Kein Treffer ⇒
- * undefined — der Aufrufer meldet den Fehler; ein eingebautes
- * Code-Mapping (defaultWidgetFor) gibt es nicht mehr.
- */
-export function widgetPrototypeFor(
-  block: AllFeatures,
+function matchCase(
+  cases: readonly TemplateCase[] | undefined,
   feature: EStructuralFeature
 ): WidgetComponent | undefined {
-  for (const templateCase of block.cases ?? []) {
+  for (const templateCase of cases ?? []) {
     if (!templateCase.widget) continue;
     if (!templateCase.when) return templateCase.widget;
     const result = evaluateValue(
@@ -178,7 +189,28 @@ export function widgetPrototypeFor(
     );
     if (result) return templateCase.widget;
   }
-  return block.template;
+  return undefined;
+}
+
+/**
+ * Widget-Wahl als geordnete Fallunterscheidung (Issue #5/#8): erster
+ * treffender Case gewinnt; `when` ist ein Meta-Ausdruck
+ * (self = EStructuralFeature) und FAIL-CLOSED — Fehler/undefined ⇒ kein
+ * Treffer. Prüfreihenfolge: overlayCases aus dem Kontext (Workspace-
+ * Overrides, #8) → lokale cases → `template`-Kurzform. Kein Treffer ⇒
+ * undefined — der Aufrufer meldet den Fehler; ein eingebautes
+ * Code-Mapping (defaultWidgetFor) gibt es nicht mehr.
+ */
+export function widgetPrototypeFor(
+  block: AllFeatures,
+  feature: EStructuralFeature,
+  context?: ExpansionContext
+): WidgetComponent | undefined {
+  return (
+    matchCase(context?.overlayCases, feature) ??
+    matchCase(block.cases, feature) ??
+    block.template
+  );
 }
 
 /**
@@ -275,7 +307,7 @@ export function expandFeatures(
 
   const widgets: WidgetComponent[] = [];
   for (const feature of assigned) {
-    const prototype = widgetPrototypeFor(block, feature);
+    const prototype = widgetPrototypeFor(block, feature, ctx);
     if (!prototype) {
       // Explizit statt stillem Code-Default (Issue #5): kein Case trifft
       // und kein template gesetzt ⇒ Renderfehler, Feature wird übersprungen.

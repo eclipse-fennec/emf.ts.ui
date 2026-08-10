@@ -122,6 +122,14 @@ die Default-Konfiguration jedes Treffers:
   existiert nicht mehr; das frühere Mapping steht als explizite Fallliste
   im mitgelieferten generischen Default-Modell und ist damit lesbar und
   überschreibbar.
+- **Workspace-Overlays** (`UIModelOverlay`,
+  [#8](https://github.com/eclipse-fennec/emf.ts.ui/issues/8)):
+  Wurzelkonzept ohne Struktur — nur Prototypen-Katalog + `cases`, die
+  die Widget-Wahl der Expansion **punktuell übersteuern** (geprüft vor
+  den lokalen cases; `priority` reiht mehrere Overlays, explizit
+  gebundene Widgets sind nie betroffen). Transport über
+  `ExpansionContext.overlayCases` (`collectOverlayCases(overlays)`),
+  bequem als `<UIModelComposer :overlays="[…]">`.
 - **API**: purer Kern `expandFeatures(eClass, block, context)` +
   `collectExpansionContext(uiModel)`; Expansion im `FormViewComposer`
   (der frühere `AllFeaturesComposer` ist entfernt, #7).

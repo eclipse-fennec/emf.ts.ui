@@ -24,6 +24,7 @@ export {
   assignFeatures,
   candidateFeatures,
   collectExpansionContext,
+  collectOverlayCases,
   widgetPrototypeFor,
   cloneComponent,
   deriveLabel,
@@ -120,6 +121,7 @@ export type { AllFeatures } from './generated/AllFeatures';
 export type { PropertyBinding } from './generated/PropertyBinding';
 export type { TemplateCase } from './generated/TemplateCase';
 export type { GroupWidget } from './generated/GroupWidget';
+export type { UIModelOverlay } from './generated/UIModelOverlay';
 export type { Conditional } from './generated/Conditional';
 export type { ForEach } from './generated/ForEach';
 export type { Expression } from './generated/Expression';

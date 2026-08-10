@@ -221,7 +221,7 @@ export function createEditor(data: LoadedEditorData): EditorContext {
       }
       return null;
     }
-    for (const root of [data.uiModel, data.genericModel, data.styleSheet] as unknown as EObject[]) {
+    for (const root of [data.uiModel, data.genericModel, data.overlay, data.styleSheet] as unknown as EObject[]) {
       if (root === obj) return null;
       const found = visit(root);
       if (found) return found;
@@ -247,6 +247,7 @@ export function createEditor(data: LoadedEditorData): EditorContext {
       ['person-form.xmi', data.formResource],
       ['styles.xmi', data.stylesResource],
       ['generic-default.uimodel.xmi', data.genericResource],
+      ['workspace-overlay.uimodel.xmi', data.overlayResource],
     ];
     return entries.map(([fileName, resource]) => ({
       fileName,

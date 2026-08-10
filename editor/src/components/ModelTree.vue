@@ -13,6 +13,7 @@ const editor = inject(EDITOR_KEY)!;
 const roots: { title: string; obj: EObject }[] = [
   { title: 'UI-Modell (person-form.xmi)', obj: editor.data.uiModel as unknown as EObject },
   { title: 'Generisch (generic-default.uimodel.xmi)', obj: editor.data.genericModel as unknown as EObject },
+  { title: 'Overlay (workspace-overlay.uimodel.xmi)', obj: editor.data.overlay as unknown as EObject },
   { title: 'StyleSheet (styles.xmi)', obj: editor.data.styleSheet as unknown as EObject },
 ];
 </script>

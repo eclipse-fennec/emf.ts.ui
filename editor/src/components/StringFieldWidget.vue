@@ -19,7 +19,9 @@ const props = defineProps<{
       placeholder?: string;
       readOnly?: boolean;
       required?: boolean;
+      rows?: number;
       validations?: ValidationExpression[];
+      eClass?: () => { getName?: () => string };
     };
   };
 }>();
@@ -37,6 +39,13 @@ const placeholder = computed(() => resolved.value.placeholder ?? props.custom?.r
 const readOnly   = computed(() => toBool(resolved.value.readOnly ?? props.custom?.rawWidget?.readOnly));
 const required   = computed(() => toBool(resolved.value.required ?? props.custom?.rawWidget?.required));
 const cssClass   = computed(() => resolved.value.css ?? '');
+
+// TextAreaWidget (z. B. per UIModelOverlay gewählt) → Multiline-Editor
+const multiline = computed(() => props.custom?.rawWidget?.eClass?.()?.getName?.() === 'TextAreaWidget');
+const rows = computed(() => {
+  const r = Number(props.custom?.rawWidget?.rows);
+  return Number.isFinite(r) && r > 0 ? r : 4;
+});
 
 function toBool(v: unknown): boolean {
   return v === true || v === 'true';
@@ -66,7 +75,19 @@ function onInput(e: Event) {
     <label class="field__label">
       {{ label }}<span v-if="required" class="field__required" aria-hidden="true"> *</span>
     </label>
+    <textarea
+      v-if="multiline"
+      class="field__input"
+      :rows="rows"
+      :value="localValue"
+      :placeholder="placeholder"
+      :readonly="readOnly"
+      :disabled="readOnly"
+      :class="{ 'field__input--invalid': validationResult }"
+      @input="onInput"
+    ></textarea>
     <input
+      v-else
       class="field__input"
       type="text"
       :value="localValue"

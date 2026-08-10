@@ -50,6 +50,8 @@ import type { ForEach } from './ForEach';
 import { ForEachImpl } from './ForEachImpl';
 import type { ReferenceLinkWidget } from './ReferenceLinkWidget';
 import { ReferenceLinkWidgetImpl } from './ReferenceLinkWidgetImpl';
+import type { UIModelOverlay } from './UIModelOverlay';
+import { UIModelOverlayImpl } from './UIModelOverlayImpl';
 import type { LayoutStyle } from './LayoutStyle';
 import { LayoutStyleImpl } from './LayoutStyleImpl';
 import type { WidgetStyle } from './WidgetStyle';
@@ -231,6 +233,13 @@ export class UimodelFactory extends BasicEFactory {
   }
 
   /**
+   * Create a new UIModelOverlay instance
+   */
+  createUIModelOverlay(): UIModelOverlay {
+    return new UIModelOverlayImpl();
+  }
+
+  /**
    * Create a new LayoutStyle instance
    */
   createLayoutStyle(): LayoutStyle {
@@ -319,6 +328,8 @@ export class UimodelFactory extends BasicEFactory {
         return this.createForEach();
       case 'ReferenceLinkWidget':
         return this.createReferenceLinkWidget();
+      case 'UIModelOverlay':
+        return this.createUIModelOverlay();
       case 'LayoutStyle':
         return this.createLayoutStyle();
       case 'WidgetStyle':

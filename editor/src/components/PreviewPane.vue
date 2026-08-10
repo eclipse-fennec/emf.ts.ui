@@ -101,6 +101,7 @@ const highlightCss = computed(() => {
         :ui-model="activeUiModel"
         :model="persons[personIndex]"
         :style-sheets="sheets"
+        :overlays="[editor.data.overlay]"
       />
     </div>
 

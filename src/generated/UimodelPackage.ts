@@ -129,6 +129,11 @@ export class UimodelPackage extends BasicEPackage {
     REFERENCE_LINK_WIDGET: null as unknown as EClass,
     REFERENCE_LINK_WIDGET__DISPLAY_EXPRESSION: null as unknown as EAttribute | EReference,
     REFERENCE_LINK_WIDGET__TARGET_ROUTE: null as unknown as EAttribute | EReference,
+    U_I_MODEL_OVERLAY: null as unknown as EClass,
+    U_I_MODEL_OVERLAY__NAME: null as unknown as EAttribute | EReference,
+    U_I_MODEL_OVERLAY__PRIORITY: null as unknown as EAttribute | EReference,
+    U_I_MODEL_OVERLAY__TEMPLATES: null as unknown as EAttribute | EReference,
+    U_I_MODEL_OVERLAY__CASES: null as unknown as EAttribute | EReference,
     STYLE: null as unknown as EClass,
     STYLE__NAME: null as unknown as EAttribute | EReference,
     STYLE__GROUP: null as unknown as EAttribute | EReference,
@@ -1014,6 +1019,49 @@ export class UimodelPackage extends BasicEPackage {
     referenceLinkWidgetClass.getEStructuralFeatures().push(referenceLinkWidget_targetRoute);
     UimodelPackage.Literals.REFERENCE_LINK_WIDGET__TARGET_ROUTE = referenceLinkWidget_targetRoute;
 
+    // Create UIModelOverlay class
+    const uIModelOverlayClass = new BasicEClass();
+    uIModelOverlayClass.setName('UIModelOverlay');
+    uIModelOverlayClass.setAbstract(false);
+    uIModelOverlayClass.setInterface(false);
+    this.getEClassifiers().push(uIModelOverlayClass);
+    uIModelOverlayClass.setEPackage(this);
+    UimodelPackage.Literals.U_I_MODEL_OVERLAY = uIModelOverlayClass;
+
+    // Create name feature
+    const uIModelOverlay_name = new BasicEAttribute();
+    uIModelOverlay_name.setName('name');
+    uIModelOverlay_name.setLowerBound(0);
+    uIModelOverlay_name.setUpperBound(1);
+    uIModelOverlayClass.getEStructuralFeatures().push(uIModelOverlay_name);
+    UimodelPackage.Literals.U_I_MODEL_OVERLAY__NAME = uIModelOverlay_name;
+
+    // Create priority feature
+    const uIModelOverlay_priority = new BasicEAttribute();
+    uIModelOverlay_priority.setName('priority');
+    uIModelOverlay_priority.setLowerBound(0);
+    uIModelOverlay_priority.setUpperBound(1);
+    uIModelOverlayClass.getEStructuralFeatures().push(uIModelOverlay_priority);
+    UimodelPackage.Literals.U_I_MODEL_OVERLAY__PRIORITY = uIModelOverlay_priority;
+
+    // Create templates feature
+    const uIModelOverlay_templates = new BasicEReference();
+    uIModelOverlay_templates.setContainment(true);
+    uIModelOverlay_templates.setName('templates');
+    uIModelOverlay_templates.setLowerBound(0);
+    uIModelOverlay_templates.setUpperBound(-1);
+    uIModelOverlayClass.getEStructuralFeatures().push(uIModelOverlay_templates);
+    UimodelPackage.Literals.U_I_MODEL_OVERLAY__TEMPLATES = uIModelOverlay_templates;
+
+    // Create cases feature
+    const uIModelOverlay_cases = new BasicEReference();
+    uIModelOverlay_cases.setContainment(true);
+    uIModelOverlay_cases.setName('cases');
+    uIModelOverlay_cases.setLowerBound(0);
+    uIModelOverlay_cases.setUpperBound(-1);
+    uIModelOverlayClass.getEStructuralFeatures().push(uIModelOverlay_cases);
+    UimodelPackage.Literals.U_I_MODEL_OVERLAY__CASES = uIModelOverlay_cases;
+
     // Create Style class
     const styleClass = new BasicEClass();
     styleClass.setName('Style');
@@ -1364,6 +1412,8 @@ export class UimodelPackage extends BasicEPackage {
     (UimodelPackage.Literals.FOR_EACH__ITEMS as BasicEReference).setEType(UimodelPackage.Literals.EXPRESSION);
     (UimodelPackage.Literals.FOR_EACH__BODY as BasicEReference).setEType(UimodelPackage.Literals.WIDGET_COMPONENT);
     (UimodelPackage.Literals.REFERENCE_LINK_WIDGET__DISPLAY_EXPRESSION as BasicEReference).setEType(UimodelPackage.Literals.EXPRESSION);
+    (UimodelPackage.Literals.U_I_MODEL_OVERLAY__TEMPLATES as BasicEReference).setEType(UimodelPackage.Literals.WIDGET_COMPONENT);
+    (UimodelPackage.Literals.U_I_MODEL_OVERLAY__CASES as BasicEReference).setEType(UimodelPackage.Literals.TEMPLATE_CASE);
     (UimodelPackage.Literals.BASE_STYLE__EXTENDS as BasicEReference).setEType(UimodelPackage.Literals.BASE_STYLE);
     (UimodelPackage.Literals.BASE_STYLE__VISIBILITY_CONDITION as BasicEReference).setEType(UimodelPackage.Literals.EXPRESSION);
     (UimodelPackage.Literals.WIDGET_STYLE__FEATURE as BasicEReference).setEType(getEcorePackage().getEClassifier('EStructuralFeature')!);
