@@ -28,10 +28,23 @@ Domänen-`EObject` reaktiv die passende Vue-Komponenten-Hierarchie.
 ## Installation
 
 ```bash
-npm install @emfts/uimodel-composer @emfts/core @emfts/vue-registry vue
+npm install @emfts/uimodel-composer vue
 ```
 
-Für die Erweiterungen zusätzlich: `vega`, `vega-embed`, `vega-lite` (Vega) bzw. `ol` (Maps).
+`@emfts/core` und `@emfts/vue-registry` kommen als Dependencies mit; `vue` ist
+Peer-Dependency.
+
+Die Renderer der Erweiterungen laden ihre Bibliotheken **dynamisch** und
+deklarieren sie als **optionale** Peer-Dependencies — installiere nur, was du
+tatsächlich nutzt:
+
+| Erweiterung | zusätzlich installieren |
+|---|---|
+| Vega-Charts (`VegaViewComposer`) | `vega-embed` (zieht `vega`/`vega-lite` mit) |
+| Karten (`MapViewComposer`) | `ol` |
+| Diagramme (`./diagram`) | `elkjs`, `@eclipse-daanse/tsm` |
+
+Ohne diese Pakete bleiben die übrigen Composer voll funktionsfähig.
 
 ## Quick Start
 
