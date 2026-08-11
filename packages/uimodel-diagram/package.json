@@ -1,0 +1,64 @@
+{
+  "name": "@emfts/uimodel-diagram",
+  "version": "0.0.1-next.1",
+  "type": "module",
+  "description": "Model-driven diagrams for @emfts/uimodel-composer (DiagramModel interpreter, ELK layout, orthogonal edge routing)",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./manifest.json": "./src/manifest.json"
+  },
+  "files": [
+    "dist",
+    "model",
+    "src/manifest.json"
+  ],
+  "scripts": {
+    "build": "vue-tsc --noEmit && vite build",
+    "type-check": "vue-tsc --noEmit"
+  },
+  "dependencies": {
+    "@emfts/tsrouter": "^0.1.0"
+  },
+  "peerDependencies": {
+    "@eclipse-daanse/tsm": "^0.0.1-next.1",
+    "@emfts/core": "^0.1.1-next.16",
+    "@emfts/uimodel-composer": "^0.0.1-next.2",
+    "elkjs": "^0.11.1",
+    "vue": "^3.4.0"
+  },
+  "peerDependenciesMeta": {
+    "@eclipse-daanse/tsm": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@eclipse-daanse/tsm": "^0.0.1-next.1",
+    "@vitejs/plugin-vue": "^5.0.0",
+    "elkjs": "^0.11.1",
+    "typescript": "^5.3.0",
+    "vite": "^5.0.0",
+    "vite-plugin-dts": "^3.7.0",
+    "vue": "^3.4.0",
+    "vue-tsc": "^3.2.4"
+  },
+  "keywords": [
+    "emf",
+    "ecore",
+    "vue",
+    "uimodel",
+    "diagram",
+    "elk",
+    "layout",
+    "emfts"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "license": "EPL-2.0"
+}

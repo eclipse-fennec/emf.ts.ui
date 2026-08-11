@@ -1,0 +1,31 @@
+{
+  "$schema": "https://tsm.dev/schema/manifest/v1.json",
+  "id": "uimodel-diagram",
+  "name": "UIModel Diagram Plugin",
+  "version": "0.0.1",
+  "description": "Model-driven diagram renderer plugin for @emfts/uimodel-composer",
+  "entry": "dist/index.js",
+
+  "exports": {
+    "./DiagramViewComposer": {
+      "type": "component",
+      "description": "Diagram view composer component"
+    }
+  },
+
+  "provides": [
+    {
+      "id": "uimodel-diagram.composer",
+      "description": "DiagramView composer registration",
+      "scope": "singleton"
+    }
+  ],
+
+  "sharedDependencies": [
+    { "id": "vue", "versionRange": "^3.4.0" },
+    { "id": "@emfts/core", "versionRange": "^0.1.0" },
+    { "id": "@emfts/uimodel-composer", "versionRange": "^0.0.1" }
+  ],
+
+  "priority": 10
+}

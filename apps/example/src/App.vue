@@ -46,7 +46,7 @@ provide(PERSONS_KEY, props.persons);
 
 // Diagram plugin — lazy loaded via sub-entry
 const DiagramViewComposer = defineAsyncComponent(() =>
-  import('@emfts/uimodel-composer/diagram').then(m => m.DiagramViewComposer)
+  import('@emfts/uimodel-diagram').then(m => m.DiagramViewComposer)
 );
 
 // ComposerRegistry mit Plugin-Support

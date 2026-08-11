@@ -20,13 +20,12 @@ export default defineConfig({
     lib: {
       entry: {
         index: resolve(__dirname, 'src/index.ts'),
-        'diagram/index': resolve(__dirname, 'src/diagram/index.ts'),
         'css/index': resolve(__dirname, 'src/css/index.ts'),
       },
       formats: ['es'],
     },
     rollupOptions: {
-      external: ['vue', '@emfts/core', '@emfts/vue-registry', 'elkjs/lib/elk.bundled.js', '@emfts/tsrouter', '@eclipse-daanse/tsm'],
+      external: ['vue', '@emfts/core', '@emfts/vue-registry'],
       output: {
         preserveModules: true,
         preserveModulesRoot: 'src',

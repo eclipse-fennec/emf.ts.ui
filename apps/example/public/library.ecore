@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  1:1 reproduction of the daanse ecore-class/showcase "library" metamodel
+  (EcoreShowcaseExampleTest). The sibling "payment" package is modelled here as
+  a sub-package of library so the whole showcase loads from a single resource
+  root; content (classes/refs/flags) is identical to the Java showcase.
+-->
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    name="library" nsURI="https://example.org/library" nsPrefix="lib">
+
+  <!-- Datatypes -->
+  <eClassifiers xsi:type="ecore:EDataType" name="Money" instanceClassName="java.math.BigDecimal"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="ISBN" instanceClassName="java.lang.String"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="EmailAddress" instanceClassName="java.lang.String"/>
+
+  <!-- Enumerations -->
+  <eClassifiers xsi:type="ecore:EEnum" name="Status">
+    <eLiterals name="ACTIVE"/>
+    <eLiterals name="INACTIVE" value="1"/>
+    <eLiterals name="ARCHIVED" value="2"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="Genre">
+    <eLiterals name="FICTION"/>
+    <eLiterals name="NON_FICTION" value="1"/>
+    <eLiterals name="SCIENCE" value="2"/>
+    <eLiterals name="POETRY" value="3"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="MemberLevel">
+    <eLiterals name="BASIC"/>
+    <eLiterals name="PREMIUM" value="1"/>
+    <eLiterals name="VIP" value="2"/>
+  </eClassifiers>
+
+  <!-- Interface -->
+  <eClassifiers xsi:type="ecore:EClass" name="Loanable" interface="true" abstract="true">
+    <eOperations name="lend" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+      <eParameters name="to" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eParameters name="until" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate"/>
+    </eOperations>
+    <eOperations name="isAvailable" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+  </eClassifiers>
+
+  <!-- Address -->
+  <eClassifiers xsi:type="ecore:EClass" name="Address">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="street" lowerBound="1" upperBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="city" lowerBound="1" upperBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="zip" lowerBound="0" upperBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+
+  <!-- Book -->
+  <eClassifiers xsi:type="ecore:EClass" name="Book" eSuperTypes="#//Loanable">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="title" lowerBound="1" upperBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="year" lowerBound="0" upperBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="price" lowerBound="0" upperBound="1" eType="#//Money"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="owners" lowerBound="1" upperBound="-1" eType="#//Person" eOpposite="#//Person/books"/>
+  </eClassifiers>
+
+  <!-- Person (abstract) -->
+  <eClassifiers xsi:type="ecore:EClass" name="Person" abstract="true">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" iD="true" lowerBound="1" upperBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="firstName" lowerBound="1" upperBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="lastName" lowerBound="1" upperBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="fullName" derived="true" lowerBound="1" upperBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="status" lowerBound="0" upperBound="1" defaultValueLiteral="ACTIVE" eType="#//Status"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="addresses" lowerBound="0" upperBound="-1" containment="true" eType="#//Address"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="books" lowerBound="0" upperBound="-1" eType="#//Book" eOpposite="#//Book/owners"/>
+    <eOperations name="greet" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eParameters name="language" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eParameters name="formal" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    </eOperations>
+    <eOperations name="rename">
+      <eParameters name="firstName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eParameters name="lastName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eOperations>
+  </eClassifiers>
+
+  <!-- Author -->
+  <eClassifiers xsi:type="ecore:EClass" name="Author" eSuperTypes="#//Person">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="pseudonym" lowerBound="0" upperBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eOperations name="publish" eType="#//Book">
+      <eParameters name="title" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eParameters name="year" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eParameters name="price" eType="#//Money"/>
+    </eOperations>
+  </eClassifiers>
+
+  <!-- Library -->
+  <eClassifiers xsi:type="ecore:EClass" name="Library">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" upperBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="contact" lowerBound="0" upperBound="1" defaultValueLiteral="info@example.org" eType="#//EmailAddress"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="books" lowerBound="0" upperBound="-1" containment="true" eType="#//Book"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="loans" lowerBound="0" upperBound="-1" containment="true" eType="#//Loan"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="members" lowerBound="0" upperBound="-1" containment="true" eType="#//Member"/>
+  </eClassifiers>
+
+  <!-- Member -->
+  <eClassifiers xsi:type="ecore:EClass" name="Member">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" iD="true" lowerBound="1" upperBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" upperBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="email" lowerBound="1" upperBound="1" eType="#//EmailAddress"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="level" lowerBound="1" upperBound="1" defaultValueLiteral="BASIC" eType="#//MemberLevel"/>
+    <eOperations name="upgrade">
+      <eParameters name="to" eType="#//MemberLevel"/>
+    </eOperations>
+  </eClassifiers>
+
+  <!-- Loan -->
+  <eClassifiers xsi:type="ecore:EClass" name="Loan">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="since" lowerBound="1" upperBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="dueDate" lowerBound="1" upperBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="renewals" lowerBound="0" upperBound="1" defaultValueLiteral="0" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="returned" lowerBound="0" upperBound="1" defaultValueLiteral="false" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="overdue" derived="true" lowerBound="0" upperBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="lastAccess" transient="true" lowerBound="0" upperBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="liveBalance" volatile="true" transient="true" derived="true" lowerBound="0" upperBound="1" eType="#//Money"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="book" lowerBound="1" upperBound="1" eType="#//Book"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="borrower" lowerBound="1" upperBound="1" eType="#//Member"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="audit" lowerBound="0" upperBound="-1" eType="#//audit/AuditEntry"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="payments" lowerBound="0" upperBound="-1" containment="true" eType="#//payment/Payment"/>
+  </eClassifiers>
+
+  <!-- Sub-package: audit -->
+  <eSubpackages name="audit" nsURI="https://example.org/library/audit" nsPrefix="audit">
+    <eClassifiers xsi:type="ecore:EClass" name="AuditEntry">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="occurredAt" lowerBound="1" upperBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="actor" lowerBound="1" upperBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="action" lowerBound="1" upperBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+  </eSubpackages>
+
+  <!-- Sub-package: payment (sibling in the Java showcase) -->
+  <eSubpackages name="payment" nsURI="https://example.org/payment" nsPrefix="pmt">
+    <eClassifiers xsi:type="ecore:EClass" name="Payment">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="amount" lowerBound="1" upperBound="1" eType="#//Money"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="currency" lowerBound="1" upperBound="1" defaultValueLiteral="EUR" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="settled" lowerBound="0" upperBound="1" defaultValueLiteral="false" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    </eClassifiers>
+  </eSubpackages>
+
+</ecore:EPackage>
