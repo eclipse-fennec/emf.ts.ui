@@ -12,11 +12,15 @@ import {
 } from '../css/componentClasses';
 import { STYLE_SHEETS_KEY } from '../css/useStyleSheets';
 import { trackExpressionTick } from '../utils/reactivity';
+import FallbackWidget from './FallbackWidget.vue';
 
 const props = defineProps<{
   widget: WidgetComponent;
   model: EObject;
 }>();
+
+/** Bereits gemeldete Widget-Klassen ohne Renderer (eine Warnung genügt). */
+const warnedEClasses = new Set<string>();
 
 const { getComponentForFeature } = useComponentRegistry();
 
@@ -35,11 +39,29 @@ const effectiveFeature = computed(
   () => resolvedStyle.value.boundFeature ?? props.widget.feature
 );
 
-const widgetVueComponent = computed(() =>
-  effectiveFeature.value
-    ? getComponentForFeature(effectiveFeature.value, props.model)
-    : null
-);
+/**
+ * Renderer aus der Registry; liefert sie nichts (z. B. Widget-Klasse aus
+ * einem Extension-Paket ohne registrierten Renderer), degradiert der
+ * Composer definiert auf FallbackWidget statt still leer zu bleiben (#9).
+ */
+const widgetVueComponent = computed(() => {
+  if (!effectiveFeature.value) return null;
+  const registered = getComponentForFeature(effectiveFeature.value, props.model);
+  if (registered) return registered;
+
+  const eclassName = props.widget.eClass?.()?.getName?.() ?? 'WidgetComponent';
+  const typeName = effectiveFeature.value.getEType?.()?.getName?.() ?? '?';
+  const key = `${eclassName}/${typeName}`;
+  if (!warnedEClasses.has(key)) {
+    warnedEClasses.add(key);
+    console.warn(
+      `[uimodel-composer] Kein Renderer für Widget "${eclassName}" auf Datentyp ` +
+        `"${typeName}" registriert — Fallback als Plaintext-Editor. ` +
+        'Host: Renderer über die @emfts/vue-registry registrieren.'
+    );
+  }
+  return FallbackWidget;
+});
 
 /** Context passed via 'custom' so registered widget components can read UIModel config. */
 const uiContext = computed(() => ({

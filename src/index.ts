@@ -16,6 +16,7 @@ export { default as WidgetComposer } from './composers/WidgetComposer.vue';
 export { default as VegaViewComposer } from './composers/VegaViewComposer.vue';
 export { default as MapViewComposer } from './composers/MapViewComposer.vue';
 export { default as FieldsRenderer } from './composers/FieldsRenderer.vue';
+export { default as FallbackWidget } from './composers/FallbackWidget.vue';
 export { default as ComponentDispatcher } from './composers/ComponentDispatcher.vue';
 
 // AllFeatures — generische Feature-Platzhalter (Issue #2)

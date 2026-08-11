@@ -212,6 +212,37 @@ vom `FieldsRenderer` (kein Markup über das Nötigste hinaus):
 </fields>
 ```
 
+## Widget-Extension-Pakete
+
+Eigene Widget-Typen (Code-, Markdown-, RichText-Editoren …) gehören **nicht**
+in den uimodel-Kern, sondern in ein eigenes EPackage des Hosts — analog zu
+`uimodel-vega.ecore`/`uimodel-maps.ecore`
+([#9](https://github.com/eclipse-fennec/emf.ts.ui/issues/9)):
+
+1. **EPackage definieren**: eigener `nsURI` (z. B.
+   `http://gene/uimodel/widgets/1.0`), Klassen erweitern
+   `http://uimodel/1.0#//WidgetComponent` per href und ergänzen eigene
+   Attribute (`language`, `preview`, `toolbarItems`, …). Codegen wie bei den
+   anderen Extensions mit `-d model/uimodel.ecore --import-mapping`.
+2. **Registrieren**: das Package **nach** dem Core-UIModel dynamisch
+   importieren und in die `EPackageRegistry` legen (`_init()` liest
+   `WidgetComponent` aus der Registry).
+3. **Renderer beisteuern**: über die `@emfts/vue-registry`; die Komponente
+   liest Konfiguration aus `custom.resolvedStyle`/`custom.rawWidget`.
+
+Die Kern-Mechanik ist EClass-agnostisch: `cloneComponent` instanziiert über
+die Factory des jeweiligen EPackage, TemplateCase-/Overlay-Matching,
+PropertyBindings und das CSS-Klassen-Stamping arbeiten reflektiv. Extension-
+Widgets brauchen dafür **generierte Impls** (wie die Vega-/Maps-Klassen) —
+`DynamicEObject`s reichen nicht, weil die Expansion Property-Accessors nutzt.
+Verifiziert in [`src/allfeatures/widgetExtension.test.ts`](src/allfeatures/widgetExtension.test.ts)
+(Expansion, TemplateCase, UIModelOverlay, Bindings auf Extension-Attributen).
+
+**Fallback**: Liefert die Registry für ein Feature keine Komponente, rendert
+der Composer ein `FallbackWidget` (Label + Plaintext-Editor auf dem gebundenen
+Feature) und meldet das einmal pro Widget-Klasse per `console.warn` — statt
+still leer zu bleiben; Daten gehen dabei nicht verloren.
+
 ## Live-Reaktivität (Expression-Tick)
 
 EObjects sind keine Vue-Reactive-Sources — Expression-Ergebnisse
