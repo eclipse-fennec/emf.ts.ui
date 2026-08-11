@@ -1,7 +1,7 @@
 # Dependencies
 node_modules/
 
-# Build-Output (Library und Example)
+# Build-Output
 dist/
 *.tsbuildinfo
 
@@ -22,11 +22,5 @@ npm-debug.log*
 # OS
 .DS_Store
 
-# Diagramm-Plugin — bewusst nicht Teil des Repos
+# Screenshots aus manuellen Diagramm-Läufen
 diagram-shots/
-src/diagram/
-src/composers/DiagramViewComposer.vue
-example/src/generated/diagrammodel/
-example/public/diagrammodel.ecore
-example/public/ecore-class-diagram.xmi
-example/public/library.ecore

@@ -23,9 +23,10 @@ import {
 import type { StyleSheet } from '@emfts/uimodel-composer/css';
 import { DgePackage } from './DgePackage';
 import { applyEcoreAttributeTypes } from './applyEcoreAttributeTypes';
-import uimodelEcoreXml from '../../../model/uimodel.ecore?raw';
-import uimodelCssEcoreXml from '../../../model/uimodel-css.ecore?raw';
-import genericDefaultXml from '../../../model/templates/generic-default.uimodel.xmi?raw';
+import uimodelEcoreXml from '../../../../packages/uimodel-composer/model/uimodel.ecore?raw';
+import uimodelCssEcoreXml from '../../../../packages/uimodel-composer/model/uimodel-css.ecore?raw';
+import genericDefaultXml from '../../../../packages/uimodel-composer/model/templates/generic-default.uimodel.xmi?raw';
+import stylesXmlRaw from '../../../../packages/uimodel-composer/model/examples/styles.xmi?raw';
 
 export interface LoadedEditorData {
   resourceSet: ResourceSet;
@@ -78,8 +79,8 @@ export async function loadEditorResources(): Promise<LoadedEditorData> {
   const rs = new BasicResourceSet();
   rs.getResourceFactoryRegistry().getExtensionToFactoryMap().set('xmi', new XMIResourceFactory());
 
-  const [stylesXml, formXml, personsXml, overlayXml] = await Promise.all([
-    fetchXml('/styles.xmi'),
+  const stylesXml = stylesXmlRaw;
+  const [formXml, personsXml, overlayXml] = await Promise.all([
     fetchXml('/person-form.xmi'),
     fetchXml('/persons.xmi'),
     fetchXml('/workspace-overlay.uimodel.xmi'),

@@ -9,9 +9,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@emfts/command": "file:../../emfts-command",
+    "@emfts/command": "file:../../../emfts-command",
     "@emfts/core": "^0.1.1-next.16",
-    "@emfts/uimodel-composer": "file:../",
+    "@emfts/uimodel-composer": "*",
     "@emfts/vue-registry": "^0.0.1-next.1",
     "vite-plugin-node-polyfills": "^0.28.0",
     "vue": "^3.4.0"

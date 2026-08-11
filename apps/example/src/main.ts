@@ -1,5 +1,5 @@
 import { createApp } from 'vue';
-import '../../dist/style.css';
+import '@emfts/uimodel-composer/style.css';
 import App from './App.vue';
 import { EmftsRendererPlugin, componentRegistry } from '@emfts/vue-registry';
 import StringFieldWidget from './components/StringFieldWidget.vue';

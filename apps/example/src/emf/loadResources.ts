@@ -52,7 +52,7 @@ export async function loadResources(): Promise<LoadedData> {
   //    (UimodelVegaFactory hat eager init die UimodelVegaPackage._init() triggert,
   //     welche Component aus der EPackageRegistry liest)
   const { UimodelVegaPackage, UimodelVegaFactory } = await import(
-    '../../../src/generated/vega/index.js'
+    '../../../../packages/uimodel-composer/src/generated/vega/index.js'
   );
   const vegaPkg = UimodelVegaPackage.eINSTANCE;
   const demoPkg = DemographicStructurePackage.eINSTANCE;
@@ -63,7 +63,7 @@ export async function loadResources(): Promise<LoadedData> {
 
   // Maps-Package (QGIS-orientiert) ebenfalls dynamisch NACH der Basis registrieren
   const { UimodelMapsPackage, UimodelMapsFactory } = await import(
-    '../../../src/generated/maps/index.js'
+    '../../../../packages/uimodel-composer/src/generated/maps/index.js'
   );
   const mapsPkg = UimodelMapsPackage.eINSTANCE;
   mapsPkg.setEFactoryInstance(UimodelMapsFactory.eINSTANCE);

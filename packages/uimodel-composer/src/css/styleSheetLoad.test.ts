@@ -24,7 +24,7 @@ import { componentCssClasses, referencedStyleClasses } from './componentClasses'
 import { resolveCrossResourceProxies } from '../utils/resolveProxies';
 
 const STYLES_XMI = readFileSync(
-  resolve(__dirname, '../../editor/public/styles.xmi'),
+  resolve(__dirname, '../../model/examples/styles.xmi'),
   'utf-8'
 );
 

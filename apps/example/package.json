@@ -11,7 +11,7 @@
   "dependencies": {
     "@emfts/core": "^0.1.1-next.7",
     "@emfts/ocl.langium": "^0.0.1-next.1",
-    "@emfts/uimodel-composer": "file:../",
+    "@emfts/uimodel-composer": "*",
     "@emfts/vue-registry": "^0.0.1-next.1",
     "ol": "^10.9.0",
     "vega": "^6.2.0",
