@@ -7,7 +7,7 @@
 
 import type { EObject, EStructuralFeature, BasicEObject, EClass } from '@emfts/core';
 import type { VectorSource } from './VectorSource';
-import type { Expression } from '..';
+import type { Expression } from '@emfts/uimodel-composer';
 import type { GeometryFormat } from './GeometryFormat';
 
 /**

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref, inject, watch, onMounted, onBeforeUnmount } from 'vue';
 import type { EObject, EStructuralFeature } from '@emfts/core';
-import { evaluateBoolean } from '../utils/evaluateExpression';
-import { MAP_SELECTION_KEY, type MapSelectionHandler } from '../composables/useMapSelection';
+import { evaluateBoolean } from '@emfts/uimodel-composer';
+import { MAP_SELECTION_KEY, type MapSelectionHandler } from './useMapSelection';
 
 const props = defineProps<{
   component: EObject; // MapView (dynamic, no generated types)

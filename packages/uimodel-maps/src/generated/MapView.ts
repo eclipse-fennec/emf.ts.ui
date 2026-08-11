@@ -6,7 +6,7 @@
  */
 
 import type { EObject, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
-import type { Component } from '..';
+import type { Component } from '@emfts/uimodel-composer';
 import type { MapLayer } from './MapLayer';
 import type { MapSelectionBinding } from './MapSelectionBinding';
 import type { MapExtent } from './MapExtent';

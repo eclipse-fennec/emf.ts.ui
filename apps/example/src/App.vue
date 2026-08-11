@@ -3,16 +3,15 @@ import { provide, ref, computed, defineAsyncComponent } from 'vue';
 import type { EObject } from '@emfts/core';
 import type { UIModel } from '@emfts/uimodel-composer';
 import { VegaViewComposer } from '@emfts/uimodel-vega';
+import { MapViewComposer, MAP_SELECTION_KEY } from '@emfts/uimodel-maps';
 import {
   UIModelComposer,
-  MapViewComposer,
   createComposerRegistry,
   FormViewComposer,
   SectionViewComposer,
   TabViewComposer,
   SummaryViewComposer,
   MasterDetailComposer,
-  MAP_SELECTION_KEY,
 } from '@emfts/uimodel-composer';
 import 'ol/ol.css';
 import PersonTableRenderer from './components/PersonTableRenderer.vue';

@@ -26,7 +26,7 @@ export default defineConfig({
       formats: ['es'],
     },
     rollupOptions: {
-      external: ['vue', '@emfts/core', '@emfts/vue-registry', /^ol(\/.*)?$/, 'elkjs/lib/elk.bundled.js', '@emfts/tsrouter', '@eclipse-daanse/tsm'],
+      external: ['vue', '@emfts/core', '@emfts/vue-registry', 'elkjs/lib/elk.bundled.js', '@emfts/tsrouter', '@eclipse-daanse/tsm'],
       output: {
         preserveModules: true,
         preserveModulesRoot: 'src',

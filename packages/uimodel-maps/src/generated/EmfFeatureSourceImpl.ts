@@ -7,7 +7,7 @@
 
 import type { EClass, EStructuralFeature } from '@emfts/core';
 import type { VectorSource } from './VectorSource';
-import type { Expression } from '..';
+import type { Expression } from '@emfts/uimodel-composer';
 import { GeometryFormat } from './GeometryFormat';
 import { VectorSourceImpl } from './VectorSourceImpl';
 import type { EmfFeatureSource } from './EmfFeatureSource';

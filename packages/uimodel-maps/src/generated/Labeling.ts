@@ -6,7 +6,7 @@
  */
 
 import type { EObject, EStructuralFeature, BasicEObject, EClass } from '@emfts/core';
-import type { Expression } from '..';
+import type { Expression } from '@emfts/uimodel-composer';
 import type { LabelPlacement } from './LabelPlacement';
 
 /**

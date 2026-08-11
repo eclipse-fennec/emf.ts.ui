@@ -7,7 +7,7 @@
 
 import { BasicEObject } from '@emfts/core';
 import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { Expression } from '..';
+import type { Expression } from '@emfts/uimodel-composer';
 import { LabelPlacement } from './LabelPlacement';
 import type { Labeling } from './Labeling';
 import { UimodelMapsPackage } from './UimodelMapsPackage';

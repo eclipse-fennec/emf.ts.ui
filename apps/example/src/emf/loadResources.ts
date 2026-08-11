@@ -60,9 +60,7 @@ export async function loadResources(): Promise<LoadedData> {
   EPackageRegistry.INSTANCE.set(demoPkg.getNsURI()!,  demoPkg);
 
   // Maps-Package (QGIS-orientiert) ebenfalls dynamisch NACH der Basis registrieren
-  const { UimodelMapsPackage, UimodelMapsFactory } = await import(
-    '../../../../packages/uimodel-composer/src/generated/maps/index.js'
-  );
+  const { UimodelMapsPackage, UimodelMapsFactory } = await import('@emfts/uimodel-maps');
   const mapsPkg = UimodelMapsPackage.eINSTANCE;
   mapsPkg.setEFactoryInstance(UimodelMapsFactory.eINSTANCE);
   EPackageRegistry.INSTANCE.set(mapsPkg.getNsURI()!,  mapsPkg);

@@ -21,7 +21,6 @@ import TabViewComposer from './TabViewComposer.vue';
 import SummaryViewComposer from './SummaryViewComposer.vue';
 import TableViewComposer from './TableViewComposer.vue';
 import MasterDetailComposer from './MasterDetailComposer.vue';
-import MapViewComposer from './MapViewComposer.vue';
 
 const props = defineProps<{
   /** The loaded UIModel instance */
@@ -80,7 +79,6 @@ const registry =
     SummaryView: SummaryViewComposer,
     TableView: TableViewComposer,
     MasterDetail: MasterDetailComposer,
-    MapView: MapViewComposer,
   });
 
 provide(COMPOSER_REGISTRY_KEY, registry);

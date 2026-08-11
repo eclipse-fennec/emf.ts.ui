@@ -13,7 +13,6 @@ export { default as SummaryViewComposer } from './composers/SummaryViewComposer.
 export { default as TableViewComposer } from './composers/TableViewComposer.vue';
 export { default as MasterDetailComposer } from './composers/MasterDetailComposer.vue';
 export { default as WidgetComposer } from './composers/WidgetComposer.vue';
-export { default as MapViewComposer } from './composers/MapViewComposer.vue';
 export { default as FieldsRenderer } from './composers/FieldsRenderer.vue';
 export { default as FallbackWidget } from './composers/FallbackWidget.vue';
 export { default as ComponentDispatcher } from './composers/ComponentDispatcher.vue';
@@ -53,8 +52,6 @@ export {
   COMPOSER_REGISTRY_KEY,
 } from './composables/useComposerRegistry';
 export type { ComposerRegistry } from './composables/useComposerRegistry';
-export { useMapSelection, MAP_SELECTION_KEY } from './composables/useMapSelection';
-export type { MapSelectionHandler } from './composables/useMapSelection';
 
 // Utilities
 export { resolveStyleChain, resolveStyleList } from './utils/resolveStyleChain';
@@ -142,5 +139,3 @@ export { Severity } from './generated/Severity';
 export { MapperExecutionOrder } from './generated/MapperExecutionOrder';
 
 
-// Maps extension (QGIS-orientiert) — separate import to avoid eager init before UIModel is registered
-// Use: import { UimodelMapsPackage, UimodelMapsFactory } from '@emfts/uimodel-composer/maps'
