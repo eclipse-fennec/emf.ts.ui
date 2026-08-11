@@ -21,7 +21,6 @@ import TabViewComposer from './TabViewComposer.vue';
 import SummaryViewComposer from './SummaryViewComposer.vue';
 import TableViewComposer from './TableViewComposer.vue';
 import MasterDetailComposer from './MasterDetailComposer.vue';
-import VegaViewComposer from './VegaViewComposer.vue';
 import MapViewComposer from './MapViewComposer.vue';
 
 const props = defineProps<{
@@ -81,7 +80,6 @@ const registry =
     SummaryView: SummaryViewComposer,
     TableView: TableViewComposer,
     MasterDetail: MasterDetailComposer,
-    VegaView: VegaViewComposer,
     MapView: MapViewComposer,
   });
 

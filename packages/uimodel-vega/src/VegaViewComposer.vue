@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
 import type { EObject, EStructuralFeature } from '@emfts/core';
-import { evaluateBoolean } from '../utils/evaluateExpression';
+import { evaluateBoolean } from '@emfts/uimodel-composer';
 
 const props = defineProps<{
   component: EObject; // VegaView (dynamic, no generated types)

@@ -13,7 +13,6 @@ export { default as SummaryViewComposer } from './composers/SummaryViewComposer.
 export { default as TableViewComposer } from './composers/TableViewComposer.vue';
 export { default as MasterDetailComposer } from './composers/MasterDetailComposer.vue';
 export { default as WidgetComposer } from './composers/WidgetComposer.vue';
-export { default as VegaViewComposer } from './composers/VegaViewComposer.vue';
 export { default as MapViewComposer } from './composers/MapViewComposer.vue';
 export { default as FieldsRenderer } from './composers/FieldsRenderer.vue';
 export { default as FallbackWidget } from './composers/FallbackWidget.vue';
@@ -100,6 +99,12 @@ export type { StyleSheetContext } from './css/useStyleSheets';
 export type { ResolvedStyle } from './types/ResolvedStyle';
 export type { UIModelContext } from './types/UIModelContext';
 
+// Impl-Basisklassen für Extension-Pakete (eigene WidgetComponent-/
+// Component-Subklassen erben davon; siehe README "Widget-Extension-Pakete")
+export { ComponentImpl } from './generated/ComponentImpl';
+export { WidgetComponentImpl } from './generated/WidgetComponentImpl';
+export { BaseStyleImpl } from './generated/BaseStyleImpl';
+
 // Generated interfaces (re-exported for consumers)
 export type { UIModel } from './generated/UIModel';
 export type { Component } from './generated/Component';
@@ -136,8 +141,6 @@ export { LayoutType } from './generated/LayoutType';
 export { Severity } from './generated/Severity';
 export { MapperExecutionOrder } from './generated/MapperExecutionOrder';
 
-// Vega extension — separate import to avoid eager init before UIModel is registered
-// Use: import { UimodelVegaPackage, UimodelVegaFactory } from '@emfts/uimodel-composer/vega'
 
 // Maps extension (QGIS-orientiert) — separate import to avoid eager init before UIModel is registered
 // Use: import { UimodelMapsPackage, UimodelMapsFactory } from '@emfts/uimodel-composer/maps'

@@ -2,9 +2,9 @@
 import { provide, ref, computed, defineAsyncComponent } from 'vue';
 import type { EObject } from '@emfts/core';
 import type { UIModel } from '@emfts/uimodel-composer';
+import { VegaViewComposer } from '@emfts/uimodel-vega';
 import {
   UIModelComposer,
-  VegaViewComposer,
   MapViewComposer,
   createComposerRegistry,
   FormViewComposer,

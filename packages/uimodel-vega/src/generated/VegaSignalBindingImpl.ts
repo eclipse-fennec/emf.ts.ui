@@ -7,7 +7,7 @@
 
 import { BasicEObject } from '@emfts/core';
 import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { Expression } from '..';
+import type { Expression } from '@emfts/uimodel-composer';
 import type { VegaSignalBinding } from './VegaSignalBinding';
 import { UimodelVegaPackage } from './UimodelVegaPackage';
 

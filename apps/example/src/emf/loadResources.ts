@@ -51,9 +51,7 @@ export async function loadResources(): Promise<LoadedData> {
   // 3. Vega-Package dynamisch importieren NACH Registrierung der Basis
   //    (UimodelVegaFactory hat eager init die UimodelVegaPackage._init() triggert,
   //     welche Component aus der EPackageRegistry liest)
-  const { UimodelVegaPackage, UimodelVegaFactory } = await import(
-    '../../../../packages/uimodel-composer/src/generated/vega/index.js'
-  );
+  const { UimodelVegaPackage, UimodelVegaFactory } = await import('@emfts/uimodel-vega');
   const vegaPkg = UimodelVegaPackage.eINSTANCE;
   const demoPkg = DemographicStructurePackage.eINSTANCE;
   vegaPkg.setEFactoryInstance(UimodelVegaFactory.eINSTANCE);

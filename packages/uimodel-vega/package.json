@@ -1,0 +1,55 @@
+{
+  "name": "@emfts/uimodel-vega",
+  "version": "0.0.1-next.1",
+  "type": "module",
+  "description": "Vega-Lite charts for @emfts/uimodel-composer (VegaView extension EPackage + renderer)",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "model"
+  ],
+  "scripts": {
+    "generate": "emfts-codegen generate -m model/uimodel-vega.ecore -c model/uimodel-vega.genconfig.xmi -d ../uimodel-composer/model/uimodel.ecore --import-mapping http://uimodel/1.0=@emfts/uimodel-composer",
+    "build": "vue-tsc --noEmit && vite build",
+    "type-check": "vue-tsc --noEmit"
+  },
+  "peerDependencies": {
+    "@emfts/core": "^0.1.1-next.16",
+    "@emfts/uimodel-composer": "^0.0.1-next.2",
+    "vega-embed": "^7.1.0",
+    "vue": "^3.4.0"
+  },
+  "devDependencies": {
+    "@emfts/codegen": "^0.0.1-next.7",
+    "@vitejs/plugin-vue": "^5.0.0",
+    "typescript": "^5.3.0",
+    "vega": "^6.2.0",
+    "vega-embed": "^7.1.0",
+    "vega-lite": "^6.4.3",
+    "vite": "^5.0.0",
+    "vite-plugin-dts": "^3.7.0",
+    "vue": "^3.4.0",
+    "vue-tsc": "^3.2.4"
+  },
+  "keywords": [
+    "emf",
+    "ecore",
+    "vue",
+    "uimodel",
+    "vega",
+    "charts",
+    "emfts"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "license": "EPL-2.0"
+}

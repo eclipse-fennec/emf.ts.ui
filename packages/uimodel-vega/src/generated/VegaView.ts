@@ -6,13 +6,13 @@
  */
 
 import type { EObject, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
-import type { Component } from '..';
+import type { Component } from '@emfts/uimodel-composer';
 import type { VegaSpec } from './VegaSpec';
 import type { VegaDataSource } from './VegaDataSource';
 import type { VegaParam } from './VegaParam';
 import type { VegaSignalBinding } from './VegaSignalBinding';
 import type { VegaAutosize } from './VegaAutosize';
-import type { Expression } from '..';
+import type { Expression } from '@emfts/uimodel-composer';
 
 /**
  * VegaView
