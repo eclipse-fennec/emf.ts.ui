@@ -1,6 +1,6 @@
 {
   "name": "@emfts/uimodel-composer",
-  "version": "0.0.1-next.2",
+  "version": "0.0.2-next.1",
   "type": "module",
   "description": "UIModel-driven Vue 3 composer for EMF.ts models",
   "main": "./dist/index.js",
