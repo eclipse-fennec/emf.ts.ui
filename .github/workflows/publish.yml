@@ -1,0 +1,76 @@
+name: Publish to npm
+
+# Ein Release pro Paket. Der Tag trägt Paketverzeichnis und Version:
+#
+#   uimodel-composer@0.0.2-next.1
+#   uimodel-vega@0.0.1-next.1
+#   tsrouter@0.1.0
+#
+# Wie in den übrigen emf.ts-Repos ist der Tag die Wahrheit: die Version
+# aus dem Tag wird vor dem Publish in die package.json geschrieben, die
+# im Repo gepflegte Version ist nur eine Untergrenze. Prerelease-Tags
+# (mit Bindestrich) landen auf dem dist-tag "next", reine Semver-Tags
+# auf "latest".
+on:
+  release:
+    types: [published]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # npm Trusted Publishing (OIDC) + Provenance
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js 24
+        # Node 24 bringt npm >= 11.5 — Voraussetzung für Trusted Publishing
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          registry-url: https://registry.npmjs.org
+
+      - name: Parse tag (<package>@<version>)
+        id: target
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          PKG="${TAG%@*}"
+          VERSION="${TAG##*@}"
+          if [[ "$PKG" == "$TAG" || -z "$PKG" || -z "$VERSION" ]]; then
+            echo "::error::Tag '$TAG' erwartet im Format <package>@<version>, z. B. uimodel-composer@0.0.2-next.1"
+            exit 1
+          fi
+          if [[ ! -d "packages/$PKG" ]]; then
+            echo "::error::packages/$PKG existiert nicht"
+            exit 1
+          fi
+          echo "pkg=$PKG" >> "$GITHUB_OUTPUT"
+          echo "dir=packages/$PKG" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          if [[ "$VERSION" == *"-"* ]]; then
+            echo "npm_tag=next" >> "$GITHUB_OUTPUT"
+          else
+            echo "npm_tag=latest" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Set version from tag
+        working-directory: ${{ steps.target.outputs.dir }}
+        run: npm version "${{ steps.target.outputs.version }}" --no-git-tag-version --allow-same-version
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Immer alle Workspaces bauen: die Erweiterungs-Pakete typprüfen
+      # gegen die dist-Typen des Core.
+      - name: Build
+        run: npm run build
+
+      - name: Test
+        run: npm run test:run
+
+      - name: Publish
+        working-directory: ${{ steps.target.outputs.dir }}
+        run: npm publish --provenance --tag ${{ steps.target.outputs.npm_tag }} --access public

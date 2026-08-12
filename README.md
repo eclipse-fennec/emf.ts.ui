@@ -49,6 +49,51 @@ mit `@emfts/codegen` aus den `.ecore`-Modellen erzeugt (`npm run generate`
 je Paket). Details im
 [Core-README](packages/uimodel-composer/README.md#modell--codegen).
 
+## Release
+
+Wie in den übrigen emf.ts-Repos gilt: **der Tag ist die Wahrheit.** Die
+Version in der `package.json` ist nur eine Untergrenze — veröffentlicht wird
+die Version aus dem Release-Tag.
+
+Weil hier mehrere Pakete mit eigenen Versionen liegen, trägt der Tag zusätzlich
+das Paket:
+
+```
+<paket>@<version>        z. B.  uimodel-composer@0.0.2-next.1
+                                uimodel-vega@0.0.1-next.1
+                                tsrouter@0.1.0
+```
+
+Ein GitHub-Release auf so einem Tag löst `.github/workflows/publish.yml` aus:
+Version aus dem Tag setzen → `npm ci` → alle Workspaces bauen → Tests →
+`npm publish --provenance` in das betroffene Paketverzeichnis. Das dist-tag
+ergibt sich aus der Version: mit Bindestrich (`-next.N`) → `next`, reines
+Semver → `latest`.
+
+```bash
+gh release create uimodel-composer@0.0.2-next.1 --generate-notes
+```
+
+Authentifiziert wird über **npm Trusted Publishing (OIDC)** — keine Tokens im
+Repo. Das muss auf npmjs.com **pro Paket einmal** eingerichtet werden
+(Package → Settings → Trusted Publisher: Repository `eclipse-fennec/emf.ts.ui`,
+Workflow `publish.yml`). Da das ein existierendes Paket voraussetzt, läuft die
+**Erstveröffentlichung einmalig lokal**:
+
+```bash
+npm login
+cd packages/tsrouter          && npm publish   # Reihenfolge: Abhängigkeiten zuerst
+cd ../uimodel-composer        && npm publish
+cd ../uimodel-vega            && npm publish
+cd ../uimodel-maps            && npm publish
+cd ../uimodel-diagram         && npm publish
+```
+
+Bewusst **ohne** `--tag`: so erhält jedes neue Paket ein `latest`, damit
+`npm install @emfts/<paket>` ohne `@next` funktioniert (gleiche Praxis wie bei
+`@emfts/core`, `@emfts/codegen`, `@emfts/vue-registry`). Alle Folge-Releases
+laufen dann über GitHub Actions.
+
 ## Lizenz
 
 EPL-2.0
