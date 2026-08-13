@@ -4,6 +4,7 @@ node_modules/
 # Build-Output
 dist/
 *.tsbuildinfo
+.vite/
 
 # Test / Coverage
 coverage/
