@@ -33,13 +33,19 @@ davon.
 
 ```bash
 npm install            # im Repo-Root (npm workspaces)
-npm run build          # alle Pakete und Apps bauen
+npm run build          # alles bauen (Pakete + Apps)
+npm run build:packages # nur die publizierten Pakete (das baut auch die CI)
 npm run test:run       # alle Tests
 npm run type-check     # nur Typprüfung
 
 npm run dev:editor     # Editor-App starten
 npm run dev:example    # Example-App starten
 ```
+
+Die CI baut bewusst nur `build:packages`: `apps/editor` hängt an
+`@emfts/command`, das bisher nur als lokaler `file:`-Verweis existiert und
+auf einem Runner nicht auflösbar ist. Sobald `@emfts/command` veröffentlicht
+ist, kann der App-Build in die CI aufgenommen werden.
 
 Reihenfolge beim Bauen: der Core zuerst — die Erweiterungs-Pakete prüfen gegen
 seine `dist`-Typen (`npm run build` im Root erledigt das).
