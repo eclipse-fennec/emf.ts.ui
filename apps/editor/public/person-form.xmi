@@ -25,7 +25,7 @@
         required="true"/>
 
     <!-- GroupWidget (Issue #6): Kontaktdaten als horizontale Gruppe -->
-    <fields xsi:type="uimodel:GroupWidget" name="contact" layout="HORIZONTAL">
+    <fields xsi:type="uimodel:GroupWidget" name="contact" layout="HORIZONTAL" label="Kontakt">
       <fields xsi:type="uimodel:InputWidget"
           name="email"
           feature="https://dg.de/1.0#//Person/email"

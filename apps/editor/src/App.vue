@@ -196,10 +196,12 @@ body { font-family: system-ui, sans-serif; background: #f4f5f7; color: #1a1a2e; 
 
 /* Strukturelle Platzhalter (Issue #6) */
 .uimodel-group { display: flex; flex-direction: column; gap: .8rem; }
-.uimodel-group--horizontal { flex-direction: row; }
+.uimodel-group--horizontal { flex-direction: row; flex-wrap: wrap; }
 .uimodel-group--horizontal > * { flex: 1; min-width: 0; }
 .uimodel-group--grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: .8rem; }
 .uimodel-foreach-empty { font-size: .85rem; color: var(--uic-color-muted, #99a); font-style: italic; }
+.uim-group-label { font-size: .72rem; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--uic-color-muted, #667); margin-bottom: .1rem; }
+.uimodel-group--horizontal > .uim-group-label { flex: 0 0 100%; }
 
 /* Widget-Grundlayout (StringFieldWidget) */
 .field { display: flex; flex-direction: column; gap: .3rem; }

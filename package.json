@@ -10,6 +10,8 @@
   ],
   "scripts": {
     "build": "npm run build --workspaces --if-present",
+    "build:packages": "npm run build --workspace packages/tsrouter && npm run build --workspace packages/uimodel-composer && npm run build --workspace packages/uimodel-vega && npm run build --workspace packages/uimodel-maps && npm run build --workspace packages/uimodel-diagram",
+    "build:apps": "npm run build --workspace apps/editor --workspace apps/example",
     "type-check": "npm run type-check --workspaces --if-present",
     "test": "npm run test:run --workspaces --if-present",
     "test:run": "npm run test:run --workspaces --if-present",

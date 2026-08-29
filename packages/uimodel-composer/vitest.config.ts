@@ -11,5 +11,8 @@ export default defineConfig({
   },
   test: {
     globals: true,
+    // Komponententests (GroupComposer u. a.) brauchen ein DOM; die
+    // reinen Logik-Tests laufen unverändert.
+    environment: 'jsdom',
   },
 });
