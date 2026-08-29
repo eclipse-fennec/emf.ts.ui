@@ -14,6 +14,7 @@ export { default as TableViewComposer } from './composers/TableViewComposer.vue'
 export { default as MasterDetailComposer } from './composers/MasterDetailComposer.vue';
 export { default as WidgetComposer } from './composers/WidgetComposer.vue';
 export { default as FieldsRenderer } from './composers/FieldsRenderer.vue';
+export { default as GroupComposer } from './composers/GroupComposer.vue';
 export { default as FallbackWidget } from './composers/FallbackWidget.vue';
 export { default as ComponentDispatcher } from './composers/ComponentDispatcher.vue';
 
