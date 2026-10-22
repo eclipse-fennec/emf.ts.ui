@@ -23,9 +23,13 @@ export class MapExtentImpl extends BasicEObject implements MapExtent {
 
   // Private fields
   private _minLon: number = 0;
+  private _minLonIsSet = false;
   private _minLat: number = 0;
+  private _minLatIsSet = false;
   private _maxLon: number = 0;
+  private _maxLonIsSet = false;
   private _maxLat: number = 0;
+  private _maxLatIsSet = false;
 
   /**
    * Returns the EClass of this object
@@ -42,6 +46,7 @@ export class MapExtentImpl extends BasicEObject implements MapExtent {
   set minLon(value: number) {
     const oldValue = this._minLon;
     this._minLon = value;
+    this._minLonIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -66,6 +71,7 @@ export class MapExtentImpl extends BasicEObject implements MapExtent {
   set minLat(value: number) {
     const oldValue = this._minLat;
     this._minLat = value;
+    this._minLatIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -90,6 +96,7 @@ export class MapExtentImpl extends BasicEObject implements MapExtent {
   set maxLon(value: number) {
     const oldValue = this._maxLon;
     this._maxLon = value;
+    this._maxLonIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -114,6 +121,7 @@ export class MapExtentImpl extends BasicEObject implements MapExtent {
   set maxLat(value: number) {
     const oldValue = this._maxLat;
     this._maxLat = value;
+    this._maxLatIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -186,13 +194,13 @@ export class MapExtentImpl extends BasicEObject implements MapExtent {
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case MapExtentImpl.MIN_LON:
-        return this._minLon !== 0;
+        return this._minLonIsSet;
       case MapExtentImpl.MIN_LAT:
-        return this._minLat !== 0;
+        return this._minLatIsSet;
       case MapExtentImpl.MAX_LON:
-        return this._maxLon !== 0;
+        return this._maxLonIsSet;
       case MapExtentImpl.MAX_LAT:
-        return this._maxLat !== 0;
+        return this._maxLatIsSet;
       default:
         return super.eIsSet(feature);
     }
@@ -206,15 +214,19 @@ export class MapExtentImpl extends BasicEObject implements MapExtent {
     switch (featureID) {
       case MapExtentImpl.MIN_LON:
         this._minLon = 0;
+        this._minLonIsSet = false;
         return;
       case MapExtentImpl.MIN_LAT:
         this._minLat = 0;
+        this._minLatIsSet = false;
         return;
       case MapExtentImpl.MAX_LON:
         this._maxLon = 0;
+        this._maxLonIsSet = false;
         return;
       case MapExtentImpl.MAX_LAT:
         this._maxLat = 0;
+        this._maxLatIsSet = false;
         return;
       default:
         super.eUnset(feature);

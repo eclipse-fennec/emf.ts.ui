@@ -32,6 +32,7 @@ export class MarkerSymbolImpl extends SymbolImpl implements MarkerSymbol {
   private _strokeColor: string = "#ffffff";
   private _strokeWidth: number = 1.0;
   private _rotation: number = 0;
+  private _rotationIsSet = false;
 
   /**
    * Returns the EClass of this object
@@ -168,6 +169,7 @@ export class MarkerSymbolImpl extends SymbolImpl implements MarkerSymbol {
   set rotation(value: number) {
     const oldValue = this._rotation;
     this._rotation = value;
+    this._rotationIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -262,7 +264,7 @@ export class MarkerSymbolImpl extends SymbolImpl implements MarkerSymbol {
       case MarkerSymbolImpl.STROKE_WIDTH:
         return this._strokeWidth !== 1.0;
       case MarkerSymbolImpl.ROTATION:
-        return this._rotation !== 0;
+        return this._rotationIsSet;
       default:
         return super.eIsSet(feature);
     }
@@ -291,6 +293,7 @@ export class MarkerSymbolImpl extends SymbolImpl implements MarkerSymbol {
         return;
       case MarkerSymbolImpl.ROTATION:
         this._rotation = 0;
+        this._rotationIsSet = false;
         return;
       default:
         super.eUnset(feature);
