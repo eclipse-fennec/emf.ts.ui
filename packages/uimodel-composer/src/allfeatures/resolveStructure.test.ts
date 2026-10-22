@@ -119,7 +119,7 @@ describe('resolveStructure', () => {
     each.items = jsExpr('[]');
     each.body.push(input('row'));
     each.emptyText = 'Keine Einträge';
-    expect(resolveStructure([each], company)).toEqual([{ kind: 'note', text: 'Keine Einträge' }]);
+    expect(resolveStructure([each], company)).toEqual([{ kind: 'note', text: 'Keine Einträge', owner: each }]);
   });
 
   it('komponierbar: ForEach → Conditional → AllFeatures', () => {

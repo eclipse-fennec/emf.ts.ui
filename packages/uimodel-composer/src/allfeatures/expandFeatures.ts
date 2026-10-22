@@ -24,6 +24,7 @@ import { UimodelFactory } from '../generated/UimodelFactory';
 import { evaluateBoolean, evaluateValue } from '../utils/evaluateExpression';
 import { eNum } from '../css/cssEngine';
 import { isSet } from '../utils/isSet';
+import { MESSAGE_KEYS } from '../i18n/translate';
 
 /** Dedup-Scope: alle Blöcke + explizit gebundene Features eines UIModels. */
 export interface ExpansionContext {
@@ -275,12 +276,16 @@ function bindFeatureDeep(widget: WidgetComponent, feature: EStructuralFeature): 
   }
 }
 
-/** Generierte Required-Validation für abgeleitete Pflichtfelder (Issue #7). */
-function requiredValidationFor(featureName: string, label: string | undefined) {
+/**
+ * Generierte Required-Validation für abgeleitete Pflichtfelder (Issue #7).
+ * Die Meldung ist ein Composer-Key (Issue #13); useValidation übersetzt
+ * sie zur Anzeigezeit mit dem Label des Widgets.
+ */
+function requiredValidationFor(featureName: string) {
   const validation = UimodelFactory.eINSTANCE.createValidationExpression();
   validation.language = 'JS';
   validation.body = `self.${featureName} !== null && self.${featureName} !== undefined && String(self.${featureName}).length > 0`;
-  validation.defaultMessage = `${label ?? featureName} ist erforderlich.`;
+  validation.defaultMessage = MESSAGE_KEYS.required;
   validation.severity = 'ERROR' as never;
   return validation;
 }
@@ -345,7 +350,7 @@ export function expandFeatures(
     if (!isSet(widget, 'required') && eNum(feature.getLowerBound?.()) >= 1) {
       widget.required = true;
       if (widget.validations.length === 0) {
-        widget.validations.push(requiredValidationFor(featureName, widget.label));
+        widget.validations.push(requiredValidationFor(featureName));
       }
     }
     // Block-Level-Bindings auf jedes erzeugte Widget kopieren —

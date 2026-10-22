@@ -26,7 +26,7 @@ import { evaluateBoolean, evaluateValue } from '../utils/evaluateExpression';
 export type ResolvedEntry =
   | { kind: 'widget'; widget: WidgetComponent; model: EObject }
   | { kind: 'group'; widget: GroupWidget; model: EObject }
-  | { kind: 'note'; text: string };
+  | { kind: 'note'; text: string; owner: EObject };
 
 function eclassName(obj: EObject): string {
   return obj.eClass?.()?.getName?.() ?? '';
@@ -86,7 +86,7 @@ export function resolveStructure(
     } else if (isForEach(field)) {
       const items = toEObjects(evaluateValue(field.items, model));
       if (items.length === 0) {
-        if (field.emptyText) entries.push({ kind: 'note', text: field.emptyText });
+        if (field.emptyText) entries.push({ kind: 'note', text: field.emptyText, owner: field });
         continue;
       }
       for (const item of items) {

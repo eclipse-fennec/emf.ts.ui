@@ -12,6 +12,7 @@ import { resolveStructure } from '../allfeatures/resolveStructure';
 import { EXPANSION_CONTEXT_KEY } from '../allfeatures/context';
 import { trackExpressionTick } from '../utils/reactivity';
 import { STYLE_SHEETS_KEY } from '../css/useStyleSheets';
+import { useTranslate } from '../i18n/translate';
 import WidgetComposer from './WidgetComposer.vue';
 import GroupComposer from './GroupComposer.vue';
 
@@ -21,6 +22,7 @@ const props = defineProps<{
 }>();
 
 const expansionContext = inject(EXPANSION_CONTEXT_KEY, undefined);
+const translate = useTranslate();
 const styleSheets = inject(STYLE_SHEETS_KEY, undefined);
 
 const entries = computed(() => {
@@ -33,7 +35,7 @@ const entries = computed(() => {
 
 <template>
   <template v-for="(entry, i) in entries" :key="i">
-    <p v-if="entry.kind === 'note'" class="uimodel-foreach-empty">{{ entry.text }}</p>
+    <p v-if="entry.kind === 'note'" class="uimodel-foreach-empty">{{ translate(entry.text, { kind: 'text', owner: entry.owner }) }}</p>
     <GroupComposer
       v-else-if="entry.kind === 'group'"
       :widget="entry.widget"

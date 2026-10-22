@@ -10,6 +10,7 @@ import {
   type EStructuralFeature,
 } from '@emfts/core';
 import { UimodelPackage } from '../generated/UimodelPackage';
+import { MESSAGE_KEYS, translateText } from '../i18n/translate';
 import { UimodelFactory } from '../generated/UimodelFactory';
 import type { AllFeatures } from '../generated/AllFeatures';
 import type { InputWidget } from '../generated/InputWidget';
@@ -296,7 +297,14 @@ describe('required aus lowerBound (Issue #3/#7)', () => {
     const [widget] = expandFeatures(cls, b);
     expect(widget.required).toBe(true);
     expect(widget.validations).toHaveLength(1);
-    expect(widget.validations[0].defaultMessage).toBe('Code ist erforderlich.');
+    // Composer-Key im Modell (Issue #13); ohne Übersetzer der eingebaute Text
+    expect(widget.validations[0].defaultMessage).toBe(MESSAGE_KEYS.required);
+    expect(
+      translateText(undefined, widget.validations[0].defaultMessage, {
+        kind: 'message',
+        params: { label: widget.label! },
+      })
+    ).toBe('Code ist erforderlich.');
     expect(widget.validations[0].body).toContain('self.code');
   });
 
