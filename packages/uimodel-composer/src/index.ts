@@ -46,7 +46,17 @@ export { useVisibility } from './composables/useVisibility';
 export { useWidgetConfig } from './composables/useWidgetConfig';
 export type { WidgetConfig } from './composables/useWidgetConfig';
 export { useValidation } from './composables/useValidation';
-export type { ValidationResult } from './composables/useValidation';
+export type { ValidationResult, ValidationOptions } from './composables/useValidation';
+
+// Übersetzbare Texte (Issue #13)
+export {
+  useTranslate,
+  translateText,
+  isLocalized,
+  TRANSLATOR_KEY,
+  MESSAGE_KEYS,
+} from './i18n/translate';
+export type { Translator, TranslateContext, TranslateKind } from './i18n/translate';
 export {
   useComposerRegistry,
   createComposerRegistry,

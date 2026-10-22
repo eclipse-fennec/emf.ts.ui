@@ -16,6 +16,8 @@ Domänen-`EObject` reaktiv die passende Vue-Komponenten-Hierarchie.
 - **Expressions**: Sichtbarkeit und Validierung modellgetrieben via JS- oder OCL-Ausdrücken
   (`registerOclEvaluator` für einen OCL-Adapter, z. B. `@emfts/ocl.langium`)
 - **Validierung**: `ValidationExpression` + `ValidationMessageMapper` mit Severities
+- **Übersetzbare Texte**: `LocalizedEString` für Labels, Placeholder und Meldungen,
+  übersetzt zur Renderzeit über eine `translate`-Funktion des Konsumenten (siehe unten)
 - **CSS-Styling** (`http://uimodel/css/1.0`): modelliertes, CSS-basiertes Styling
   (Design-Tokens, Themes, benannte Styles, Selektor-Regeln) — Teil dieses Pakets,
   siehe unten
@@ -265,6 +267,52 @@ Verifiziert in [`src/allfeatures/widgetExtension.test.ts`](src/allfeatures/widge
 der Composer ein `FallbackWidget` (Label + Plaintext-Editor auf dem gebundenen
 Feature) und meldet das einmal pro Widget-Klasse per `console.warn` — statt
 still leer zu bleiben; Daten gehen dabei nicht verloren.
+
+## Übersetzbare Texte (`LocalizedEString`)
+
+Angezeigte Texte im UIModel sind vom Datentyp `LocalizedEString`
+([#13](https://github.com/eclipse-fennec/emf.ts.ui/issues/13)):
+`WidgetComponent.label`/`placeholder`, `WidgetStyle.label`,
+`ForEach.emptyText`, `ValidationExpression.defaultMessage` und
+`ValidationMessageMapper.mappedText`. Der Wert ist ein Übersetzungs-Key
+oder ein wörtlicher Text; in XMI bleibt er ein normaler String.
+
+Der Composer übersetzt zur Renderzeit mit einer Funktion des Konsumenten,
+an keine i18n-Bibliothek gebunden:
+
+```vue
+<UIModelComposer :ui-model="uiModel" :model="person"
+  :translate="(key, ctx) => i18n.te(key) ? i18n.t(key, ctx.params ?? {}) : undefined" />
+```
+
+- **Unbekannter Key → Wert unverändert.** Liefert `translate` `undefined`,
+  zeigt der Composer den Wert selbst: wörtliche Texte funktionieren ohne
+  Übersetzer weiter, ein fehlender Key bleibt sichtbar
+  (`textPlain:Form.fontSize`) statt als Feldname durchzugehen.
+- **Das Modell bleibt unverändert** — der Key wird nie überschrieben.
+- **Sprachwechsel:** liest `translate` reaktive Quellen (z. B. die Locale
+  von vue-i18n), rendert der Composer neu.
+- **Kontext:** `ctx.kind` (`label`, `placeholder`, `text`, `message`,
+  `hint`), `ctx.feature` (gebundenes Domänen-Feature), `ctx.owner`
+  (das Modellobjekt mit dem Text), `ctx.params` (z. B. `{ label }`).
+- **Nicht übersetzt** werden Ergebnisse von PropertyBindings — sie sind
+  berechnet, nicht modelliert.
+- **Composer-Meldungen** sind Keys mit eingebautem deutschem Text
+  (`MESSAGE_KEYS.required` → „{label} ist erforderlich.“,
+  `MESSAGE_KEYS.invalid` → „Ungültiger Wert.“). Die von AllFeatures
+  generierte Pflichtfeld-Validation trägt den Key; `useValidation(…, …,
+  { label })` setzt das Label zur Anzeigezeit ein.
+
+Eigene Renderer übersetzen mit `useTranslate()` — etwa Hint-Texte aus der
+`documentation`-Annotation des Domänen-Features (`kind: 'hint'`) oder
+eigene `LocalizedEString`-Attribute von Extension-Paketen
+(`isLocalized(feature)`):
+
+```ts
+const translate = useTranslate();
+// documentationOf: eigener Helfer, der die documentation-Annotation liest
+const hint = computed(() => translate(documentationOf(props.feature), { kind: 'hint', feature: props.feature }));
+```
 
 ## Live-Reaktivität (Expression-Tick)
 

@@ -12,6 +12,7 @@ import { STYLE_SHEETS_KEY, useStyleSheetInjection } from '../css/useStyleSheets'
 import { collectExpansionContext, collectOverlayCases } from '../allfeatures/expandFeatures';
 import type { UIModelOverlay } from '../generated/UIModelOverlay';
 import { EXPANSION_CONTEXT_KEY } from '../allfeatures/context';
+import { TRANSLATOR_KEY, type Translator } from '../i18n/translate';
 import { evaluateBoolean } from '../utils/evaluateExpression';
 import { trackExpressionTick, useModelTick } from '../utils/reactivity';
 import ComponentDispatcher from './ComponentDispatcher.vue';
@@ -45,9 +46,17 @@ const props = defineProps<{
    * der Konsument (hier nur die Reihung via collectOverlayCases).
    */
   overlays?: UIModelOverlay[];
+  /**
+   * Übersetzer für LocalizedEString-Texte (Issue #13): label, placeholder,
+   * emptyText, Validierungsmeldungen. Liefert er undefined, wird der Wert
+   * unverändert angezeigt. Reaktiv: liest die Funktion reaktive Quellen
+   * (z. B. eine Locale), rendert ein Sprachwechsel neu.
+   */
+  translate?: Translator;
 }>();
 
 const sheets = computed<readonly StyleSheet[]>(() => props.styleSheets ?? []);
+provide(TRANSLATOR_KEY, computed(() => props.translate));
 const { version: styleVersion } = useStyleSheetInjection(sheets);
 provide(STYLE_SHEETS_KEY, { sheets, version: styleVersion });
 

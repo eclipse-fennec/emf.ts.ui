@@ -26,7 +26,8 @@ const props = defineProps<{
 
 const validationResult = useValidation(
   () => props.custom?.rawWidget?.validations ?? [],
-  () => props.eObject!
+  () => props.eObject!,
+  { label: () => label.value, feature: () => props.feature }
 );
 
 // resolvedStyle enthält die Binding-aufgelösten Werte

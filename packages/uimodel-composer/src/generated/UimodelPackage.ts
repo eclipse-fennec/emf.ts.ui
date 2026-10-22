@@ -5,7 +5,7 @@
  * @generated
  */
 
-import { BasicEPackage, BasicEClass, BasicEAttribute, BasicEReference, EPackageRegistry, getEcorePackage, BasicEEnum, BasicEEnumLiteral } from '@emfts/core';
+import { BasicEPackage, BasicEClass, BasicEAttribute, BasicEReference, EPackageRegistry, getEcorePackage, BasicEEnum, BasicEEnumLiteral, BasicEDataType, BasicEAnnotation } from '@emfts/core';
 import type { EClass, EAttribute, EReference, EEnum, EDataType } from '@emfts/core';
 import { UimodelFactory } from './UimodelFactory.js';
 import { Severity } from './Severity.js';
@@ -178,6 +178,7 @@ export class UimodelPackage extends BasicEPackage {
     WIDGET_TYPE: null as unknown as EEnum,
     LAYOUT_TYPE: null as unknown as EEnum,
     INPUT_TYPE: null as unknown as EEnum,
+    LOCALIZED_E_STRING: null as unknown as EDataType,
   };
 
   private constructor() {
@@ -1668,6 +1669,19 @@ export class UimodelPackage extends BasicEPackage {
     UimodelPackage.Literals.INPUT_TYPE = inputTypeEnumType;
     this.getEClassifiers().push(inputTypeEnumType);
 
+    // Create LocalizedEString datatype
+    const localizedEStringDataType = new BasicEDataType();
+    localizedEStringDataType.setName('LocalizedEString');
+    localizedEStringDataType.setInstanceClassName("java.lang.String");
+    {
+      const annotation = new BasicEAnnotation();
+      annotation.setSource("http:///org/eclipse/emf/ecore/util/ExtendedMetaData");
+      annotation.getDetails().putByKey("baseType", "http://www.eclipse.org/emf/2002/Ecore#EString");
+      localizedEStringDataType.getEAnnotations().push(annotation);
+    }
+    UimodelPackage.Literals.LOCALIZED_E_STRING = localizedEStringDataType;
+    this.getEClassifiers().push(localizedEStringDataType);
+
 
     // ============================================
     // Set ESuperTypes (must be done after all classes are created)
@@ -1725,8 +1739,8 @@ export class UimodelPackage extends BasicEPackage {
     (UimodelPackage.Literals.MASTER_DETAIL__MASTER as BasicEReference).setEType(UimodelPackage.Literals.TABLE_VIEW);
     (UimodelPackage.Literals.MASTER_DETAIL__DETAIL as BasicEReference).setEType(UimodelPackage.Literals.COMPONENT);
     (UimodelPackage.Literals.WIDGET_COMPONENT__FEATURE as BasicEReference).setEType(getEcorePackage().getEClassifier('EStructuralFeature')!);
-    (UimodelPackage.Literals.WIDGET_COMPONENT__LABEL as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
-    (UimodelPackage.Literals.WIDGET_COMPONENT__PLACEHOLDER as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelPackage.Literals.WIDGET_COMPONENT__LABEL as BasicEAttribute).setEType(UimodelPackage.Literals.LOCALIZED_E_STRING);
+    (UimodelPackage.Literals.WIDGET_COMPONENT__PLACEHOLDER as BasicEAttribute).setEType(UimodelPackage.Literals.LOCALIZED_E_STRING);
     (UimodelPackage.Literals.WIDGET_COMPONENT__READ_ONLY as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EBoolean')!);
     (UimodelPackage.Literals.WIDGET_COMPONENT__REQUIRED as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EBoolean')!);
     (UimodelPackage.Literals.WIDGET_COMPONENT__VISIBILITY_CONDITION as BasicEReference).setEType(UimodelPackage.Literals.EXPRESSION);
@@ -1773,7 +1787,7 @@ export class UimodelPackage extends BasicEPackage {
     (UimodelPackage.Literals.CONDITIONAL__ELSE as BasicEReference).setEType(UimodelPackage.Literals.WIDGET_COMPONENT);
     (UimodelPackage.Literals.FOR_EACH__ITEMS as BasicEReference).setEType(UimodelPackage.Literals.EXPRESSION);
     (UimodelPackage.Literals.FOR_EACH__BODY as BasicEReference).setEType(UimodelPackage.Literals.WIDGET_COMPONENT);
-    (UimodelPackage.Literals.FOR_EACH__EMPTY_TEXT as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelPackage.Literals.FOR_EACH__EMPTY_TEXT as BasicEAttribute).setEType(UimodelPackage.Literals.LOCALIZED_E_STRING);
     (UimodelPackage.Literals.REFERENCE_LINK_WIDGET__DISPLAY_EXPRESSION as BasicEReference).setEType(UimodelPackage.Literals.EXPRESSION);
     (UimodelPackage.Literals.REFERENCE_LINK_WIDGET__TARGET_ROUTE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
     (UimodelPackage.Literals.U_I_MODEL_OVERLAY__NAME as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
@@ -1790,19 +1804,19 @@ export class UimodelPackage extends BasicEPackage {
     (UimodelPackage.Literals.LAYOUT_STYLE__ORDER as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EInt')!);
     (UimodelPackage.Literals.WIDGET_STYLE__FEATURE as BasicEReference).setEType(getEcorePackage().getEClassifier('EStructuralFeature')!);
     (UimodelPackage.Literals.WIDGET_STYLE__WIDGET_TYPE as BasicEAttribute).setEType(UimodelPackage.Literals.WIDGET_TYPE);
-    (UimodelPackage.Literals.WIDGET_STYLE__LABEL as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelPackage.Literals.WIDGET_STYLE__LABEL as BasicEAttribute).setEType(UimodelPackage.Literals.LOCALIZED_E_STRING);
     (UimodelPackage.Literals.WIDGET_STYLE__READ_ONLY as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EBoolean')!);
     (UimodelPackage.Literals.WIDGET_STYLE__ORDER as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EInt')!);
     (UimodelPackage.Literals.TABLE_STYLE__COLUMNS as BasicEReference).setEType(UimodelPackage.Literals.WIDGET_STYLE);
     (UimodelPackage.Literals.EXPRESSION__LANGUAGE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
     (UimodelPackage.Literals.EXPRESSION__BODY as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
-    (UimodelPackage.Literals.VALIDATION_EXPRESSION__DEFAULT_MESSAGE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelPackage.Literals.VALIDATION_EXPRESSION__DEFAULT_MESSAGE as BasicEAttribute).setEType(UimodelPackage.Literals.LOCALIZED_E_STRING);
     (UimodelPackage.Literals.VALIDATION_EXPRESSION__SEVERITY as BasicEAttribute).setEType(UimodelPackage.Literals.SEVERITY);
     (UimodelPackage.Literals.VALIDATION_MESSAGE_MAPPER__ORDER as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EInt')!);
     (UimodelPackage.Literals.VALIDATION_MESSAGE_MAPPER__MATCH_CODE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
     (UimodelPackage.Literals.VALIDATION_MESSAGE_MAPPER__MATCH_SEVERITY as BasicEAttribute).setEType(UimodelPackage.Literals.SEVERITY);
     (UimodelPackage.Literals.VALIDATION_MESSAGE_MAPPER__MATCH_EXPRESSION as BasicEReference).setEType(UimodelPackage.Literals.EXPRESSION);
-    (UimodelPackage.Literals.VALIDATION_MESSAGE_MAPPER__MAPPED_TEXT as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelPackage.Literals.VALIDATION_MESSAGE_MAPPER__MAPPED_TEXT as BasicEAttribute).setEType(UimodelPackage.Literals.LOCALIZED_E_STRING);
     (UimodelPackage.Literals.VALIDATION_MESSAGE_MAPPER__MAPPED_TEXT_EXPRESSION as BasicEReference).setEType(UimodelPackage.Literals.EXPRESSION);
     (UimodelPackage.Literals.VALIDATION_MESSAGE_MAPPER__MAPPED_SEVERITY as BasicEAttribute).setEType(UimodelPackage.Literals.SEVERITY);
 

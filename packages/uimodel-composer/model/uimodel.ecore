@@ -84,8 +84,8 @@
     <eSuperTypes href="http://uimodel/1.0#//Component"/>
     <!-- [0..1]: ungebunden nur als Prototyp erlaubt (siehe AllFeatures.template) -->
     <eStructuralFeatures xsi:type="ecore:EReference" eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature" name="feature"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="label"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="placeholder"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" eType="http://uimodel/1.0#//LocalizedEString" name="label"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" eType="http://uimodel/1.0#//LocalizedEString" name="placeholder"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true" eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="readOnly"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true" eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="required"/>
     <eStructuralFeatures xsi:type="ecore:EReference" eType="http://uimodel/1.0#//Expression" name="visibilityCondition" containment="true"/>
@@ -268,7 +268,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" upperBound="-1"
         eType="http://uimodel/1.0#//WidgetComponent" name="body" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute"
-        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="emptyText"/>
+        eType="http://uimodel/1.0#//LocalizedEString" name="emptyText"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ReferenceLinkWidget">
     <eSuperTypes href="http://uimodel/1.0#//WidgetComponent"/>
@@ -317,7 +317,7 @@
     <eSuperTypes href="http://uimodel/1.0#//BaseStyle"/>
     <eStructuralFeatures xsi:type="ecore:EReference" eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature" name="feature"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true" eType="http://uimodel/1.0#//WidgetType" name="widgetType"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="label"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" eType="http://uimodel/1.0#//LocalizedEString" name="label"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true" eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="readOnly"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true" eType="http://www.eclipse.org/emf/2002/Ecore#//EInt" name="order"/>
   </eClassifiers>
@@ -344,7 +344,7 @@
       eSuperTypes="http://uimodel/1.0#//Expression">
     <!-- Fallback-Nachrichtentext wenn body false liefert und keine eigenen Nachrichten enthält -->
     <eStructuralFeatures xsi:type="ecore:EAttribute"
-        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="defaultMessage"/>
+        eType="http://uimodel/1.0#//LocalizedEString" name="defaultMessage"/>
     <!-- Standard-Schwere für defaultMessage; default ERROR -->
     <eStructuralFeatures xsi:type="ecore:EAttribute"
         eType="http://uimodel/1.0#//Severity" name="severity"
@@ -369,7 +369,7 @@
     <!-- Transformation: nur gesetzte Felder werden überschrieben -->
     <!-- Statischer Ersatztext (hat Vorrang vor mappedTextExpression wenn beide gesetzt) -->
     <eStructuralFeatures xsi:type="ecore:EAttribute"
-        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="mappedText"/>
+        eType="http://uimodel/1.0#//LocalizedEString" name="mappedText"/>
     <!-- Dynamischer Ersatztext via Expression; Kontext: die originale ValidationMessage -->
     <eStructuralFeatures xsi:type="ecore:EReference"
         eType="http://uimodel/1.0#//Expression" name="mappedTextExpression" containment="true"/>
@@ -377,6 +377,15 @@
         eType="http://uimodel/1.0#//Severity" name="mappedSeverity"/>
   </eClassifiers>
 
+  <!-- Übersetzbarer Text (Issue #13): der Wert ist ein Übersetzungs-Key
+       oder ein wörtlicher Text. Der Composer reicht ihn durch die
+       translate-Funktion des Konsumenten; liefert sie nichts, wird der
+       Wert unverändert angezeigt — ein fehlender Key bleibt so sichtbar. -->
+  <eClassifiers xsi:type="ecore:EDataType" name="LocalizedEString" instanceClassName="java.lang.String">
+    <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+      <details key="baseType" value="http://www.eclipse.org/emf/2002/Ecore#EString"/>
+    </eAnnotations>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="Severity">
     <eLiterals name="INFO"    value="0"/>
     <eLiterals name="WARNING" value="1"/>
