@@ -5,12 +5,13 @@
  * @generated
  */
 
-import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { WidgetComponent } from './WidgetComponent';
-import type { Expression } from './Expression';
-import { WidgetComponentImpl } from './WidgetComponentImpl';
-import type { Conditional } from './Conditional';
-import { UimodelPackage } from './UimodelPackage';
+import { createContainmentEList } from '@emfts/core';
+import type { EClass, EStructuralFeature, EList, EReference } from '@emfts/core';
+import type { WidgetComponent } from './WidgetComponent.js';
+import type { Expression } from './Expression.js';
+import { WidgetComponentImpl } from './WidgetComponentImpl.js';
+import type { Conditional } from './Conditional.js';
+import { UimodelPackage } from './UimodelPackage.js';
 
 /**
  * Implementation of Conditional
@@ -24,8 +25,8 @@ export class ConditionalImpl extends WidgetComponentImpl implements Conditional 
 
   // Private fields
   private _condition?: Expression;
-  private _then: WidgetComponent[] = [];
-  private _else: WidgetComponent[] = [];
+  private _then!: EList<WidgetComponent>;
+  private _else!: EList<WidgetComponent>;
 
   /**
    * Returns the EClass of this object
@@ -59,52 +60,18 @@ export class ConditionalImpl extends WidgetComponentImpl implements Conditional 
     }
   }
 
-  get then(): WidgetComponent[] {
+  get then(): EList<WidgetComponent> {
+    if (!this._then) {
+      this._then = createContainmentEList<any>(this, this.eClass().getEStructuralFeature('then') as EReference);
+    }
     return this._then;
   }
 
-  set then(value: WidgetComponent[]) {
-    const oldValue = this._then;
-    this._then = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(ConditionalImpl.THEN),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => ConditionalImpl.THEN,
-        merge: () => false
-      });
+  get else(): EList<WidgetComponent> {
+    if (!this._else) {
+      this._else = createContainmentEList<any>(this, this.eClass().getEStructuralFeature('else') as EReference);
     }
-  }
-
-  get else(): WidgetComponent[] {
     return this._else;
-  }
-
-  set else(value: WidgetComponent[]) {
-    const oldValue = this._else;
-    this._else = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(ConditionalImpl.ELSE),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => ConditionalImpl.ELSE,
-        merge: () => false
-      });
-    }
   }
 
   // Reflective API
@@ -137,11 +104,13 @@ export class ConditionalImpl extends WidgetComponentImpl implements Conditional 
         super.eSet(feature, newValue);
         break;
       case ConditionalImpl.THEN:
-        this.then = newValue as WidgetComponent[];
+        this.then.clear();
+        this.then.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       case ConditionalImpl.ELSE:
-        this.else = newValue as WidgetComponent[];
+        this.else.clear();
+        this.else.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       default:
@@ -158,9 +127,9 @@ export class ConditionalImpl extends WidgetComponentImpl implements Conditional 
       case ConditionalImpl.CONDITION:
         return this._condition !== undefined;
       case ConditionalImpl.THEN:
-        return this._then !== undefined && this._then.length > 0;
+        return this._then !== undefined && !this._then.isEmpty();
       case ConditionalImpl.ELSE:
-        return this._else !== undefined && this._else.length > 0;
+        return this._else !== undefined && !this._else.isEmpty();
       default:
         return super.eIsSet(feature);
     }
@@ -176,10 +145,10 @@ export class ConditionalImpl extends WidgetComponentImpl implements Conditional 
         this._condition = undefined;
         return;
       case ConditionalImpl.THEN:
-        this._then = [];
+        if (this._then) this._then.clear();
         return;
       case ConditionalImpl.ELSE:
-        this._else = [];
+        if (this._else) this._else.clear();
         return;
       default:
         super.eUnset(feature);

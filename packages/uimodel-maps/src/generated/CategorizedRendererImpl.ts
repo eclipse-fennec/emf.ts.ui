@@ -5,13 +5,14 @@
  * @generated
  */
 
-import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { Renderer } from './Renderer';
-import type { RendererCategory } from './RendererCategory';
-import type { Symbol } from './Symbol';
-import { RendererImpl } from './RendererImpl';
-import type { CategorizedRenderer } from './CategorizedRenderer';
-import { UimodelMapsPackage } from './UimodelMapsPackage';
+import { createContainmentEList } from '@emfts/core';
+import type { EClass, EStructuralFeature, EList, EReference } from '@emfts/core';
+import type { Renderer } from './Renderer.js';
+import type { RendererCategory } from './RendererCategory.js';
+import type { Symbol } from './Symbol.js';
+import { RendererImpl } from './RendererImpl.js';
+import type { CategorizedRenderer } from './CategorizedRenderer.js';
+import { UimodelMapsPackage } from './UimodelMapsPackage.js';
 
 /**
  * Implementation of CategorizedRenderer
@@ -25,7 +26,7 @@ export class CategorizedRendererImpl extends RendererImpl implements Categorized
 
   // Private fields
   private _classificationFeature?: EStructuralFeature;
-  private _categories: RendererCategory[] = [];
+  private _categories!: EList<RendererCategory>;
   private _defaultSymbol?: Symbol;
 
   /**
@@ -60,28 +61,11 @@ export class CategorizedRendererImpl extends RendererImpl implements Categorized
     }
   }
 
-  get categories(): RendererCategory[] {
-    return this._categories;
-  }
-
-  set categories(value: RendererCategory[]) {
-    const oldValue = this._categories;
-    this._categories = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(CategorizedRendererImpl.CATEGORIES),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => CategorizedRendererImpl.CATEGORIES,
-        merge: () => false
-      });
+  get categories(): EList<RendererCategory> {
+    if (!this._categories) {
+      this._categories = createContainmentEList<any>(this, this.eClass().getEStructuralFeature('categories') as EReference);
     }
+    return this._categories;
   }
 
   get defaultSymbol(): Symbol {
@@ -138,7 +122,8 @@ export class CategorizedRendererImpl extends RendererImpl implements Categorized
         super.eSet(feature, newValue);
         break;
       case CategorizedRendererImpl.CATEGORIES:
-        this.categories = newValue as RendererCategory[];
+        this.categories.clear();
+        this.categories.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       case CategorizedRendererImpl.DEFAULT_SYMBOL:
@@ -159,7 +144,7 @@ export class CategorizedRendererImpl extends RendererImpl implements Categorized
       case CategorizedRendererImpl.CLASSIFICATION_FEATURE:
         return this._classificationFeature !== undefined;
       case CategorizedRendererImpl.CATEGORIES:
-        return this._categories !== undefined && this._categories.length > 0;
+        return this._categories !== undefined && !this._categories.isEmpty();
       case CategorizedRendererImpl.DEFAULT_SYMBOL:
         return this._defaultSymbol !== undefined;
       default:
@@ -177,7 +162,7 @@ export class CategorizedRendererImpl extends RendererImpl implements Categorized
         this._classificationFeature = undefined;
         return;
       case CategorizedRendererImpl.CATEGORIES:
-        this._categories = [];
+        if (this._categories) this._categories.clear();
         return;
       case CategorizedRendererImpl.DEFAULT_SYMBOL:
         this._defaultSymbol = undefined;

@@ -5,15 +5,15 @@
  * @generated
  */
 
-import type { EObject, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
-import type { Component } from './Component';
-import type { FormView } from './FormView';
+import type { EObject, EList, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
+import type { Component } from './Component.js';
+import type { FormView } from './FormView.js';
 
 /**
  * SectionView
  * @generated
  */
 export interface SectionView extends Component {
-  sections: FormView[];
+  sections: EList<FormView>;
 
 }

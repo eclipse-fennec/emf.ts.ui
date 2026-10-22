@@ -5,21 +5,21 @@
  * @generated
  */
 
-import type { EObject, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
-import type { Component } from './Component';
-import type { WidgetComponent } from './WidgetComponent';
-import type { ValidationExpression } from './ValidationExpression';
-import type { ValidationMessageMapper } from './ValidationMessageMapper';
-import type { MapperExecutionOrder } from './MapperExecutionOrder';
+import type { EObject, EList, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
+import type { Component } from './Component.js';
+import type { WidgetComponent } from './WidgetComponent.js';
+import type { ValidationExpression } from './ValidationExpression.js';
+import type { ValidationMessageMapper } from './ValidationMessageMapper.js';
+import type { MapperExecutionOrder } from './MapperExecutionOrder.js';
 
 /**
  * FormView
  * @generated
  */
 export interface FormView extends Component {
-  fields: WidgetComponent[];
-  validations: ValidationExpression[];
-  validationMappers: ValidationMessageMapper[];
+  fields: EList<WidgetComponent>;
+  validations: EList<ValidationExpression>;
+  validationMappers: EList<ValidationMessageMapper>;
   mapperOrder?: MapperExecutionOrder;
 
 }

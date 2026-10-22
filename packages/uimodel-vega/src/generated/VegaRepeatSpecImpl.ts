@@ -5,11 +5,12 @@
  * @generated
  */
 
-import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { VegaSpec } from './VegaSpec';
-import { VegaSpecImpl } from './VegaSpecImpl';
-import type { VegaRepeatSpec } from './VegaRepeatSpec';
-import { UimodelVegaPackage } from './UimodelVegaPackage';
+import { createBasicEList } from '@emfts/core';
+import type { EClass, EStructuralFeature, EList, EReference } from '@emfts/core';
+import type { VegaSpec } from './VegaSpec.js';
+import { VegaSpecImpl } from './VegaSpecImpl.js';
+import type { VegaRepeatSpec } from './VegaRepeatSpec.js';
+import { UimodelVegaPackage } from './UimodelVegaPackage.js';
 
 /**
  * Implementation of VegaRepeatSpec
@@ -22,8 +23,9 @@ export class VegaRepeatSpecImpl extends VegaSpecImpl implements VegaRepeatSpec {
   static readonly SPEC: number = 3;
 
   // Private fields
-  private _fields: string[] = [];
-  private _columns?: number;
+  private _fields!: EList<string>;
+  private _columns: number = 0;
+  private _columnsIsSet = false;
   private _spec?: VegaSpec;
 
   /**
@@ -34,28 +36,11 @@ export class VegaRepeatSpecImpl extends VegaSpecImpl implements VegaRepeatSpec {
   }
 
   // Getters and Setters
-  get fields(): string[] {
-    return this._fields;
-  }
-
-  set fields(value: string[]) {
-    const oldValue = this._fields;
-    this._fields = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(VegaRepeatSpecImpl.FIELDS),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => VegaRepeatSpecImpl.FIELDS,
-        merge: () => false
-      });
+  get fields(): EList<string> {
+    if (!this._fields) {
+      this._fields = createBasicEList<any>(this, this.eClass().getEStructuralFeature('fields')!);
     }
+    return this._fields;
   }
 
   get columns(): number {
@@ -65,6 +50,7 @@ export class VegaRepeatSpecImpl extends VegaSpecImpl implements VegaRepeatSpec {
   set columns(value: number) {
     const oldValue = this._columns;
     this._columns = value;
+    this._columnsIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -132,7 +118,8 @@ export class VegaRepeatSpecImpl extends VegaSpecImpl implements VegaRepeatSpec {
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case VegaRepeatSpecImpl.FIELDS:
-        this.fields = newValue as string[];
+        this.fields.clear();
+        this.fields.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       case VegaRepeatSpecImpl.COLUMNS:
@@ -155,9 +142,9 @@ export class VegaRepeatSpecImpl extends VegaSpecImpl implements VegaRepeatSpec {
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case VegaRepeatSpecImpl.FIELDS:
-        return this._fields !== undefined && this._fields.length > 0;
+        return this._fields !== undefined && !this._fields.isEmpty();
       case VegaRepeatSpecImpl.COLUMNS:
-        return this._columns !== undefined;
+        return this._columnsIsSet;
       case VegaRepeatSpecImpl.SPEC:
         return this._spec !== undefined;
       default:
@@ -172,10 +159,11 @@ export class VegaRepeatSpecImpl extends VegaSpecImpl implements VegaRepeatSpec {
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case VegaRepeatSpecImpl.FIELDS:
-        this._fields = [];
+        if (this._fields) this._fields.clear();
         return;
       case VegaRepeatSpecImpl.COLUMNS:
-        this._columns = undefined;
+        this._columns = 0;
+        this._columnsIsSet = false;
         return;
       case VegaRepeatSpecImpl.SPEC:
         this._spec = undefined;

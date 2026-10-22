@@ -5,10 +5,10 @@
  * @generated
  */
 
-import type { EObject, EStructuralFeature, BasicEObject, EClass } from '@emfts/core';
-import type { VegaTransform } from './VegaTransform';
-import type { VegaWindowOp } from './VegaWindowOp';
-import type { VegaSortField } from './VegaSortField';
+import type { EObject, EList, EStructuralFeature, BasicEObject, EClass } from '@emfts/core';
+import type { VegaTransform } from './VegaTransform.js';
+import type { VegaWindowOp } from './VegaWindowOp.js';
+import type { VegaSortField } from './VegaSortField.js';
 
 /**
  * VegaWindowTransform
@@ -18,7 +18,7 @@ export interface VegaWindowTransform extends VegaTransform {
   op: VegaWindowOp;
   field?: EStructuralFeature;
   as: string;
-  groupBy: EStructuralFeature[];
+  groupBy: EList<EStructuralFeature>;
   sort?: VegaSortField;
   frameStart?: number;
   frameEnd?: number;

@@ -6,11 +6,11 @@
  */
 
 import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { Component } from './Component';
-import type { TableView } from './TableView';
-import { ComponentImpl } from './ComponentImpl';
-import type { MasterDetail } from './MasterDetail';
-import { UimodelPackage } from './UimodelPackage';
+import type { Component } from './Component.js';
+import type { TableView } from './TableView.js';
+import { ComponentImpl } from './ComponentImpl.js';
+import type { MasterDetail } from './MasterDetail.js';
+import { UimodelPackage } from './UimodelPackage.js';
 
 /**
  * Implementation of MasterDetail

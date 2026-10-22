@@ -5,11 +5,12 @@
  * @generated
  */
 
-import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { VegaSpec } from './VegaSpec';
-import { VegaSpecImpl } from './VegaSpecImpl';
-import type { VegaHConcatSpec } from './VegaHConcatSpec';
-import { UimodelVegaPackage } from './UimodelVegaPackage';
+import { createContainmentEList } from '@emfts/core';
+import type { EClass, EStructuralFeature, EList, EReference } from '@emfts/core';
+import type { VegaSpec } from './VegaSpec.js';
+import { VegaSpecImpl } from './VegaSpecImpl.js';
+import type { VegaHConcatSpec } from './VegaHConcatSpec.js';
+import { UimodelVegaPackage } from './UimodelVegaPackage.js';
 
 /**
  * Implementation of VegaHConcatSpec
@@ -20,7 +21,7 @@ export class VegaHConcatSpecImpl extends VegaSpecImpl implements VegaHConcatSpec
   static readonly SPECS: number = 1;
 
   // Private fields
-  private _specs: VegaSpec[] = [];
+  private _specs!: EList<VegaSpec>;
 
   /**
    * Returns the EClass of this object
@@ -30,28 +31,11 @@ export class VegaHConcatSpecImpl extends VegaSpecImpl implements VegaHConcatSpec
   }
 
   // Getters and Setters
-  get specs(): VegaSpec[] {
-    return this._specs;
-  }
-
-  set specs(value: VegaSpec[]) {
-    const oldValue = this._specs;
-    this._specs = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(VegaHConcatSpecImpl.SPECS),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => VegaHConcatSpecImpl.SPECS,
-        merge: () => false
-      });
+  get specs(): EList<VegaSpec> {
+    if (!this._specs) {
+      this._specs = createContainmentEList<any>(this, this.eClass().getEStructuralFeature('specs') as EReference);
     }
+    return this._specs;
   }
 
   // Reflective API
@@ -76,7 +60,8 @@ export class VegaHConcatSpecImpl extends VegaSpecImpl implements VegaHConcatSpec
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case VegaHConcatSpecImpl.SPECS:
-        this.specs = newValue as VegaSpec[];
+        this.specs.clear();
+        this.specs.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       default:
@@ -91,7 +76,7 @@ export class VegaHConcatSpecImpl extends VegaSpecImpl implements VegaHConcatSpec
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case VegaHConcatSpecImpl.SPECS:
-        return this._specs !== undefined && this._specs.length > 0;
+        return this._specs !== undefined && !this._specs.isEmpty();
       default:
         return super.eIsSet(feature);
     }
@@ -104,7 +89,7 @@ export class VegaHConcatSpecImpl extends VegaSpecImpl implements VegaHConcatSpec
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case VegaHConcatSpecImpl.SPECS:
-        this._specs = [];
+        if (this._specs) this._specs.clear();
         return;
       default:
         super.eUnset(feature);

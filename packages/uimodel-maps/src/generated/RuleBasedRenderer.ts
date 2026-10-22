@@ -5,15 +5,15 @@
  * @generated
  */
 
-import type { EObject, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
-import type { Renderer } from './Renderer';
-import type { RendererRule } from './RendererRule';
+import type { EObject, EList, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
+import type { Renderer } from './Renderer.js';
+import type { RendererRule } from './RendererRule.js';
 
 /**
  * RuleBasedRenderer
  * @generated
  */
 export interface RuleBasedRenderer extends Renderer {
-  rules: RendererRule[];
+  rules: EList<RendererRule>;
 
 }

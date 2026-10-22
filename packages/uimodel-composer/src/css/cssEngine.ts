@@ -92,15 +92,15 @@ export function conditionClass(sheet: StyleSheet, ruleIndex: number): string {
   return `uicss-cond-${slug(sheet.name ?? 'sheet')}-${ruleIndex}`;
 }
 
-function renderDeclarations(declarations: CssDeclaration[], indent = '  '): string {
-  return declarations
+function renderDeclarations(declarations: Iterable<CssDeclaration>, indent = '  '): string {
+  return [...declarations]
     .filter((d) => d.property && d.value !== undefined)
     .map((d) => `${indent}${d.property.trim()}: ${resolveValue(d.value)}${eBool(d.important) ? ' !important' : ''};`)
     .join('\n');
 }
 
-function renderStates(baseSelector: string, states: CssState[]): string {
-  return states
+function renderStates(baseSelector: string, states: Iterable<CssState>): string {
+  return [...states]
     .filter((s) => s.declarations.length > 0)
     .map((s) => {
       // Enum-Werte können als Literal-String oder EEnumLiteral-Objekt vorliegen
@@ -112,10 +112,11 @@ function renderStates(baseSelector: string, states: CssState[]): string {
     .join('\n');
 }
 
-function renderBlock(selector: string, declarations: CssDeclaration[], states: CssState[], media?: string): string {
+function renderBlock(selector: string, declarations: Iterable<CssDeclaration>, states: Iterable<CssState>, media?: string): string {
+  const declarationList = [...declarations];
   const parts: string[] = [];
-  if (declarations.length > 0) {
-    parts.push(`${selector} {\n${renderDeclarations(declarations)}\n}`);
+  if (declarationList.length > 0) {
+    parts.push(`${selector} {\n${renderDeclarations(declarationList)}\n}`);
   }
   const stateCss = renderStates(selector, states);
   if (stateCss) parts.push(stateCss);
@@ -155,7 +156,7 @@ export function ruleSelector(sheet: StyleSheet, rule: StyleRule, ruleIndex: numb
  * Sortiert die extends-Ketten der benannten Styles topologisch
  * (Eltern vor Kindern), zyklussicher.
  */
-function topoSortStyles(styles: CssStyle[]): CssStyle[] {
+function topoSortStyles(styles: Iterable<CssStyle>): CssStyle[] {
   const inSheet = new Set<CssStyle>(styles);
   const sorted: CssStyle[] = [];
   const done = new Set<CssStyle>();

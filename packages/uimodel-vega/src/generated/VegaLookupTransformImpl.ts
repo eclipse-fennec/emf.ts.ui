@@ -5,12 +5,13 @@
  * @generated
  */
 
-import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { VegaTransform } from './VegaTransform';
-import type { VegaLookupData } from './VegaLookupData';
-import { VegaTransformImpl } from './VegaTransformImpl';
-import type { VegaLookupTransform } from './VegaLookupTransform';
-import { UimodelVegaPackage } from './UimodelVegaPackage';
+import { createBasicEList } from '@emfts/core';
+import type { EClass, EStructuralFeature, EList, EReference } from '@emfts/core';
+import type { VegaTransform } from './VegaTransform.js';
+import type { VegaLookupData } from './VegaLookupData.js';
+import { VegaTransformImpl } from './VegaTransformImpl.js';
+import type { VegaLookupTransform } from './VegaLookupTransform.js';
+import { UimodelVegaPackage } from './UimodelVegaPackage.js';
 
 /**
  * Implementation of VegaLookupTransform
@@ -26,7 +27,7 @@ export class VegaLookupTransformImpl extends VegaTransformImpl implements VegaLo
   // Private fields
   private _lookup?: EStructuralFeature;
   private _from?: VegaLookupData;
-  private _as: string[] = [];
+  private _as!: EList<string>;
   private _default?: string;
 
   /**
@@ -85,28 +86,11 @@ export class VegaLookupTransformImpl extends VegaTransformImpl implements VegaLo
     }
   }
 
-  get as(): string[] {
-    return this._as;
-  }
-
-  set as(value: string[]) {
-    const oldValue = this._as;
-    this._as = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(VegaLookupTransformImpl.AS),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => VegaLookupTransformImpl.AS,
-        merge: () => false
-      });
+  get as(): EList<string> {
+    if (!this._as) {
+      this._as = createBasicEList<any>(this, this.eClass().getEStructuralFeature('as')!);
     }
+    return this._as;
   }
 
   get default(): string {
@@ -169,7 +153,8 @@ export class VegaLookupTransformImpl extends VegaTransformImpl implements VegaLo
         super.eSet(feature, newValue);
         break;
       case VegaLookupTransformImpl.AS:
-        this.as = newValue as string[];
+        this.as.clear();
+        this.as.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       case VegaLookupTransformImpl.DEFAULT:
@@ -192,7 +177,7 @@ export class VegaLookupTransformImpl extends VegaTransformImpl implements VegaLo
       case VegaLookupTransformImpl.FROM:
         return this._from !== undefined;
       case VegaLookupTransformImpl.AS:
-        return this._as !== undefined && this._as.length > 0;
+        return this._as !== undefined && !this._as.isEmpty();
       case VegaLookupTransformImpl.DEFAULT:
         return this._default !== undefined;
       default:
@@ -213,7 +198,7 @@ export class VegaLookupTransformImpl extends VegaTransformImpl implements VegaLo
         this._from = undefined;
         return;
       case VegaLookupTransformImpl.AS:
-        this._as = [];
+        if (this._as) this._as.clear();
         return;
       case VegaLookupTransformImpl.DEFAULT:
         this._default = undefined;

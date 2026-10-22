@@ -6,12 +6,12 @@
  */
 
 import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { VectorSource } from './VectorSource';
+import type { VectorSource } from './VectorSource.js';
 import type { Expression } from '@emfts/uimodel-composer';
-import { GeometryFormat } from './GeometryFormat';
-import { VectorSourceImpl } from './VectorSourceImpl';
-import type { EmfFeatureSource } from './EmfFeatureSource';
-import { UimodelMapsPackage } from './UimodelMapsPackage';
+import { GeometryFormat } from './GeometryFormat.js';
+import { VectorSourceImpl } from './VectorSourceImpl.js';
+import type { EmfFeatureSource } from './EmfFeatureSource.js';
+import { UimodelMapsPackage } from './UimodelMapsPackage.js';
 
 /**
  * Implementation of EmfFeatureSource

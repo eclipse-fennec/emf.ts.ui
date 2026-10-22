@@ -6,11 +6,11 @@
  */
 
 import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { VegaTransform } from './VegaTransform';
-import { VegaImputeMethod } from './VegaImputeMethod';
-import { VegaTransformImpl } from './VegaTransformImpl';
-import type { VegaImputeTransform } from './VegaImputeTransform';
-import { UimodelVegaPackage } from './UimodelVegaPackage';
+import type { VegaTransform } from './VegaTransform.js';
+import { VegaImputeMethod } from './VegaImputeMethod.js';
+import { VegaTransformImpl } from './VegaTransformImpl.js';
+import type { VegaImputeTransform } from './VegaImputeTransform.js';
+import { UimodelVegaPackage } from './UimodelVegaPackage.js';
 
 /**
  * Implementation of VegaImputeTransform

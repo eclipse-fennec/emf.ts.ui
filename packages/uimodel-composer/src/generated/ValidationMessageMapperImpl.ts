@@ -7,10 +7,10 @@
 
 import { BasicEObject } from '@emfts/core';
 import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { Severity } from './Severity';
-import type { Expression } from './Expression';
-import type { ValidationMessageMapper } from './ValidationMessageMapper';
-import { UimodelPackage } from './UimodelPackage';
+import type { Expression } from './Expression.js';
+import { Severity } from './Severity.js';
+import type { ValidationMessageMapper } from './ValidationMessageMapper.js';
+import { UimodelPackage } from './UimodelPackage.js';
 
 /**
  * Implementation of ValidationMessageMapper
@@ -27,13 +27,15 @@ export class ValidationMessageMapperImpl extends BasicEObject implements Validat
   static readonly MAPPED_SEVERITY: number = 6;
 
   // Private fields
-  private _order?: number;
+  private _order: number = 0;
   private _matchCode?: string;
-  private _matchSeverity?: Severity;
+  private _matchSeverity: Severity = Severity.INFO;
+  private _matchSeverityIsSet = false;
   private _matchExpression?: Expression;
   private _mappedText?: string;
   private _mappedTextExpression?: Expression;
-  private _mappedSeverity?: Severity;
+  private _mappedSeverity: Severity = Severity.INFO;
+  private _mappedSeverityIsSet = false;
 
   /**
    * Returns the EClass of this object
@@ -98,6 +100,7 @@ export class ValidationMessageMapperImpl extends BasicEObject implements Validat
   set matchSeverity(value: Severity) {
     const oldValue = this._matchSeverity;
     this._matchSeverity = value;
+    this._matchSeverityIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -194,6 +197,7 @@ export class ValidationMessageMapperImpl extends BasicEObject implements Validat
   set mappedSeverity(value: Severity) {
     const oldValue = this._mappedSeverity;
     this._mappedSeverity = value;
+    this._mappedSeverityIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -284,11 +288,11 @@ export class ValidationMessageMapperImpl extends BasicEObject implements Validat
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case ValidationMessageMapperImpl.ORDER:
-        return this._order !== undefined;
+        return this._order !== 0;
       case ValidationMessageMapperImpl.MATCH_CODE:
         return this._matchCode !== undefined;
       case ValidationMessageMapperImpl.MATCH_SEVERITY:
-        return this._matchSeverity !== undefined;
+        return this._matchSeverityIsSet;
       case ValidationMessageMapperImpl.MATCH_EXPRESSION:
         return this._matchExpression !== undefined;
       case ValidationMessageMapperImpl.MAPPED_TEXT:
@@ -296,7 +300,7 @@ export class ValidationMessageMapperImpl extends BasicEObject implements Validat
       case ValidationMessageMapperImpl.MAPPED_TEXT_EXPRESSION:
         return this._mappedTextExpression !== undefined;
       case ValidationMessageMapperImpl.MAPPED_SEVERITY:
-        return this._mappedSeverity !== undefined;
+        return this._mappedSeverityIsSet;
       default:
         return super.eIsSet(feature);
     }
@@ -309,13 +313,14 @@ export class ValidationMessageMapperImpl extends BasicEObject implements Validat
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case ValidationMessageMapperImpl.ORDER:
-        this._order = undefined;
+        this._order = 0;
         return;
       case ValidationMessageMapperImpl.MATCH_CODE:
         this._matchCode = undefined;
         return;
       case ValidationMessageMapperImpl.MATCH_SEVERITY:
-        this._matchSeverity = undefined;
+        this._matchSeverity = Severity.INFO;
+        this._matchSeverityIsSet = false;
         return;
       case ValidationMessageMapperImpl.MATCH_EXPRESSION:
         this._matchExpression = undefined;
@@ -327,7 +332,8 @@ export class ValidationMessageMapperImpl extends BasicEObject implements Validat
         this._mappedTextExpression = undefined;
         return;
       case ValidationMessageMapperImpl.MAPPED_SEVERITY:
-        this._mappedSeverity = undefined;
+        this._mappedSeverity = Severity.INFO;
+        this._mappedSeverityIsSet = false;
         return;
       default:
         super.eUnset(feature);

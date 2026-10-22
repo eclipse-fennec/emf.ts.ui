@@ -6,11 +6,12 @@
  */
 
 import { BasicEObject } from '@emfts/core';
-import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { PseudoState } from './PseudoState';
-import type { CssDeclaration } from './CssDeclaration';
-import type { CssState } from './CssState';
-import { UimodelCssPackage } from './UimodelCssPackage';
+import { createContainmentEList } from '@emfts/core';
+import type { EClass, EStructuralFeature, EList, EReference } from '@emfts/core';
+import type { CssDeclaration } from './CssDeclaration.js';
+import { PseudoState } from './PseudoState.js';
+import type { CssState } from './CssState.js';
+import { UimodelCssPackage } from './UimodelCssPackage.js';
 
 /**
  * Implementation of CssState
@@ -22,8 +23,8 @@ export class CssStateImpl extends BasicEObject implements CssState {
   static readonly DECLARATIONS: number = 1;
 
   // Private fields
-  private _state?: PseudoState;
-  private _declarations: CssDeclaration[] = [];
+  private _state: PseudoState = PseudoState.HOVER;
+  private _declarations!: EList<CssDeclaration>;
 
   /**
    * Returns the EClass of this object
@@ -57,28 +58,11 @@ export class CssStateImpl extends BasicEObject implements CssState {
     }
   }
 
-  get declarations(): CssDeclaration[] {
-    return this._declarations;
-  }
-
-  set declarations(value: CssDeclaration[]) {
-    const oldValue = this._declarations;
-    this._declarations = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(CssStateImpl.DECLARATIONS),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => CssStateImpl.DECLARATIONS,
-        merge: () => false
-      });
+  get declarations(): EList<CssDeclaration> {
+    if (!this._declarations) {
+      this._declarations = createContainmentEList<any>(this, this.eClass().getEStructuralFeature('declarations') as EReference);
     }
+    return this._declarations;
   }
 
   // Reflective API
@@ -109,7 +93,8 @@ export class CssStateImpl extends BasicEObject implements CssState {
         super.eSet(feature, newValue);
         break;
       case CssStateImpl.DECLARATIONS:
-        this.declarations = newValue as CssDeclaration[];
+        this.declarations.clear();
+        this.declarations.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       default:
@@ -124,9 +109,9 @@ export class CssStateImpl extends BasicEObject implements CssState {
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case CssStateImpl.STATE:
-        return this._state !== undefined;
+        return this._state !== PseudoState.HOVER;
       case CssStateImpl.DECLARATIONS:
-        return this._declarations !== undefined && this._declarations.length > 0;
+        return this._declarations !== undefined && !this._declarations.isEmpty();
       default:
         return super.eIsSet(feature);
     }
@@ -139,10 +124,10 @@ export class CssStateImpl extends BasicEObject implements CssState {
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case CssStateImpl.STATE:
-        this._state = undefined;
+        this._state = PseudoState.HOVER;
         return;
       case CssStateImpl.DECLARATIONS:
-        this._declarations = [];
+        if (this._declarations) this._declarations.clear();
         return;
       default:
         super.eUnset(feature);

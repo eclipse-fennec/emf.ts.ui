@@ -5,10 +5,10 @@
  * @generated
  */
 
-import type { EObject, EStructuralFeature, BasicEObject, EClass } from '@emfts/core';
-import type { Renderer } from './Renderer';
-import type { RendererCategory } from './RendererCategory';
-import type { Symbol } from './Symbol';
+import type { EObject, EList, EStructuralFeature, BasicEObject, EClass } from '@emfts/core';
+import type { Renderer } from './Renderer.js';
+import type { RendererCategory } from './RendererCategory.js';
+import type { Symbol } from './Symbol.js';
 
 /**
  * CategorizedRenderer
@@ -16,7 +16,7 @@ import type { Symbol } from './Symbol';
  */
 export interface CategorizedRenderer extends Renderer {
   classificationFeature: EStructuralFeature;
-  categories: RendererCategory[];
+  categories: EList<RendererCategory>;
   defaultSymbol?: Symbol;
 
 }

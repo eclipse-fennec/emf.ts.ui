@@ -7,8 +7,8 @@
 
 import { BasicEObject } from '@emfts/core';
 import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { MapLayer } from './MapLayer';
-import { UimodelMapsPackage } from './UimodelMapsPackage';
+import type { MapLayer } from './MapLayer.js';
+import { UimodelMapsPackage } from './UimodelMapsPackage.js';
 
 /**
  * Implementation of MapLayer
@@ -27,8 +27,8 @@ export abstract class MapLayerImpl extends BasicEObject implements MapLayer {
   private _name?: string;
   private _visible: boolean = true;
   private _opacity: number = 1.0;
-  private _minZoom?: number;
-  private _maxZoom?: number;
+  private _minZoom: number = 0;
+  private _maxZoom: number = 0;
   private _attribution?: string;
 
   /**
@@ -256,9 +256,9 @@ export abstract class MapLayerImpl extends BasicEObject implements MapLayer {
       case MapLayerImpl.OPACITY:
         return this._opacity !== 1.0;
       case MapLayerImpl.MIN_ZOOM:
-        return this._minZoom !== undefined;
+        return this._minZoom !== 0;
       case MapLayerImpl.MAX_ZOOM:
-        return this._maxZoom !== undefined;
+        return this._maxZoom !== 0;
       case MapLayerImpl.ATTRIBUTION:
         return this._attribution !== undefined;
       default:
@@ -282,10 +282,10 @@ export abstract class MapLayerImpl extends BasicEObject implements MapLayer {
         this._opacity = 1.0;
         return;
       case MapLayerImpl.MIN_ZOOM:
-        this._minZoom = undefined;
+        this._minZoom = 0;
         return;
       case MapLayerImpl.MAX_ZOOM:
-        this._maxZoom = undefined;
+        this._maxZoom = 0;
         return;
       case MapLayerImpl.ATTRIBUTION:
         this._attribution = undefined;

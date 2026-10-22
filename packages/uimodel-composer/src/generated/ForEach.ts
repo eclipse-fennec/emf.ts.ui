@@ -5,9 +5,9 @@
  * @generated
  */
 
-import type { EObject, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
-import type { WidgetComponent } from './WidgetComponent';
-import type { Expression } from './Expression';
+import type { EObject, EList, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
+import type { WidgetComponent } from './WidgetComponent.js';
+import type { Expression } from './Expression.js';
 
 /**
  * ForEach
@@ -15,7 +15,7 @@ import type { Expression } from './Expression';
  */
 export interface ForEach extends WidgetComponent {
   items: Expression;
-  body: WidgetComponent[];
+  body: EList<WidgetComponent>;
   emptyText?: string;
 
 }

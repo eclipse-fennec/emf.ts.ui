@@ -5,14 +5,14 @@
  * @generated
  */
 
-import type { EObject, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
-import type { Component } from './Component';
+import type { EObject, EList, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
+import type { Component } from './Component.js';
 
 /**
  * TabView
  * @generated
  */
 export interface TabView extends Component {
-  tabs: Component[];
+  tabs: EList<Component>;
 
 }

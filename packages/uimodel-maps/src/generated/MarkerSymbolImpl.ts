@@ -6,11 +6,11 @@
  */
 
 import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { Symbol } from './Symbol';
-import { MarkerShape } from './MarkerShape';
-import { SymbolImpl } from './SymbolImpl';
-import type { MarkerSymbol } from './MarkerSymbol';
-import { UimodelMapsPackage } from './UimodelMapsPackage';
+import type { Symbol } from './Symbol.js';
+import { MarkerShape } from './MarkerShape.js';
+import { SymbolImpl } from './SymbolImpl.js';
+import type { MarkerSymbol } from './MarkerSymbol.js';
+import { UimodelMapsPackage } from './UimodelMapsPackage.js';
 
 /**
  * Implementation of MarkerSymbol
@@ -31,7 +31,7 @@ export class MarkerSymbolImpl extends SymbolImpl implements MarkerSymbol {
   private _color: string = "#3399CC";
   private _strokeColor: string = "#ffffff";
   private _strokeWidth: number = 1.0;
-  private _rotation?: number;
+  private _rotation: number = 0;
 
   /**
    * Returns the EClass of this object
@@ -262,7 +262,7 @@ export class MarkerSymbolImpl extends SymbolImpl implements MarkerSymbol {
       case MarkerSymbolImpl.STROKE_WIDTH:
         return this._strokeWidth !== 1.0;
       case MarkerSymbolImpl.ROTATION:
-        return this._rotation !== undefined;
+        return this._rotation !== 0;
       default:
         return super.eIsSet(feature);
     }
@@ -290,7 +290,7 @@ export class MarkerSymbolImpl extends SymbolImpl implements MarkerSymbol {
         this._strokeWidth = 1.0;
         return;
       case MarkerSymbolImpl.ROTATION:
-        this._rotation = undefined;
+        this._rotation = 0;
         return;
       default:
         super.eUnset(feature);

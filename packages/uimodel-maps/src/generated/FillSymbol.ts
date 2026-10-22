@@ -6,8 +6,8 @@
  */
 
 import type { EObject, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
-import type { Symbol } from './Symbol';
-import type { FillStyle } from './FillStyle';
+import type { Symbol } from './Symbol.js';
+import type { FillStyle } from './FillStyle.js';
 
 /**
  * FillSymbol

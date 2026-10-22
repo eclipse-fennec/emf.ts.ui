@@ -6,7 +6,7 @@
  */
 
 import type { EObject, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
-import type { Expression } from './Expression';
+import type { Expression } from './Expression.js';
 
 /**
  * PropertyBinding

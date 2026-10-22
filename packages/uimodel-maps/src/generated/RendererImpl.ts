@@ -7,8 +7,8 @@
 
 import { BasicEObject } from '@emfts/core';
 import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { Renderer } from './Renderer';
-import { UimodelMapsPackage } from './UimodelMapsPackage';
+import type { Renderer } from './Renderer.js';
+import { UimodelMapsPackage } from './UimodelMapsPackage.js';
 
 /**
  * Implementation of Renderer

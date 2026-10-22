@@ -6,11 +6,11 @@
  */
 
 import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { Component } from './Component';
-import type { TableStyle } from './TableStyle';
-import { ComponentImpl } from './ComponentImpl';
-import type { TableView } from './TableView';
-import { UimodelPackage } from './UimodelPackage';
+import type { Component } from './Component.js';
+import type { TableStyle } from './TableStyle.js';
+import { ComponentImpl } from './ComponentImpl.js';
+import type { TableView } from './TableView.js';
+import { UimodelPackage } from './UimodelPackage.js';
 
 /**
  * Implementation of TableView

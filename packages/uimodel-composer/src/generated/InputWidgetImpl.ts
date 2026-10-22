@@ -6,10 +6,10 @@
  */
 
 import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { WidgetComponent } from './WidgetComponent';
-import { WidgetComponentImpl } from './WidgetComponentImpl';
-import type { InputWidget } from './InputWidget';
-import { UimodelPackage } from './UimodelPackage';
+import type { WidgetComponent } from './WidgetComponent.js';
+import { WidgetComponentImpl } from './WidgetComponentImpl.js';
+import type { InputWidget } from './InputWidget.js';
+import { UimodelPackage } from './UimodelPackage.js';
 
 /**
  * Implementation of InputWidget
@@ -22,9 +22,9 @@ export class InputWidgetImpl extends WidgetComponentImpl implements InputWidget 
   static readonly PASSWORD: number = 16;
 
   // Private fields
-  private _maxLength?: number;
+  private _maxLength: number = 0;
   private _value?: string;
-  private _password?: boolean;
+  private _password: boolean = false;
 
   /**
    * Returns the EClass of this object
@@ -155,11 +155,11 @@ export class InputWidgetImpl extends WidgetComponentImpl implements InputWidget 
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case InputWidgetImpl.MAX_LENGTH:
-        return this._maxLength !== undefined;
+        return this._maxLength !== 0;
       case InputWidgetImpl.VALUE:
         return this._value !== undefined;
       case InputWidgetImpl.PASSWORD:
-        return this._password !== undefined;
+        return this._password !== false;
       default:
         return super.eIsSet(feature);
     }
@@ -172,13 +172,13 @@ export class InputWidgetImpl extends WidgetComponentImpl implements InputWidget 
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case InputWidgetImpl.MAX_LENGTH:
-        this._maxLength = undefined;
+        this._maxLength = 0;
         return;
       case InputWidgetImpl.VALUE:
         this._value = undefined;
         return;
       case InputWidgetImpl.PASSWORD:
-        this._password = undefined;
+        this._password = false;
         return;
       default:
         super.eUnset(feature);

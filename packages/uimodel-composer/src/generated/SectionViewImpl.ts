@@ -5,12 +5,13 @@
  * @generated
  */
 
-import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { Component } from './Component';
-import type { FormView } from './FormView';
-import { ComponentImpl } from './ComponentImpl';
-import type { SectionView } from './SectionView';
-import { UimodelPackage } from './UimodelPackage';
+import { createContainmentEList } from '@emfts/core';
+import type { EClass, EStructuralFeature, EList, EReference } from '@emfts/core';
+import type { Component } from './Component.js';
+import type { FormView } from './FormView.js';
+import { ComponentImpl } from './ComponentImpl.js';
+import type { SectionView } from './SectionView.js';
+import { UimodelPackage } from './UimodelPackage.js';
 
 /**
  * Implementation of SectionView
@@ -21,7 +22,7 @@ export class SectionViewImpl extends ComponentImpl implements SectionView {
   static readonly SECTIONS: number = 5;
 
   // Private fields
-  private _sections: FormView[] = [];
+  private _sections!: EList<FormView>;
 
   /**
    * Returns the EClass of this object
@@ -31,28 +32,11 @@ export class SectionViewImpl extends ComponentImpl implements SectionView {
   }
 
   // Getters and Setters
-  get sections(): FormView[] {
-    return this._sections;
-  }
-
-  set sections(value: FormView[]) {
-    const oldValue = this._sections;
-    this._sections = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(SectionViewImpl.SECTIONS),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => SectionViewImpl.SECTIONS,
-        merge: () => false
-      });
+  get sections(): EList<FormView> {
+    if (!this._sections) {
+      this._sections = createContainmentEList<any>(this, this.eClass().getEStructuralFeature('sections') as EReference);
     }
+    return this._sections;
   }
 
   // Reflective API
@@ -77,7 +61,8 @@ export class SectionViewImpl extends ComponentImpl implements SectionView {
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case SectionViewImpl.SECTIONS:
-        this.sections = newValue as FormView[];
+        this.sections.clear();
+        this.sections.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       default:
@@ -92,7 +77,7 @@ export class SectionViewImpl extends ComponentImpl implements SectionView {
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case SectionViewImpl.SECTIONS:
-        return this._sections !== undefined && this._sections.length > 0;
+        return this._sections !== undefined && !this._sections.isEmpty();
       default:
         return super.eIsSet(feature);
     }
@@ -105,7 +90,7 @@ export class SectionViewImpl extends ComponentImpl implements SectionView {
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case SectionViewImpl.SECTIONS:
-        this._sections = [];
+        if (this._sections) this._sections.clear();
         return;
       default:
         super.eUnset(feature);

@@ -7,8 +7,8 @@
 
 import { BasicEObject } from '@emfts/core';
 import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { VegaSelectionMark } from './VegaSelectionMark';
-import { UimodelVegaPackage } from './UimodelVegaPackage';
+import type { VegaSelectionMark } from './VegaSelectionMark.js';
+import { UimodelVegaPackage } from './UimodelVegaPackage.js';
 
 /**
  * Implementation of VegaSelectionMark
@@ -23,9 +23,11 @@ export class VegaSelectionMarkImpl extends BasicEObject implements VegaSelection
 
   // Private fields
   private _fill?: string;
-  private _fillOpacity?: number;
+  private _fillOpacity: number = 0;
+  private _fillOpacityIsSet = false;
   private _stroke?: string;
-  private _strokeWidth?: number;
+  private _strokeWidth: number = 0;
+  private _strokeWidthIsSet = false;
 
   /**
    * Returns the EClass of this object
@@ -66,6 +68,7 @@ export class VegaSelectionMarkImpl extends BasicEObject implements VegaSelection
   set fillOpacity(value: number) {
     const oldValue = this._fillOpacity;
     this._fillOpacity = value;
+    this._fillOpacityIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -114,6 +117,7 @@ export class VegaSelectionMarkImpl extends BasicEObject implements VegaSelection
   set strokeWidth(value: number) {
     const oldValue = this._strokeWidth;
     this._strokeWidth = value;
+    this._strokeWidthIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -188,11 +192,11 @@ export class VegaSelectionMarkImpl extends BasicEObject implements VegaSelection
       case VegaSelectionMarkImpl.FILL:
         return this._fill !== undefined;
       case VegaSelectionMarkImpl.FILL_OPACITY:
-        return this._fillOpacity !== undefined;
+        return this._fillOpacityIsSet;
       case VegaSelectionMarkImpl.STROKE:
         return this._stroke !== undefined;
       case VegaSelectionMarkImpl.STROKE_WIDTH:
-        return this._strokeWidth !== undefined;
+        return this._strokeWidthIsSet;
       default:
         return super.eIsSet(feature);
     }
@@ -208,13 +212,15 @@ export class VegaSelectionMarkImpl extends BasicEObject implements VegaSelection
         this._fill = undefined;
         return;
       case VegaSelectionMarkImpl.FILL_OPACITY:
-        this._fillOpacity = undefined;
+        this._fillOpacity = 0;
+        this._fillOpacityIsSet = false;
         return;
       case VegaSelectionMarkImpl.STROKE:
         this._stroke = undefined;
         return;
       case VegaSelectionMarkImpl.STROKE_WIDTH:
-        this._strokeWidth = undefined;
+        this._strokeWidth = 0;
+        this._strokeWidthIsSet = false;
         return;
       default:
         super.eUnset(feature);

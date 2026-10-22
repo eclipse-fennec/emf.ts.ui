@@ -5,10 +5,10 @@
  * @generated
  */
 
-import type { EObject, EClass, BasicEObject, EStructuralFeature } from '@emfts/core';
+import type { EObject, EList, EClass, BasicEObject, EStructuralFeature } from '@emfts/core';
 import type { Expression } from '..';
-import type { CssDeclaration } from './CssDeclaration';
-import type { CssState } from './CssState';
+import type { CssDeclaration } from './CssDeclaration.js';
+import type { CssState } from './CssState.js';
 
 /**
  * StyleRule
@@ -23,7 +23,7 @@ export interface StyleRule extends EObject {
   priority?: number;
   media?: string;
   condition?: Expression;
-  declarations: CssDeclaration[];
-  states: CssState[];
+  declarations: EList<CssDeclaration>;
+  states: EList<CssState>;
 
 }

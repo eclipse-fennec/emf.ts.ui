@@ -6,7 +6,7 @@
  */
 
 import type { EObject, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
-import type { MapLayer } from './MapLayer';
+import type { MapLayer } from './MapLayer.js';
 
 /**
  * XYZTileLayer

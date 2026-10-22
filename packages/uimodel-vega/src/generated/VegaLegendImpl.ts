@@ -6,12 +6,13 @@
  */
 
 import { BasicEObject } from '@emfts/core';
-import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { VegaLegendOrient } from './VegaLegendOrient';
-import type { VegaLegendType } from './VegaLegendType';
-import type { VegaDirection } from './VegaDirection';
-import type { VegaLegend } from './VegaLegend';
-import { UimodelVegaPackage } from './UimodelVegaPackage';
+import { createBasicEList } from '@emfts/core';
+import type { EClass, EStructuralFeature, EList, EReference } from '@emfts/core';
+import { VegaLegendOrient } from './VegaLegendOrient.js';
+import { VegaLegendType } from './VegaLegendType.js';
+import { VegaDirection } from './VegaDirection.js';
+import type { VegaLegend } from './VegaLegend.js';
+import { UimodelVegaPackage } from './UimodelVegaPackage.js';
 
 /**
  * Implementation of VegaLegend
@@ -36,21 +37,31 @@ export class VegaLegendImpl extends BasicEObject implements VegaLegend {
   static readonly DISABLE: number = 14;
 
   // Private fields
-  private _orient?: VegaLegendOrient;
+  private _orient: VegaLegendOrient = VegaLegendOrient.LEFT;
+  private _orientIsSet = false;
   private _title?: string;
   private _titleColor?: string;
-  private _titleFontSize?: number;
-  private _type?: VegaLegendType;
-  private _direction?: VegaDirection;
+  private _titleFontSize: number = 0;
+  private _titleFontSizeIsSet = false;
+  private _type: VegaLegendType = VegaLegendType.SYMBOL;
+  private _typeIsSet = false;
+  private _direction: VegaDirection = VegaDirection.VERTICAL;
+  private _directionIsSet = false;
   private _labelColor?: string;
-  private _labelFontSize?: number;
-  private _symbolSize?: number;
+  private _labelFontSize: number = 0;
+  private _labelFontSizeIsSet = false;
+  private _symbolSize: number = 0;
+  private _symbolSizeIsSet = false;
   private _symbolType?: string;
-  private _padding?: number;
-  private _offset?: number;
-  private _columns?: number;
-  private _values: string[] = [];
-  private _disable?: boolean;
+  private _padding: number = 0;
+  private _paddingIsSet = false;
+  private _offset: number = 0;
+  private _offsetIsSet = false;
+  private _columns: number = 0;
+  private _columnsIsSet = false;
+  private _values!: EList<string>;
+  private _disable: boolean = false;
+  private _disableIsSet = false;
 
   /**
    * Returns the EClass of this object
@@ -67,6 +78,7 @@ export class VegaLegendImpl extends BasicEObject implements VegaLegend {
   set orient(value: VegaLegendOrient) {
     const oldValue = this._orient;
     this._orient = value;
+    this._orientIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -139,6 +151,7 @@ export class VegaLegendImpl extends BasicEObject implements VegaLegend {
   set titleFontSize(value: number) {
     const oldValue = this._titleFontSize;
     this._titleFontSize = value;
+    this._titleFontSizeIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -163,6 +176,7 @@ export class VegaLegendImpl extends BasicEObject implements VegaLegend {
   set type(value: VegaLegendType) {
     const oldValue = this._type;
     this._type = value;
+    this._typeIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -187,6 +201,7 @@ export class VegaLegendImpl extends BasicEObject implements VegaLegend {
   set direction(value: VegaDirection) {
     const oldValue = this._direction;
     this._direction = value;
+    this._directionIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -235,6 +250,7 @@ export class VegaLegendImpl extends BasicEObject implements VegaLegend {
   set labelFontSize(value: number) {
     const oldValue = this._labelFontSize;
     this._labelFontSize = value;
+    this._labelFontSizeIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -259,6 +275,7 @@ export class VegaLegendImpl extends BasicEObject implements VegaLegend {
   set symbolSize(value: number) {
     const oldValue = this._symbolSize;
     this._symbolSize = value;
+    this._symbolSizeIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -307,6 +324,7 @@ export class VegaLegendImpl extends BasicEObject implements VegaLegend {
   set padding(value: number) {
     const oldValue = this._padding;
     this._padding = value;
+    this._paddingIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -331,6 +349,7 @@ export class VegaLegendImpl extends BasicEObject implements VegaLegend {
   set offset(value: number) {
     const oldValue = this._offset;
     this._offset = value;
+    this._offsetIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -355,6 +374,7 @@ export class VegaLegendImpl extends BasicEObject implements VegaLegend {
   set columns(value: number) {
     const oldValue = this._columns;
     this._columns = value;
+    this._columnsIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -372,28 +392,11 @@ export class VegaLegendImpl extends BasicEObject implements VegaLegend {
     }
   }
 
-  get values(): string[] {
-    return this._values;
-  }
-
-  set values(value: string[]) {
-    const oldValue = this._values;
-    this._values = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(VegaLegendImpl.VALUES),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => VegaLegendImpl.VALUES,
-        merge: () => false
-      });
+  get values(): EList<string> {
+    if (!this._values) {
+      this._values = createBasicEList<any>(this, this.eClass().getEStructuralFeature('values')!);
     }
+    return this._values;
   }
 
   get disable(): boolean {
@@ -403,6 +406,7 @@ export class VegaLegendImpl extends BasicEObject implements VegaLegend {
   set disable(value: boolean) {
     const oldValue = this._disable;
     this._disable = value;
+    this._disableIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -522,7 +526,8 @@ export class VegaLegendImpl extends BasicEObject implements VegaLegend {
         super.eSet(feature, newValue);
         break;
       case VegaLegendImpl.VALUES:
-        this.values = newValue as string[];
+        this.values.clear();
+        this.values.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       case VegaLegendImpl.DISABLE:
@@ -541,35 +546,35 @@ export class VegaLegendImpl extends BasicEObject implements VegaLegend {
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case VegaLegendImpl.ORIENT:
-        return this._orient !== undefined;
+        return this._orientIsSet;
       case VegaLegendImpl.TITLE:
         return this._title !== undefined;
       case VegaLegendImpl.TITLE_COLOR:
         return this._titleColor !== undefined;
       case VegaLegendImpl.TITLE_FONT_SIZE:
-        return this._titleFontSize !== undefined;
+        return this._titleFontSizeIsSet;
       case VegaLegendImpl.TYPE:
-        return this._type !== undefined;
+        return this._typeIsSet;
       case VegaLegendImpl.DIRECTION:
-        return this._direction !== undefined;
+        return this._directionIsSet;
       case VegaLegendImpl.LABEL_COLOR:
         return this._labelColor !== undefined;
       case VegaLegendImpl.LABEL_FONT_SIZE:
-        return this._labelFontSize !== undefined;
+        return this._labelFontSizeIsSet;
       case VegaLegendImpl.SYMBOL_SIZE:
-        return this._symbolSize !== undefined;
+        return this._symbolSizeIsSet;
       case VegaLegendImpl.SYMBOL_TYPE:
         return this._symbolType !== undefined;
       case VegaLegendImpl.PADDING:
-        return this._padding !== undefined;
+        return this._paddingIsSet;
       case VegaLegendImpl.OFFSET:
-        return this._offset !== undefined;
+        return this._offsetIsSet;
       case VegaLegendImpl.COLUMNS:
-        return this._columns !== undefined;
+        return this._columnsIsSet;
       case VegaLegendImpl.VALUES:
-        return this._values !== undefined && this._values.length > 0;
+        return this._values !== undefined && !this._values.isEmpty();
       case VegaLegendImpl.DISABLE:
-        return this._disable !== undefined;
+        return this._disableIsSet;
       default:
         return super.eIsSet(feature);
     }
@@ -582,7 +587,8 @@ export class VegaLegendImpl extends BasicEObject implements VegaLegend {
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case VegaLegendImpl.ORIENT:
-        this._orient = undefined;
+        this._orient = VegaLegendOrient.LEFT;
+        this._orientIsSet = false;
         return;
       case VegaLegendImpl.TITLE:
         this._title = undefined;
@@ -591,40 +597,49 @@ export class VegaLegendImpl extends BasicEObject implements VegaLegend {
         this._titleColor = undefined;
         return;
       case VegaLegendImpl.TITLE_FONT_SIZE:
-        this._titleFontSize = undefined;
+        this._titleFontSize = 0;
+        this._titleFontSizeIsSet = false;
         return;
       case VegaLegendImpl.TYPE:
-        this._type = undefined;
+        this._type = VegaLegendType.SYMBOL;
+        this._typeIsSet = false;
         return;
       case VegaLegendImpl.DIRECTION:
-        this._direction = undefined;
+        this._direction = VegaDirection.VERTICAL;
+        this._directionIsSet = false;
         return;
       case VegaLegendImpl.LABEL_COLOR:
         this._labelColor = undefined;
         return;
       case VegaLegendImpl.LABEL_FONT_SIZE:
-        this._labelFontSize = undefined;
+        this._labelFontSize = 0;
+        this._labelFontSizeIsSet = false;
         return;
       case VegaLegendImpl.SYMBOL_SIZE:
-        this._symbolSize = undefined;
+        this._symbolSize = 0;
+        this._symbolSizeIsSet = false;
         return;
       case VegaLegendImpl.SYMBOL_TYPE:
         this._symbolType = undefined;
         return;
       case VegaLegendImpl.PADDING:
-        this._padding = undefined;
+        this._padding = 0;
+        this._paddingIsSet = false;
         return;
       case VegaLegendImpl.OFFSET:
-        this._offset = undefined;
+        this._offset = 0;
+        this._offsetIsSet = false;
         return;
       case VegaLegendImpl.COLUMNS:
-        this._columns = undefined;
+        this._columns = 0;
+        this._columnsIsSet = false;
         return;
       case VegaLegendImpl.VALUES:
-        this._values = [];
+        if (this._values) this._values.clear();
         return;
       case VegaLegendImpl.DISABLE:
-        this._disable = undefined;
+        this._disable = false;
+        this._disableIsSet = false;
         return;
       default:
         super.eUnset(feature);

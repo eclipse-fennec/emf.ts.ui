@@ -5,8 +5,8 @@
  * @generated
  */
 
-import type { EObject, EClass, BasicEObject, EStructuralFeature } from '@emfts/core';
-import type { BaseStyle } from './BaseStyle';
+import type { EObject, EList, EClass, BasicEObject, EStructuralFeature } from '@emfts/core';
+import type { BaseStyle } from './BaseStyle.js';
 
 /**
  * Component
@@ -15,8 +15,8 @@ import type { BaseStyle } from './BaseStyle';
 export interface Component extends EObject {
   name: string;
   group?: string;
-  targetClasses: EClass[];
-  styles: BaseStyle[];
-  children: Component[];
+  targetClasses: EList<EClass>;
+  styles: EList<BaseStyle>;
+  children: EList<Component>;
 
 }

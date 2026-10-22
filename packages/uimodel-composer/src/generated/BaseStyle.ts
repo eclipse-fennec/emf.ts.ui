@@ -6,8 +6,8 @@
  */
 
 import type { EObject, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
-import type { Style } from './Style';
-import type { Expression } from './Expression';
+import type { Style } from './Style.js';
+import type { Expression } from './Expression.js';
 
 /**
  * BaseStyle

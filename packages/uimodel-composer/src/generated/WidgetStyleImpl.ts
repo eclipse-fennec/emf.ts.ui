@@ -6,11 +6,11 @@
  */
 
 import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { BaseStyle } from './BaseStyle';
-import type { WidgetType } from './WidgetType';
-import { BaseStyleImpl } from './BaseStyleImpl';
-import type { WidgetStyle } from './WidgetStyle';
-import { UimodelPackage } from './UimodelPackage';
+import type { BaseStyle } from './BaseStyle.js';
+import { WidgetType } from './WidgetType.js';
+import { BaseStyleImpl } from './BaseStyleImpl.js';
+import type { WidgetStyle } from './WidgetStyle.js';
+import { UimodelPackage } from './UimodelPackage.js';
 
 /**
  * Implementation of WidgetStyle
@@ -26,10 +26,13 @@ export class WidgetStyleImpl extends BaseStyleImpl implements WidgetStyle {
 
   // Private fields
   private _feature?: EStructuralFeature;
-  private _widgetType?: WidgetType;
+  private _widgetType: WidgetType = WidgetType.TEXT;
+  private _widgetTypeIsSet = false;
   private _label?: string;
-  private _readOnly?: boolean;
-  private _order?: number;
+  private _readOnly: boolean = false;
+  private _readOnlyIsSet = false;
+  private _order: number = 0;
+  private _orderIsSet = false;
 
   /**
    * Returns the EClass of this object
@@ -70,6 +73,7 @@ export class WidgetStyleImpl extends BaseStyleImpl implements WidgetStyle {
   set widgetType(value: WidgetType) {
     const oldValue = this._widgetType;
     this._widgetType = value;
+    this._widgetTypeIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -118,6 +122,7 @@ export class WidgetStyleImpl extends BaseStyleImpl implements WidgetStyle {
   set readOnly(value: boolean) {
     const oldValue = this._readOnly;
     this._readOnly = value;
+    this._readOnlyIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -142,6 +147,7 @@ export class WidgetStyleImpl extends BaseStyleImpl implements WidgetStyle {
   set order(value: number) {
     const oldValue = this._order;
     this._order = value;
+    this._orderIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -222,13 +228,13 @@ export class WidgetStyleImpl extends BaseStyleImpl implements WidgetStyle {
       case WidgetStyleImpl.FEATURE:
         return this._feature !== undefined;
       case WidgetStyleImpl.WIDGET_TYPE:
-        return this._widgetType !== undefined;
+        return this._widgetTypeIsSet;
       case WidgetStyleImpl.LABEL:
         return this._label !== undefined;
       case WidgetStyleImpl.READ_ONLY:
-        return this._readOnly !== undefined;
+        return this._readOnlyIsSet;
       case WidgetStyleImpl.ORDER:
-        return this._order !== undefined;
+        return this._orderIsSet;
       default:
         return super.eIsSet(feature);
     }
@@ -244,16 +250,19 @@ export class WidgetStyleImpl extends BaseStyleImpl implements WidgetStyle {
         this._feature = undefined;
         return;
       case WidgetStyleImpl.WIDGET_TYPE:
-        this._widgetType = undefined;
+        this._widgetType = WidgetType.TEXT;
+        this._widgetTypeIsSet = false;
         return;
       case WidgetStyleImpl.LABEL:
         this._label = undefined;
         return;
       case WidgetStyleImpl.READ_ONLY:
-        this._readOnly = undefined;
+        this._readOnly = false;
+        this._readOnlyIsSet = false;
         return;
       case WidgetStyleImpl.ORDER:
-        this._order = undefined;
+        this._order = 0;
+        this._orderIsSet = false;
         return;
       default:
         super.eUnset(feature);

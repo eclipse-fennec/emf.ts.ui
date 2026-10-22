@@ -6,10 +6,10 @@
  */
 
 import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { WidgetComponent } from './WidgetComponent';
-import { WidgetComponentImpl } from './WidgetComponentImpl';
-import type { CheckboxWidget } from './CheckboxWidget';
-import { UimodelPackage } from './UimodelPackage';
+import type { WidgetComponent } from './WidgetComponent.js';
+import { WidgetComponentImpl } from './WidgetComponentImpl.js';
+import type { CheckboxWidget } from './CheckboxWidget.js';
+import { UimodelPackage } from './UimodelPackage.js';
 
 /**
  * Implementation of CheckboxWidget
@@ -21,8 +21,8 @@ export class CheckboxWidgetImpl extends WidgetComponentImpl implements CheckboxW
   static readonly VALUE: number = 15;
 
   // Private fields
-  private _asToggle?: boolean;
-  private _value?: boolean;
+  private _asToggle: boolean = false;
+  private _value: boolean = false;
 
   /**
    * Returns the EClass of this object
@@ -123,9 +123,9 @@ export class CheckboxWidgetImpl extends WidgetComponentImpl implements CheckboxW
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case CheckboxWidgetImpl.AS_TOGGLE:
-        return this._asToggle !== undefined;
+        return this._asToggle !== false;
       case CheckboxWidgetImpl.VALUE:
-        return this._value !== undefined;
+        return this._value !== false;
       default:
         return super.eIsSet(feature);
     }
@@ -138,10 +138,10 @@ export class CheckboxWidgetImpl extends WidgetComponentImpl implements CheckboxW
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case CheckboxWidgetImpl.AS_TOGGLE:
-        this._asToggle = undefined;
+        this._asToggle = false;
         return;
       case CheckboxWidgetImpl.VALUE:
-        this._value = undefined;
+        this._value = false;
         return;
       default:
         super.eUnset(feature);

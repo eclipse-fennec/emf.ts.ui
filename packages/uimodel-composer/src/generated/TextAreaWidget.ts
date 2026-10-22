@@ -6,7 +6,7 @@
  */
 
 import type { EObject, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
-import type { WidgetComponent } from './WidgetComponent';
+import type { WidgetComponent } from './WidgetComponent.js';
 
 /**
  * TextAreaWidget

@@ -8,10 +8,10 @@
 import { BasicEObject } from '@emfts/core';
 import type { EClass, EStructuralFeature } from '@emfts/core';
 import type { Expression } from '@emfts/uimodel-composer';
-import type { VegaFieldType } from './VegaFieldType';
-import type { VegaAggregate } from './VegaAggregate';
-import type { VegaCondition } from './VegaCondition';
-import { UimodelVegaPackage } from './UimodelVegaPackage';
+import { VegaFieldType } from './VegaFieldType.js';
+import { VegaAggregate } from './VegaAggregate.js';
+import type { VegaCondition } from './VegaCondition.js';
+import { UimodelVegaPackage } from './UimodelVegaPackage.js';
 
 /**
  * Implementation of VegaCondition
@@ -31,8 +31,10 @@ export class VegaConditionImpl extends BasicEObject implements VegaCondition {
   private _predicate?: Expression;
   private _value?: string;
   private _feature?: EStructuralFeature;
-  private _fieldType?: VegaFieldType;
-  private _aggregate?: VegaAggregate;
+  private _fieldType: VegaFieldType = VegaFieldType.QUANTITATIVE;
+  private _fieldTypeIsSet = false;
+  private _aggregate: VegaAggregate = VegaAggregate.NONE;
+  private _aggregateIsSet = false;
 
   /**
    * Returns the EClass of this object
@@ -145,6 +147,7 @@ export class VegaConditionImpl extends BasicEObject implements VegaCondition {
   set fieldType(value: VegaFieldType) {
     const oldValue = this._fieldType;
     this._fieldType = value;
+    this._fieldTypeIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -169,6 +172,7 @@ export class VegaConditionImpl extends BasicEObject implements VegaCondition {
   set aggregate(value: VegaAggregate) {
     const oldValue = this._aggregate;
     this._aggregate = value;
+    this._aggregateIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -261,9 +265,9 @@ export class VegaConditionImpl extends BasicEObject implements VegaCondition {
       case VegaConditionImpl.FEATURE:
         return this._feature !== undefined;
       case VegaConditionImpl.FIELD_TYPE:
-        return this._fieldType !== undefined;
+        return this._fieldTypeIsSet;
       case VegaConditionImpl.AGGREGATE:
-        return this._aggregate !== undefined;
+        return this._aggregateIsSet;
       default:
         return super.eIsSet(feature);
     }
@@ -288,10 +292,12 @@ export class VegaConditionImpl extends BasicEObject implements VegaCondition {
         this._feature = undefined;
         return;
       case VegaConditionImpl.FIELD_TYPE:
-        this._fieldType = undefined;
+        this._fieldType = VegaFieldType.QUANTITATIVE;
+        this._fieldTypeIsSet = false;
         return;
       case VegaConditionImpl.AGGREGATE:
-        this._aggregate = undefined;
+        this._aggregate = VegaAggregate.NONE;
+        this._aggregateIsSet = false;
         return;
       default:
         super.eUnset(feature);

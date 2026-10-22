@@ -66,7 +66,7 @@ const dataAttrs = computed(() =>
   componentDataAttrs(props.widget as unknown as WidgetComponent)
 );
 
-const fields = computed<WidgetComponent[]>(() => props.widget.fields ?? []);
+const fields = computed<WidgetComponent[]>(() => [...(props.widget.fields ?? [])]);
 </script>
 
 <template>

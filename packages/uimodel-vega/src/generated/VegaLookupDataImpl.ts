@@ -6,9 +6,10 @@
  */
 
 import { BasicEObject } from '@emfts/core';
-import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { VegaLookupData } from './VegaLookupData';
-import { UimodelVegaPackage } from './UimodelVegaPackage';
+import { createBasicEList } from '@emfts/core';
+import type { EClass, EStructuralFeature, EList, EReference } from '@emfts/core';
+import type { VegaLookupData } from './VegaLookupData.js';
+import { UimodelVegaPackage } from './UimodelVegaPackage.js';
 
 /**
  * Implementation of VegaLookupData
@@ -23,7 +24,7 @@ export class VegaLookupDataImpl extends BasicEObject implements VegaLookupData {
   // Private fields
   private _feature?: EStructuralFeature;
   private _key?: EStructuralFeature;
-  private _fields: string[] = [];
+  private _fields!: EList<string>;
 
   /**
    * Returns the EClass of this object
@@ -81,28 +82,11 @@ export class VegaLookupDataImpl extends BasicEObject implements VegaLookupData {
     }
   }
 
-  get fields(): string[] {
-    return this._fields;
-  }
-
-  set fields(value: string[]) {
-    const oldValue = this._fields;
-    this._fields = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(VegaLookupDataImpl.FIELDS),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => VegaLookupDataImpl.FIELDS,
-        merge: () => false
-      });
+  get fields(): EList<string> {
+    if (!this._fields) {
+      this._fields = createBasicEList<any>(this, this.eClass().getEStructuralFeature('fields')!);
     }
+    return this._fields;
   }
 
   // Reflective API
@@ -139,7 +123,8 @@ export class VegaLookupDataImpl extends BasicEObject implements VegaLookupData {
         super.eSet(feature, newValue);
         break;
       case VegaLookupDataImpl.FIELDS:
-        this.fields = newValue as string[];
+        this.fields.clear();
+        this.fields.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       default:
@@ -158,7 +143,7 @@ export class VegaLookupDataImpl extends BasicEObject implements VegaLookupData {
       case VegaLookupDataImpl.KEY:
         return this._key !== undefined;
       case VegaLookupDataImpl.FIELDS:
-        return this._fields !== undefined && this._fields.length > 0;
+        return this._fields !== undefined && !this._fields.isEmpty();
       default:
         return super.eIsSet(feature);
     }
@@ -177,7 +162,7 @@ export class VegaLookupDataImpl extends BasicEObject implements VegaLookupData {
         this._key = undefined;
         return;
       case VegaLookupDataImpl.FIELDS:
-        this._fields = [];
+        if (this._fields) this._fields.clear();
         return;
       default:
         super.eUnset(feature);

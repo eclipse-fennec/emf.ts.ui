@@ -6,11 +6,12 @@
  */
 
 import { BasicEObject } from '@emfts/core';
-import type { EClass, EStructuralFeature } from '@emfts/core';
+import { createBasicEList } from '@emfts/core';
+import type { EClass, EStructuralFeature, EList, EReference } from '@emfts/core';
 import type { Expression } from '@emfts/uimodel-composer';
-import { VegaScaleType } from './VegaScaleType';
-import type { VegaScale } from './VegaScale';
-import { UimodelVegaPackage } from './UimodelVegaPackage';
+import { VegaScaleType } from './VegaScaleType.js';
+import type { VegaScale } from './VegaScale.js';
+import { UimodelVegaPackage } from './UimodelVegaPackage.js';
 
 /**
  * Implementation of VegaScale
@@ -37,20 +38,30 @@ export class VegaScaleImpl extends BasicEObject implements VegaScale {
 
   // Private fields
   private _type: VegaScaleType = VegaScaleType.LINEAR;
-  private _domain: string[] = [];
+  private _domain!: EList<string>;
   private _domainExpression?: Expression;
-  private _range: string[] = [];
+  private _range!: EList<string>;
   private _scheme?: string;
-  private _zero?: boolean;
-  private _nice?: boolean;
-  private _clamp?: boolean;
-  private _round?: boolean;
-  private _reverse?: boolean;
-  private _padding?: number;
-  private _paddingInner?: number;
-  private _paddingOuter?: number;
-  private _exponent?: number;
-  private _base?: number;
+  private _zero: boolean = false;
+  private _zeroIsSet = false;
+  private _nice: boolean = false;
+  private _niceIsSet = false;
+  private _clamp: boolean = false;
+  private _clampIsSet = false;
+  private _round: boolean = false;
+  private _roundIsSet = false;
+  private _reverse: boolean = false;
+  private _reverseIsSet = false;
+  private _padding: number = 0;
+  private _paddingIsSet = false;
+  private _paddingInner: number = 0;
+  private _paddingInnerIsSet = false;
+  private _paddingOuter: number = 0;
+  private _paddingOuterIsSet = false;
+  private _exponent: number = 0;
+  private _exponentIsSet = false;
+  private _base: number = 0;
+  private _baseIsSet = false;
   private _interpolate?: string;
 
   /**
@@ -85,28 +96,11 @@ export class VegaScaleImpl extends BasicEObject implements VegaScale {
     }
   }
 
-  get domain(): string[] {
-    return this._domain;
-  }
-
-  set domain(value: string[]) {
-    const oldValue = this._domain;
-    this._domain = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(VegaScaleImpl.DOMAIN),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => VegaScaleImpl.DOMAIN,
-        merge: () => false
-      });
+  get domain(): EList<string> {
+    if (!this._domain) {
+      this._domain = createBasicEList<any>(this, this.eClass().getEStructuralFeature('domain')!);
     }
+    return this._domain;
   }
 
   get domainExpression(): Expression {
@@ -133,28 +127,11 @@ export class VegaScaleImpl extends BasicEObject implements VegaScale {
     }
   }
 
-  get range(): string[] {
-    return this._range;
-  }
-
-  set range(value: string[]) {
-    const oldValue = this._range;
-    this._range = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(VegaScaleImpl.RANGE),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => VegaScaleImpl.RANGE,
-        merge: () => false
-      });
+  get range(): EList<string> {
+    if (!this._range) {
+      this._range = createBasicEList<any>(this, this.eClass().getEStructuralFeature('range')!);
     }
+    return this._range;
   }
 
   get scheme(): string {
@@ -188,6 +165,7 @@ export class VegaScaleImpl extends BasicEObject implements VegaScale {
   set zero(value: boolean) {
     const oldValue = this._zero;
     this._zero = value;
+    this._zeroIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -212,6 +190,7 @@ export class VegaScaleImpl extends BasicEObject implements VegaScale {
   set nice(value: boolean) {
     const oldValue = this._nice;
     this._nice = value;
+    this._niceIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -236,6 +215,7 @@ export class VegaScaleImpl extends BasicEObject implements VegaScale {
   set clamp(value: boolean) {
     const oldValue = this._clamp;
     this._clamp = value;
+    this._clampIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -260,6 +240,7 @@ export class VegaScaleImpl extends BasicEObject implements VegaScale {
   set round(value: boolean) {
     const oldValue = this._round;
     this._round = value;
+    this._roundIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -284,6 +265,7 @@ export class VegaScaleImpl extends BasicEObject implements VegaScale {
   set reverse(value: boolean) {
     const oldValue = this._reverse;
     this._reverse = value;
+    this._reverseIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -308,6 +290,7 @@ export class VegaScaleImpl extends BasicEObject implements VegaScale {
   set padding(value: number) {
     const oldValue = this._padding;
     this._padding = value;
+    this._paddingIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -332,6 +315,7 @@ export class VegaScaleImpl extends BasicEObject implements VegaScale {
   set paddingInner(value: number) {
     const oldValue = this._paddingInner;
     this._paddingInner = value;
+    this._paddingInnerIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -356,6 +340,7 @@ export class VegaScaleImpl extends BasicEObject implements VegaScale {
   set paddingOuter(value: number) {
     const oldValue = this._paddingOuter;
     this._paddingOuter = value;
+    this._paddingOuterIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -380,6 +365,7 @@ export class VegaScaleImpl extends BasicEObject implements VegaScale {
   set exponent(value: number) {
     const oldValue = this._exponent;
     this._exponent = value;
+    this._exponentIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -404,6 +390,7 @@ export class VegaScaleImpl extends BasicEObject implements VegaScale {
   set base(value: number) {
     const oldValue = this._base;
     this._base = value;
+    this._baseIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -501,7 +488,8 @@ export class VegaScaleImpl extends BasicEObject implements VegaScale {
         super.eSet(feature, newValue);
         break;
       case VegaScaleImpl.DOMAIN:
-        this.domain = newValue as string[];
+        this.domain.clear();
+        this.domain.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       case VegaScaleImpl.DOMAIN_EXPRESSION:
@@ -509,7 +497,8 @@ export class VegaScaleImpl extends BasicEObject implements VegaScale {
         super.eSet(feature, newValue);
         break;
       case VegaScaleImpl.RANGE:
-        this.range = newValue as string[];
+        this.range.clear();
+        this.range.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       case VegaScaleImpl.SCHEME:
@@ -574,33 +563,33 @@ export class VegaScaleImpl extends BasicEObject implements VegaScale {
       case VegaScaleImpl.TYPE:
         return this._type !== VegaScaleType.LINEAR;
       case VegaScaleImpl.DOMAIN:
-        return this._domain !== undefined && this._domain.length > 0;
+        return this._domain !== undefined && !this._domain.isEmpty();
       case VegaScaleImpl.DOMAIN_EXPRESSION:
         return this._domainExpression !== undefined;
       case VegaScaleImpl.RANGE:
-        return this._range !== undefined && this._range.length > 0;
+        return this._range !== undefined && !this._range.isEmpty();
       case VegaScaleImpl.SCHEME:
         return this._scheme !== undefined;
       case VegaScaleImpl.ZERO:
-        return this._zero !== undefined;
+        return this._zeroIsSet;
       case VegaScaleImpl.NICE:
-        return this._nice !== undefined;
+        return this._niceIsSet;
       case VegaScaleImpl.CLAMP:
-        return this._clamp !== undefined;
+        return this._clampIsSet;
       case VegaScaleImpl.ROUND:
-        return this._round !== undefined;
+        return this._roundIsSet;
       case VegaScaleImpl.REVERSE:
-        return this._reverse !== undefined;
+        return this._reverseIsSet;
       case VegaScaleImpl.PADDING:
-        return this._padding !== undefined;
+        return this._paddingIsSet;
       case VegaScaleImpl.PADDING_INNER:
-        return this._paddingInner !== undefined;
+        return this._paddingInnerIsSet;
       case VegaScaleImpl.PADDING_OUTER:
-        return this._paddingOuter !== undefined;
+        return this._paddingOuterIsSet;
       case VegaScaleImpl.EXPONENT:
-        return this._exponent !== undefined;
+        return this._exponentIsSet;
       case VegaScaleImpl.BASE:
-        return this._base !== undefined;
+        return this._baseIsSet;
       case VegaScaleImpl.INTERPOLATE:
         return this._interpolate !== undefined;
       default:
@@ -618,46 +607,56 @@ export class VegaScaleImpl extends BasicEObject implements VegaScale {
         this._type = VegaScaleType.LINEAR;
         return;
       case VegaScaleImpl.DOMAIN:
-        this._domain = [];
+        if (this._domain) this._domain.clear();
         return;
       case VegaScaleImpl.DOMAIN_EXPRESSION:
         this._domainExpression = undefined;
         return;
       case VegaScaleImpl.RANGE:
-        this._range = [];
+        if (this._range) this._range.clear();
         return;
       case VegaScaleImpl.SCHEME:
         this._scheme = undefined;
         return;
       case VegaScaleImpl.ZERO:
-        this._zero = undefined;
+        this._zero = false;
+        this._zeroIsSet = false;
         return;
       case VegaScaleImpl.NICE:
-        this._nice = undefined;
+        this._nice = false;
+        this._niceIsSet = false;
         return;
       case VegaScaleImpl.CLAMP:
-        this._clamp = undefined;
+        this._clamp = false;
+        this._clampIsSet = false;
         return;
       case VegaScaleImpl.ROUND:
-        this._round = undefined;
+        this._round = false;
+        this._roundIsSet = false;
         return;
       case VegaScaleImpl.REVERSE:
-        this._reverse = undefined;
+        this._reverse = false;
+        this._reverseIsSet = false;
         return;
       case VegaScaleImpl.PADDING:
-        this._padding = undefined;
+        this._padding = 0;
+        this._paddingIsSet = false;
         return;
       case VegaScaleImpl.PADDING_INNER:
-        this._paddingInner = undefined;
+        this._paddingInner = 0;
+        this._paddingInnerIsSet = false;
         return;
       case VegaScaleImpl.PADDING_OUTER:
-        this._paddingOuter = undefined;
+        this._paddingOuter = 0;
+        this._paddingOuterIsSet = false;
         return;
       case VegaScaleImpl.EXPONENT:
-        this._exponent = undefined;
+        this._exponent = 0;
+        this._exponentIsSet = false;
         return;
       case VegaScaleImpl.BASE:
-        this._base = undefined;
+        this._base = 0;
+        this._baseIsSet = false;
         return;
       case VegaScaleImpl.INTERPOLATE:
         this._interpolate = undefined;

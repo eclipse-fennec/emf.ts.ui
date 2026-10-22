@@ -5,11 +5,12 @@
  * @generated
  */
 
-import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { VegaTransform } from './VegaTransform';
-import { VegaTransformImpl } from './VegaTransformImpl';
-import type { VegaPivotTransform } from './VegaPivotTransform';
-import { UimodelVegaPackage } from './UimodelVegaPackage';
+import { createEObjectEList } from '@emfts/core';
+import type { EClass, EStructuralFeature, EList, EReference } from '@emfts/core';
+import type { VegaTransform } from './VegaTransform.js';
+import { VegaTransformImpl } from './VegaTransformImpl.js';
+import type { VegaPivotTransform } from './VegaPivotTransform.js';
+import { UimodelVegaPackage } from './UimodelVegaPackage.js';
 
 /**
  * Implementation of VegaPivotTransform
@@ -24,7 +25,7 @@ export class VegaPivotTransformImpl extends VegaTransformImpl implements VegaPiv
   // Private fields
   private _pivot?: EStructuralFeature;
   private _value?: EStructuralFeature;
-  private _groupBy: EStructuralFeature[] = [];
+  private _groupBy!: EList<EStructuralFeature>;
 
   /**
    * Returns the EClass of this object
@@ -82,28 +83,11 @@ export class VegaPivotTransformImpl extends VegaTransformImpl implements VegaPiv
     }
   }
 
-  get groupBy(): EStructuralFeature[] {
-    return this._groupBy;
-  }
-
-  set groupBy(value: EStructuralFeature[]) {
-    const oldValue = this._groupBy;
-    this._groupBy = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(VegaPivotTransformImpl.GROUP_BY),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => VegaPivotTransformImpl.GROUP_BY,
-        merge: () => false
-      });
+  get groupBy(): EList<EStructuralFeature> {
+    if (!this._groupBy) {
+      this._groupBy = createEObjectEList(this, this.eClass().getEStructuralFeature('groupBy') as EReference) as unknown as EList<EStructuralFeature>;
     }
+    return this._groupBy;
   }
 
   // Reflective API
@@ -140,7 +124,8 @@ export class VegaPivotTransformImpl extends VegaTransformImpl implements VegaPiv
         super.eSet(feature, newValue);
         break;
       case VegaPivotTransformImpl.GROUP_BY:
-        this.groupBy = newValue as EStructuralFeature[];
+        this.groupBy.clear();
+        this.groupBy.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       default:
@@ -159,7 +144,7 @@ export class VegaPivotTransformImpl extends VegaTransformImpl implements VegaPiv
       case VegaPivotTransformImpl.VALUE:
         return this._value !== undefined;
       case VegaPivotTransformImpl.GROUP_BY:
-        return this._groupBy !== undefined && this._groupBy.length > 0;
+        return this._groupBy !== undefined && !this._groupBy.isEmpty();
       default:
         return super.eIsSet(feature);
     }
@@ -178,7 +163,7 @@ export class VegaPivotTransformImpl extends VegaTransformImpl implements VegaPiv
         this._value = undefined;
         return;
       case VegaPivotTransformImpl.GROUP_BY:
-        this._groupBy = [];
+        if (this._groupBy) this._groupBy.clear();
         return;
       default:
         super.eUnset(feature);

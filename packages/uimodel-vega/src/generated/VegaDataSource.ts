@@ -5,9 +5,9 @@
  * @generated
  */
 
-import type { EObject, EStructuralFeature, BasicEObject, EClass } from '@emfts/core';
+import type { EObject, EList, EStructuralFeature, BasicEObject, EClass } from '@emfts/core';
 import type { Expression } from '@emfts/uimodel-composer';
-import type { VegaTransform } from './VegaTransform';
+import type { VegaTransform } from './VegaTransform.js';
 
 /**
  * VegaDataSource
@@ -16,7 +16,7 @@ import type { VegaTransform } from './VegaTransform';
 export interface VegaDataSource extends EObject {
   feature: EStructuralFeature;
   filterExpression?: Expression;
-  transforms: VegaTransform[];
+  transforms: EList<VegaTransform>;
   transformExpression?: Expression;
 
 }

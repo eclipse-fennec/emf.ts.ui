@@ -5,12 +5,13 @@
  * @generated
  */
 
-import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { Renderer } from './Renderer';
-import type { RendererRule } from './RendererRule';
-import { RendererImpl } from './RendererImpl';
-import type { RuleBasedRenderer } from './RuleBasedRenderer';
-import { UimodelMapsPackage } from './UimodelMapsPackage';
+import { createContainmentEList } from '@emfts/core';
+import type { EClass, EStructuralFeature, EList, EReference } from '@emfts/core';
+import type { Renderer } from './Renderer.js';
+import type { RendererRule } from './RendererRule.js';
+import { RendererImpl } from './RendererImpl.js';
+import type { RuleBasedRenderer } from './RuleBasedRenderer.js';
+import { UimodelMapsPackage } from './UimodelMapsPackage.js';
 
 /**
  * Implementation of RuleBasedRenderer
@@ -21,7 +22,7 @@ export class RuleBasedRendererImpl extends RendererImpl implements RuleBasedRend
   static readonly RULES: number = 0;
 
   // Private fields
-  private _rules: RendererRule[] = [];
+  private _rules!: EList<RendererRule>;
 
   /**
    * Returns the EClass of this object
@@ -31,28 +32,11 @@ export class RuleBasedRendererImpl extends RendererImpl implements RuleBasedRend
   }
 
   // Getters and Setters
-  get rules(): RendererRule[] {
-    return this._rules;
-  }
-
-  set rules(value: RendererRule[]) {
-    const oldValue = this._rules;
-    this._rules = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(RuleBasedRendererImpl.RULES),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => RuleBasedRendererImpl.RULES,
-        merge: () => false
-      });
+  get rules(): EList<RendererRule> {
+    if (!this._rules) {
+      this._rules = createContainmentEList<any>(this, this.eClass().getEStructuralFeature('rules') as EReference);
     }
+    return this._rules;
   }
 
   // Reflective API
@@ -77,7 +61,8 @@ export class RuleBasedRendererImpl extends RendererImpl implements RuleBasedRend
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case RuleBasedRendererImpl.RULES:
-        this.rules = newValue as RendererRule[];
+        this.rules.clear();
+        this.rules.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       default:
@@ -92,7 +77,7 @@ export class RuleBasedRendererImpl extends RendererImpl implements RuleBasedRend
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case RuleBasedRendererImpl.RULES:
-        return this._rules !== undefined && this._rules.length > 0;
+        return this._rules !== undefined && !this._rules.isEmpty();
       default:
         return super.eIsSet(feature);
     }
@@ -105,7 +90,7 @@ export class RuleBasedRendererImpl extends RendererImpl implements RuleBasedRend
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case RuleBasedRendererImpl.RULES:
-        this._rules = [];
+        if (this._rules) this._rules.clear();
         return;
       default:
         super.eUnset(feature);

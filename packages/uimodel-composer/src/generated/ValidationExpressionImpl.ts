@@ -6,11 +6,11 @@
  */
 
 import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { Expression } from './Expression';
-import { Severity } from './Severity';
-import { ExpressionImpl } from './ExpressionImpl';
-import type { ValidationExpression } from './ValidationExpression';
-import { UimodelPackage } from './UimodelPackage';
+import type { Expression } from './Expression.js';
+import { Severity } from './Severity.js';
+import { ExpressionImpl } from './ExpressionImpl.js';
+import type { ValidationExpression } from './ValidationExpression.js';
+import { UimodelPackage } from './UimodelPackage.js';
 
 /**
  * Implementation of ValidationExpression

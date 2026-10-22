@@ -27,6 +27,12 @@ function eGet(obj: EObject, name: string): any {
   return obj.eGet(feature);
 }
 
+/** Like eNum, but undefined when the feature is not set (unsettable bounds). */
+function eNumIfSet(obj: EObject, name: string): number | undefined {
+  const feature = obj.eClass?.()?.getEStructuralFeature(name);
+  return feature && obj.eIsSet(feature) ? eNum(obj, name) : undefined;
+}
+
 /** Read a feature and coerce to a finite number (XMI stores numeric attrs as strings). */
 function eNum(obj: EObject, name: string): number | undefined {
   const v = eGet(obj, name);
@@ -373,8 +379,9 @@ function pickSymbol(renderer: EObject, feature: any): EObject | undefined {
     const num = classF ? Number(feature.get(classF.getName?.() ?? '')) : NaN;
     const classes = toList(eGet(renderer, 'classes'));
     const match = classes.find((c) => {
-      const lo = eNum(c, 'lowerBound') ?? -Infinity;
-      const hi = eNum(c, 'upperBound') ?? Infinity;
+      // unset bounds are open: attributes start at 0, so ask eIsSet
+      const lo = eNumIfSet(c, 'lowerBound') ?? -Infinity;
+      const hi = eNumIfSet(c, 'upperBound') ?? Infinity;
       return num >= lo && num <= hi;
     });
     return match ? (eGet(match, 'symbol') as EObject) : undefined;

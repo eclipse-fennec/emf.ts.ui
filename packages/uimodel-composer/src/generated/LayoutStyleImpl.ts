@@ -6,11 +6,11 @@
  */
 
 import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { BaseStyle } from './BaseStyle';
-import type { LayoutType } from './LayoutType';
-import { BaseStyleImpl } from './BaseStyleImpl';
-import type { LayoutStyle } from './LayoutStyle';
-import { UimodelPackage } from './UimodelPackage';
+import type { BaseStyle } from './BaseStyle.js';
+import { LayoutType } from './LayoutType.js';
+import { BaseStyleImpl } from './BaseStyleImpl.js';
+import type { LayoutStyle } from './LayoutStyle.js';
+import { UimodelPackage } from './UimodelPackage.js';
 
 /**
  * Implementation of LayoutStyle
@@ -22,8 +22,10 @@ export class LayoutStyleImpl extends BaseStyleImpl implements LayoutStyle {
   static readonly ORDER: number = 7;
 
   // Private fields
-  private _layout?: LayoutType;
-  private _order?: number;
+  private _layout: LayoutType = LayoutType.VERTICAL;
+  private _layoutIsSet = false;
+  private _order: number = 0;
+  private _orderIsSet = false;
 
   /**
    * Returns the EClass of this object
@@ -40,6 +42,7 @@ export class LayoutStyleImpl extends BaseStyleImpl implements LayoutStyle {
   set layout(value: LayoutType) {
     const oldValue = this._layout;
     this._layout = value;
+    this._layoutIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -64,6 +67,7 @@ export class LayoutStyleImpl extends BaseStyleImpl implements LayoutStyle {
   set order(value: number) {
     const oldValue = this._order;
     this._order = value;
+    this._orderIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -124,9 +128,9 @@ export class LayoutStyleImpl extends BaseStyleImpl implements LayoutStyle {
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case LayoutStyleImpl.LAYOUT:
-        return this._layout !== undefined;
+        return this._layoutIsSet;
       case LayoutStyleImpl.ORDER:
-        return this._order !== undefined;
+        return this._orderIsSet;
       default:
         return super.eIsSet(feature);
     }
@@ -139,10 +143,12 @@ export class LayoutStyleImpl extends BaseStyleImpl implements LayoutStyle {
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case LayoutStyleImpl.LAYOUT:
-        this._layout = undefined;
+        this._layout = LayoutType.VERTICAL;
+        this._layoutIsSet = false;
         return;
       case LayoutStyleImpl.ORDER:
-        this._order = undefined;
+        this._order = 0;
+        this._orderIsSet = false;
         return;
       default:
         super.eUnset(feature);

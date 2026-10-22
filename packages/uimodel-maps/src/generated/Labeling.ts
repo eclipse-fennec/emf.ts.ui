@@ -7,7 +7,7 @@
 
 import type { EObject, EStructuralFeature, BasicEObject, EClass } from '@emfts/core';
 import type { Expression } from '@emfts/uimodel-composer';
-import type { LabelPlacement } from './LabelPlacement';
+import type { LabelPlacement } from './LabelPlacement.js';
 
 /**
  * Labeling

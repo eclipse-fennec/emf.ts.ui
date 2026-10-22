@@ -5,15 +5,16 @@
  * @generated
  */
 
-import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { Component } from './Component';
-import type { Expression } from './Expression';
-import type { ValidationExpression } from './ValidationExpression';
-import type { ValidationMessageMapper } from './ValidationMessageMapper';
-import type { PropertyBinding } from './PropertyBinding';
-import { ComponentImpl } from './ComponentImpl';
-import type { WidgetComponent } from './WidgetComponent';
-import { UimodelPackage } from './UimodelPackage';
+import { createContainmentEList } from '@emfts/core';
+import type { EClass, EStructuralFeature, EList, EReference } from '@emfts/core';
+import type { Component } from './Component.js';
+import type { Expression } from './Expression.js';
+import type { ValidationExpression } from './ValidationExpression.js';
+import type { ValidationMessageMapper } from './ValidationMessageMapper.js';
+import type { PropertyBinding } from './PropertyBinding.js';
+import { ComponentImpl } from './ComponentImpl.js';
+import type { WidgetComponent } from './WidgetComponent.js';
+import { UimodelPackage } from './UimodelPackage.js';
 
 /**
  * Implementation of WidgetComponent
@@ -35,12 +36,14 @@ export abstract class WidgetComponentImpl extends ComponentImpl implements Widge
   private _feature?: EStructuralFeature;
   private _label?: string;
   private _placeholder?: string;
-  private _readOnly?: boolean;
-  private _required?: boolean;
+  private _readOnly: boolean = false;
+  private _readOnlyIsSet = false;
+  private _required: boolean = false;
+  private _requiredIsSet = false;
   private _visibilityCondition?: Expression;
-  private _validations: ValidationExpression[] = [];
-  private _validationMappers: ValidationMessageMapper[] = [];
-  private _bindings: PropertyBinding[] = [];
+  private _validations!: EList<ValidationExpression>;
+  private _validationMappers!: EList<ValidationMessageMapper>;
+  private _bindings!: EList<PropertyBinding>;
 
   /**
    * Returns the EClass of this object
@@ -129,6 +132,7 @@ export abstract class WidgetComponentImpl extends ComponentImpl implements Widge
   set readOnly(value: boolean) {
     const oldValue = this._readOnly;
     this._readOnly = value;
+    this._readOnlyIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -153,6 +157,7 @@ export abstract class WidgetComponentImpl extends ComponentImpl implements Widge
   set required(value: boolean) {
     const oldValue = this._required;
     this._required = value;
+    this._requiredIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -194,76 +199,25 @@ export abstract class WidgetComponentImpl extends ComponentImpl implements Widge
     }
   }
 
-  get validations(): ValidationExpression[] {
+  get validations(): EList<ValidationExpression> {
+    if (!this._validations) {
+      this._validations = createContainmentEList<any>(this, this.eClass().getEStructuralFeature('validations') as EReference);
+    }
     return this._validations;
   }
 
-  set validations(value: ValidationExpression[]) {
-    const oldValue = this._validations;
-    this._validations = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(WidgetComponentImpl.VALIDATIONS),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => WidgetComponentImpl.VALIDATIONS,
-        merge: () => false
-      });
+  get validationMappers(): EList<ValidationMessageMapper> {
+    if (!this._validationMappers) {
+      this._validationMappers = createContainmentEList<any>(this, this.eClass().getEStructuralFeature('validationMappers') as EReference);
     }
-  }
-
-  get validationMappers(): ValidationMessageMapper[] {
     return this._validationMappers;
   }
 
-  set validationMappers(value: ValidationMessageMapper[]) {
-    const oldValue = this._validationMappers;
-    this._validationMappers = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(WidgetComponentImpl.VALIDATION_MAPPERS),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => WidgetComponentImpl.VALIDATION_MAPPERS,
-        merge: () => false
-      });
+  get bindings(): EList<PropertyBinding> {
+    if (!this._bindings) {
+      this._bindings = createContainmentEList<any>(this, this.eClass().getEStructuralFeature('bindings') as EReference);
     }
-  }
-
-  get bindings(): PropertyBinding[] {
     return this._bindings;
-  }
-
-  set bindings(value: PropertyBinding[]) {
-    const oldValue = this._bindings;
-    this._bindings = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(WidgetComponentImpl.BINDINGS),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => WidgetComponentImpl.BINDINGS,
-        merge: () => false
-      });
-    }
   }
 
   // Reflective API
@@ -328,15 +282,18 @@ export abstract class WidgetComponentImpl extends ComponentImpl implements Widge
         super.eSet(feature, newValue);
         break;
       case WidgetComponentImpl.VALIDATIONS:
-        this.validations = newValue as ValidationExpression[];
+        this.validations.clear();
+        this.validations.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       case WidgetComponentImpl.VALIDATION_MAPPERS:
-        this.validationMappers = newValue as ValidationMessageMapper[];
+        this.validationMappers.clear();
+        this.validationMappers.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       case WidgetComponentImpl.BINDINGS:
-        this.bindings = newValue as PropertyBinding[];
+        this.bindings.clear();
+        this.bindings.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       default:
@@ -357,17 +314,17 @@ export abstract class WidgetComponentImpl extends ComponentImpl implements Widge
       case WidgetComponentImpl.PLACEHOLDER:
         return this._placeholder !== undefined;
       case WidgetComponentImpl.READ_ONLY:
-        return this._readOnly !== undefined;
+        return this._readOnlyIsSet;
       case WidgetComponentImpl.REQUIRED:
-        return this._required !== undefined;
+        return this._requiredIsSet;
       case WidgetComponentImpl.VISIBILITY_CONDITION:
         return this._visibilityCondition !== undefined;
       case WidgetComponentImpl.VALIDATIONS:
-        return this._validations !== undefined && this._validations.length > 0;
+        return this._validations !== undefined && !this._validations.isEmpty();
       case WidgetComponentImpl.VALIDATION_MAPPERS:
-        return this._validationMappers !== undefined && this._validationMappers.length > 0;
+        return this._validationMappers !== undefined && !this._validationMappers.isEmpty();
       case WidgetComponentImpl.BINDINGS:
-        return this._bindings !== undefined && this._bindings.length > 0;
+        return this._bindings !== undefined && !this._bindings.isEmpty();
       default:
         return super.eIsSet(feature);
     }
@@ -389,22 +346,24 @@ export abstract class WidgetComponentImpl extends ComponentImpl implements Widge
         this._placeholder = undefined;
         return;
       case WidgetComponentImpl.READ_ONLY:
-        this._readOnly = undefined;
+        this._readOnly = false;
+        this._readOnlyIsSet = false;
         return;
       case WidgetComponentImpl.REQUIRED:
-        this._required = undefined;
+        this._required = false;
+        this._requiredIsSet = false;
         return;
       case WidgetComponentImpl.VISIBILITY_CONDITION:
         this._visibilityCondition = undefined;
         return;
       case WidgetComponentImpl.VALIDATIONS:
-        this._validations = [];
+        if (this._validations) this._validations.clear();
         return;
       case WidgetComponentImpl.VALIDATION_MAPPERS:
-        this._validationMappers = [];
+        if (this._validationMappers) this._validationMappers.clear();
         return;
       case WidgetComponentImpl.BINDINGS:
-        this._bindings = [];
+        if (this._bindings) this._bindings.clear();
         return;
       default:
         super.eUnset(feature);

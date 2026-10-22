@@ -7,8 +7,8 @@
 
 import type { EObject, EStructuralFeature, BasicEObject, EClass } from '@emfts/core';
 import type { Expression } from '@emfts/uimodel-composer';
-import type { VegaFieldType } from './VegaFieldType';
-import type { VegaAggregate } from './VegaAggregate';
+import type { VegaFieldType } from './VegaFieldType.js';
+import type { VegaAggregate } from './VegaAggregate.js';
 
 /**
  * VegaCondition

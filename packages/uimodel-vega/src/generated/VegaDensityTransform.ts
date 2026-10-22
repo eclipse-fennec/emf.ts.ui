@@ -5,8 +5,8 @@
  * @generated
  */
 
-import type { EObject, EStructuralFeature, BasicEObject, EClass } from '@emfts/core';
-import type { VegaTransform } from './VegaTransform';
+import type { EObject, EList, EStructuralFeature, BasicEObject, EClass } from '@emfts/core';
+import type { VegaTransform } from './VegaTransform.js';
 
 /**
  * VegaDensityTransform
@@ -16,6 +16,6 @@ export interface VegaDensityTransform extends VegaTransform {
   field: EStructuralFeature;
   bandwidth?: number;
   steps?: number;
-  as: string[];
+  as: EList<string>;
 
 }

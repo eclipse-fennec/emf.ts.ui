@@ -8,8 +8,8 @@
 import { BasicEObject } from '@emfts/core';
 import type { EClass, EStructuralFeature } from '@emfts/core';
 import type { Expression } from '@emfts/uimodel-composer';
-import type { VegaSignalBinding } from './VegaSignalBinding';
-import { UimodelVegaPackage } from './UimodelVegaPackage';
+import type { VegaSignalBinding } from './VegaSignalBinding.js';
+import { UimodelVegaPackage } from './UimodelVegaPackage.js';
 
 /**
  * Implementation of VegaSignalBinding
@@ -22,7 +22,7 @@ export class VegaSignalBindingImpl extends BasicEObject implements VegaSignalBin
   static readonly TRANSFORM: number = 2;
 
   // Private fields
-  private _signalName: string = "";
+  private _signalName?: string;
   private _targetFeature?: EStructuralFeature;
   private _transform?: Expression;
 
@@ -155,7 +155,7 @@ export class VegaSignalBindingImpl extends BasicEObject implements VegaSignalBin
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case VegaSignalBindingImpl.SIGNAL_NAME:
-        return this._signalName !== "";
+        return this._signalName !== undefined;
       case VegaSignalBindingImpl.TARGET_FEATURE:
         return this._targetFeature !== undefined;
       case VegaSignalBindingImpl.TRANSFORM:
@@ -172,7 +172,7 @@ export class VegaSignalBindingImpl extends BasicEObject implements VegaSignalBin
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case VegaSignalBindingImpl.SIGNAL_NAME:
-        this._signalName = "";
+        this._signalName = undefined;
         return;
       case VegaSignalBindingImpl.TARGET_FEATURE:
         this._targetFeature = undefined;

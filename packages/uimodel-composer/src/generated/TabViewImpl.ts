@@ -5,11 +5,12 @@
  * @generated
  */
 
-import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { Component } from './Component';
-import { ComponentImpl } from './ComponentImpl';
-import type { TabView } from './TabView';
-import { UimodelPackage } from './UimodelPackage';
+import { createContainmentEList } from '@emfts/core';
+import type { EClass, EStructuralFeature, EList, EReference } from '@emfts/core';
+import type { Component } from './Component.js';
+import { ComponentImpl } from './ComponentImpl.js';
+import type { TabView } from './TabView.js';
+import { UimodelPackage } from './UimodelPackage.js';
 
 /**
  * Implementation of TabView
@@ -20,7 +21,7 @@ export class TabViewImpl extends ComponentImpl implements TabView {
   static readonly TABS: number = 5;
 
   // Private fields
-  private _tabs: Component[] = [];
+  private _tabs!: EList<Component>;
 
   /**
    * Returns the EClass of this object
@@ -30,28 +31,11 @@ export class TabViewImpl extends ComponentImpl implements TabView {
   }
 
   // Getters and Setters
-  get tabs(): Component[] {
-    return this._tabs;
-  }
-
-  set tabs(value: Component[]) {
-    const oldValue = this._tabs;
-    this._tabs = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(TabViewImpl.TABS),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => TabViewImpl.TABS,
-        merge: () => false
-      });
+  get tabs(): EList<Component> {
+    if (!this._tabs) {
+      this._tabs = createContainmentEList<any>(this, this.eClass().getEStructuralFeature('tabs') as EReference);
     }
+    return this._tabs;
   }
 
   // Reflective API
@@ -76,7 +60,8 @@ export class TabViewImpl extends ComponentImpl implements TabView {
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case TabViewImpl.TABS:
-        this.tabs = newValue as Component[];
+        this.tabs.clear();
+        this.tabs.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       default:
@@ -91,7 +76,7 @@ export class TabViewImpl extends ComponentImpl implements TabView {
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case TabViewImpl.TABS:
-        return this._tabs !== undefined && this._tabs.length > 0;
+        return this._tabs !== undefined && !this._tabs.isEmpty();
       default:
         return super.eIsSet(feature);
     }
@@ -104,7 +89,7 @@ export class TabViewImpl extends ComponentImpl implements TabView {
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case TabViewImpl.TABS:
-        this._tabs = [];
+        if (this._tabs) this._tabs.clear();
         return;
       default:
         super.eUnset(feature);

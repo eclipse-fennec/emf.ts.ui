@@ -7,19 +7,19 @@
 
 import { BasicEObject } from '@emfts/core';
 import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { VegaChannel } from './VegaChannel';
 import type { Expression } from '@emfts/uimodel-composer';
-import type { VegaFieldType } from './VegaFieldType';
-import type { VegaTimeUnit } from './VegaTimeUnit';
-import type { VegaSortOrder } from './VegaSortOrder';
-import type { VegaStack } from './VegaStack';
-import type { VegaScale } from './VegaScale';
-import type { VegaAxis } from './VegaAxis';
-import type { VegaLegend } from './VegaLegend';
-import type { VegaCondition } from './VegaCondition';
-import { VegaAggregate } from './VegaAggregate';
-import type { VegaEncoding } from './VegaEncoding';
-import { UimodelVegaPackage } from './UimodelVegaPackage';
+import type { VegaScale } from './VegaScale.js';
+import type { VegaAxis } from './VegaAxis.js';
+import type { VegaLegend } from './VegaLegend.js';
+import type { VegaCondition } from './VegaCondition.js';
+import { VegaChannel } from './VegaChannel.js';
+import { VegaFieldType } from './VegaFieldType.js';
+import { VegaAggregate } from './VegaAggregate.js';
+import { VegaTimeUnit } from './VegaTimeUnit.js';
+import { VegaSortOrder } from './VegaSortOrder.js';
+import { VegaStack } from './VegaStack.js';
+import type { VegaEncoding } from './VegaEncoding.js';
+import { UimodelVegaPackage } from './UimodelVegaPackage.js';
 
 /**
  * Implementation of VegaEncoding
@@ -49,22 +49,31 @@ export class VegaEncodingImpl extends BasicEObject implements VegaEncoding {
   static readonly CONDITION: number = 19;
 
   // Private fields
-  private _channel?: VegaChannel;
+  private _channel: VegaChannel = VegaChannel.X;
+  private _channelIsSet = false;
   private _feature?: EStructuralFeature;
   private _expression?: Expression;
   private _value?: string;
-  private _fieldType?: VegaFieldType;
+  private _fieldType: VegaFieldType = VegaFieldType.QUANTITATIVE;
+  private _fieldTypeIsSet = false;
   private _aggregate: VegaAggregate = VegaAggregate.NONE;
-  private _bin?: boolean;
-  private _binStep?: number;
-  private _binMaxBins?: number;
-  private _timeUnit?: VegaTimeUnit;
+  private _bin: boolean = false;
+  private _binIsSet = false;
+  private _binStep: number = 0;
+  private _binStepIsSet = false;
+  private _binMaxBins: number = 0;
+  private _binMaxBinsIsSet = false;
+  private _timeUnit: VegaTimeUnit = VegaTimeUnit.YEAR;
+  private _timeUnitIsSet = false;
   private _title?: string;
   private _format?: string;
   private _formatType?: string;
-  private _sort?: VegaSortOrder;
-  private _stack?: VegaStack;
-  private _bandPosition?: number;
+  private _sort: VegaSortOrder = VegaSortOrder.ASCENDING;
+  private _sortIsSet = false;
+  private _stack: VegaStack = VegaStack.ZERO;
+  private _stackIsSet = false;
+  private _bandPosition: number = 0;
+  private _bandPositionIsSet = false;
   private _scale?: VegaScale;
   private _axis?: VegaAxis;
   private _legend?: VegaLegend;
@@ -85,6 +94,7 @@ export class VegaEncodingImpl extends BasicEObject implements VegaEncoding {
   set channel(value: VegaChannel) {
     const oldValue = this._channel;
     this._channel = value;
+    this._channelIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -181,6 +191,7 @@ export class VegaEncodingImpl extends BasicEObject implements VegaEncoding {
   set fieldType(value: VegaFieldType) {
     const oldValue = this._fieldType;
     this._fieldType = value;
+    this._fieldTypeIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -229,6 +240,7 @@ export class VegaEncodingImpl extends BasicEObject implements VegaEncoding {
   set bin(value: boolean) {
     const oldValue = this._bin;
     this._bin = value;
+    this._binIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -253,6 +265,7 @@ export class VegaEncodingImpl extends BasicEObject implements VegaEncoding {
   set binStep(value: number) {
     const oldValue = this._binStep;
     this._binStep = value;
+    this._binStepIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -277,6 +290,7 @@ export class VegaEncodingImpl extends BasicEObject implements VegaEncoding {
   set binMaxBins(value: number) {
     const oldValue = this._binMaxBins;
     this._binMaxBins = value;
+    this._binMaxBinsIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -301,6 +315,7 @@ export class VegaEncodingImpl extends BasicEObject implements VegaEncoding {
   set timeUnit(value: VegaTimeUnit) {
     const oldValue = this._timeUnit;
     this._timeUnit = value;
+    this._timeUnitIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -397,6 +412,7 @@ export class VegaEncodingImpl extends BasicEObject implements VegaEncoding {
   set sort(value: VegaSortOrder) {
     const oldValue = this._sort;
     this._sort = value;
+    this._sortIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -421,6 +437,7 @@ export class VegaEncodingImpl extends BasicEObject implements VegaEncoding {
   set stack(value: VegaStack) {
     const oldValue = this._stack;
     this._stack = value;
+    this._stackIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -445,6 +462,7 @@ export class VegaEncodingImpl extends BasicEObject implements VegaEncoding {
   set bandPosition(value: number) {
     const oldValue = this._bandPosition;
     this._bandPosition = value;
+    this._bandPositionIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -709,7 +727,7 @@ export class VegaEncodingImpl extends BasicEObject implements VegaEncoding {
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case VegaEncodingImpl.CHANNEL:
-        return this._channel !== undefined;
+        return this._channelIsSet;
       case VegaEncodingImpl.FEATURE:
         return this._feature !== undefined;
       case VegaEncodingImpl.EXPRESSION:
@@ -717,17 +735,17 @@ export class VegaEncodingImpl extends BasicEObject implements VegaEncoding {
       case VegaEncodingImpl.VALUE:
         return this._value !== undefined;
       case VegaEncodingImpl.FIELD_TYPE:
-        return this._fieldType !== undefined;
+        return this._fieldTypeIsSet;
       case VegaEncodingImpl.AGGREGATE:
         return this._aggregate !== VegaAggregate.NONE;
       case VegaEncodingImpl.BIN:
-        return this._bin !== undefined;
+        return this._binIsSet;
       case VegaEncodingImpl.BIN_STEP:
-        return this._binStep !== undefined;
+        return this._binStepIsSet;
       case VegaEncodingImpl.BIN_MAX_BINS:
-        return this._binMaxBins !== undefined;
+        return this._binMaxBinsIsSet;
       case VegaEncodingImpl.TIME_UNIT:
-        return this._timeUnit !== undefined;
+        return this._timeUnitIsSet;
       case VegaEncodingImpl.TITLE:
         return this._title !== undefined;
       case VegaEncodingImpl.FORMAT:
@@ -735,11 +753,11 @@ export class VegaEncodingImpl extends BasicEObject implements VegaEncoding {
       case VegaEncodingImpl.FORMAT_TYPE:
         return this._formatType !== undefined;
       case VegaEncodingImpl.SORT:
-        return this._sort !== undefined;
+        return this._sortIsSet;
       case VegaEncodingImpl.STACK:
-        return this._stack !== undefined;
+        return this._stackIsSet;
       case VegaEncodingImpl.BAND_POSITION:
-        return this._bandPosition !== undefined;
+        return this._bandPositionIsSet;
       case VegaEncodingImpl.SCALE:
         return this._scale !== undefined;
       case VegaEncodingImpl.AXIS:
@@ -760,7 +778,8 @@ export class VegaEncodingImpl extends BasicEObject implements VegaEncoding {
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case VegaEncodingImpl.CHANNEL:
-        this._channel = undefined;
+        this._channel = VegaChannel.X;
+        this._channelIsSet = false;
         return;
       case VegaEncodingImpl.FEATURE:
         this._feature = undefined;
@@ -772,22 +791,27 @@ export class VegaEncodingImpl extends BasicEObject implements VegaEncoding {
         this._value = undefined;
         return;
       case VegaEncodingImpl.FIELD_TYPE:
-        this._fieldType = undefined;
+        this._fieldType = VegaFieldType.QUANTITATIVE;
+        this._fieldTypeIsSet = false;
         return;
       case VegaEncodingImpl.AGGREGATE:
         this._aggregate = VegaAggregate.NONE;
         return;
       case VegaEncodingImpl.BIN:
-        this._bin = undefined;
+        this._bin = false;
+        this._binIsSet = false;
         return;
       case VegaEncodingImpl.BIN_STEP:
-        this._binStep = undefined;
+        this._binStep = 0;
+        this._binStepIsSet = false;
         return;
       case VegaEncodingImpl.BIN_MAX_BINS:
-        this._binMaxBins = undefined;
+        this._binMaxBins = 0;
+        this._binMaxBinsIsSet = false;
         return;
       case VegaEncodingImpl.TIME_UNIT:
-        this._timeUnit = undefined;
+        this._timeUnit = VegaTimeUnit.YEAR;
+        this._timeUnitIsSet = false;
         return;
       case VegaEncodingImpl.TITLE:
         this._title = undefined;
@@ -799,13 +823,16 @@ export class VegaEncodingImpl extends BasicEObject implements VegaEncoding {
         this._formatType = undefined;
         return;
       case VegaEncodingImpl.SORT:
-        this._sort = undefined;
+        this._sort = VegaSortOrder.ASCENDING;
+        this._sortIsSet = false;
         return;
       case VegaEncodingImpl.STACK:
-        this._stack = undefined;
+        this._stack = VegaStack.ZERO;
+        this._stackIsSet = false;
         return;
       case VegaEncodingImpl.BAND_POSITION:
-        this._bandPosition = undefined;
+        this._bandPosition = 0;
+        this._bandPositionIsSet = false;
         return;
       case VegaEncodingImpl.SCALE:
         this._scale = undefined;

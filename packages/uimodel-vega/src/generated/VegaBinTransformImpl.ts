@@ -6,10 +6,10 @@
  */
 
 import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { VegaTransform } from './VegaTransform';
-import { VegaTransformImpl } from './VegaTransformImpl';
-import type { VegaBinTransform } from './VegaBinTransform';
-import { UimodelVegaPackage } from './UimodelVegaPackage';
+import type { VegaTransform } from './VegaTransform.js';
+import { VegaTransformImpl } from './VegaTransformImpl.js';
+import type { VegaBinTransform } from './VegaBinTransform.js';
+import { UimodelVegaPackage } from './UimodelVegaPackage.js';
 
 /**
  * Implementation of VegaBinTransform
@@ -25,8 +25,10 @@ export class VegaBinTransformImpl extends VegaTransformImpl implements VegaBinTr
   // Private fields
   private _field?: EStructuralFeature;
   private _as?: string;
-  private _maxBins?: number;
-  private _step?: number;
+  private _maxBins: number = 0;
+  private _maxBinsIsSet = false;
+  private _step: number = 0;
+  private _stepIsSet = false;
 
   /**
    * Returns the EClass of this object
@@ -91,6 +93,7 @@ export class VegaBinTransformImpl extends VegaTransformImpl implements VegaBinTr
   set maxBins(value: number) {
     const oldValue = this._maxBins;
     this._maxBins = value;
+    this._maxBinsIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -115,6 +118,7 @@ export class VegaBinTransformImpl extends VegaTransformImpl implements VegaBinTr
   set step(value: number) {
     const oldValue = this._step;
     this._step = value;
+    this._stepIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -191,9 +195,9 @@ export class VegaBinTransformImpl extends VegaTransformImpl implements VegaBinTr
       case VegaBinTransformImpl.AS:
         return this._as !== undefined;
       case VegaBinTransformImpl.MAX_BINS:
-        return this._maxBins !== undefined;
+        return this._maxBinsIsSet;
       case VegaBinTransformImpl.STEP:
-        return this._step !== undefined;
+        return this._stepIsSet;
       default:
         return super.eIsSet(feature);
     }
@@ -212,10 +216,12 @@ export class VegaBinTransformImpl extends VegaTransformImpl implements VegaBinTr
         this._as = undefined;
         return;
       case VegaBinTransformImpl.MAX_BINS:
-        this._maxBins = undefined;
+        this._maxBins = 0;
+        this._maxBinsIsSet = false;
         return;
       case VegaBinTransformImpl.STEP:
-        this._step = undefined;
+        this._step = 0;
+        this._stepIsSet = false;
         return;
       default:
         super.eUnset(feature);

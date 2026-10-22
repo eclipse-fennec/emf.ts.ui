@@ -6,13 +6,14 @@
  */
 
 import { BasicEObject } from '@emfts/core';
-import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { DesignToken } from './DesignToken';
-import type { Theme } from './Theme';
-import type { CssStyle } from './CssStyle';
-import type { StyleRule } from './StyleRule';
-import type { StyleSheet } from './StyleSheet';
-import { UimodelCssPackage } from './UimodelCssPackage';
+import { createContainmentEList } from '@emfts/core';
+import type { EClass, EStructuralFeature, EList, EReference } from '@emfts/core';
+import type { DesignToken } from './DesignToken.js';
+import type { Theme } from './Theme.js';
+import type { CssStyle } from './CssStyle.js';
+import type { StyleRule } from './StyleRule.js';
+import type { StyleSheet } from './StyleSheet.js';
+import { UimodelCssPackage } from './UimodelCssPackage.js';
 
 /**
  * Implementation of StyleSheet
@@ -28,10 +29,10 @@ export class StyleSheetImpl extends BasicEObject implements StyleSheet {
 
   // Private fields
   private _name?: string;
-  private _tokens: DesignToken[] = [];
-  private _themes: Theme[] = [];
-  private _styles: CssStyle[] = [];
-  private _rules: StyleRule[] = [];
+  private _tokens!: EList<DesignToken>;
+  private _themes!: EList<Theme>;
+  private _styles!: EList<CssStyle>;
+  private _rules!: EList<StyleRule>;
 
   /**
    * Returns the EClass of this object
@@ -65,100 +66,32 @@ export class StyleSheetImpl extends BasicEObject implements StyleSheet {
     }
   }
 
-  get tokens(): DesignToken[] {
+  get tokens(): EList<DesignToken> {
+    if (!this._tokens) {
+      this._tokens = createContainmentEList<any>(this, this.eClass().getEStructuralFeature('tokens') as EReference);
+    }
     return this._tokens;
   }
 
-  set tokens(value: DesignToken[]) {
-    const oldValue = this._tokens;
-    this._tokens = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(StyleSheetImpl.TOKENS),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => StyleSheetImpl.TOKENS,
-        merge: () => false
-      });
+  get themes(): EList<Theme> {
+    if (!this._themes) {
+      this._themes = createContainmentEList<any>(this, this.eClass().getEStructuralFeature('themes') as EReference);
     }
-  }
-
-  get themes(): Theme[] {
     return this._themes;
   }
 
-  set themes(value: Theme[]) {
-    const oldValue = this._themes;
-    this._themes = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(StyleSheetImpl.THEMES),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => StyleSheetImpl.THEMES,
-        merge: () => false
-      });
+  get styles(): EList<CssStyle> {
+    if (!this._styles) {
+      this._styles = createContainmentEList<any>(this, this.eClass().getEStructuralFeature('styles') as EReference);
     }
-  }
-
-  get styles(): CssStyle[] {
     return this._styles;
   }
 
-  set styles(value: CssStyle[]) {
-    const oldValue = this._styles;
-    this._styles = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(StyleSheetImpl.STYLES),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => StyleSheetImpl.STYLES,
-        merge: () => false
-      });
+  get rules(): EList<StyleRule> {
+    if (!this._rules) {
+      this._rules = createContainmentEList<any>(this, this.eClass().getEStructuralFeature('rules') as EReference);
     }
-  }
-
-  get rules(): StyleRule[] {
     return this._rules;
-  }
-
-  set rules(value: StyleRule[]) {
-    const oldValue = this._rules;
-    this._rules = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(StyleSheetImpl.RULES),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => StyleSheetImpl.RULES,
-        merge: () => false
-      });
-    }
   }
 
   // Reflective API
@@ -195,19 +128,23 @@ export class StyleSheetImpl extends BasicEObject implements StyleSheet {
         super.eSet(feature, newValue);
         break;
       case StyleSheetImpl.TOKENS:
-        this.tokens = newValue as DesignToken[];
+        this.tokens.clear();
+        this.tokens.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       case StyleSheetImpl.THEMES:
-        this.themes = newValue as Theme[];
+        this.themes.clear();
+        this.themes.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       case StyleSheetImpl.STYLES:
-        this.styles = newValue as CssStyle[];
+        this.styles.clear();
+        this.styles.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       case StyleSheetImpl.RULES:
-        this.rules = newValue as StyleRule[];
+        this.rules.clear();
+        this.rules.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       default:
@@ -224,13 +161,13 @@ export class StyleSheetImpl extends BasicEObject implements StyleSheet {
       case StyleSheetImpl.NAME:
         return this._name !== undefined;
       case StyleSheetImpl.TOKENS:
-        return this._tokens !== undefined && this._tokens.length > 0;
+        return this._tokens !== undefined && !this._tokens.isEmpty();
       case StyleSheetImpl.THEMES:
-        return this._themes !== undefined && this._themes.length > 0;
+        return this._themes !== undefined && !this._themes.isEmpty();
       case StyleSheetImpl.STYLES:
-        return this._styles !== undefined && this._styles.length > 0;
+        return this._styles !== undefined && !this._styles.isEmpty();
       case StyleSheetImpl.RULES:
-        return this._rules !== undefined && this._rules.length > 0;
+        return this._rules !== undefined && !this._rules.isEmpty();
       default:
         return super.eIsSet(feature);
     }
@@ -246,16 +183,16 @@ export class StyleSheetImpl extends BasicEObject implements StyleSheet {
         this._name = undefined;
         return;
       case StyleSheetImpl.TOKENS:
-        this._tokens = [];
+        if (this._tokens) this._tokens.clear();
         return;
       case StyleSheetImpl.THEMES:
-        this._themes = [];
+        if (this._themes) this._themes.clear();
         return;
       case StyleSheetImpl.STYLES:
-        this._styles = [];
+        if (this._styles) this._styles.clear();
         return;
       case StyleSheetImpl.RULES:
-        this._rules = [];
+        if (this._rules) this._rules.clear();
         return;
       default:
         super.eUnset(feature);

@@ -6,14 +6,14 @@
  */
 
 import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { MapLayer } from './MapLayer';
-import type { VectorSource } from './VectorSource';
-import type { Renderer } from './Renderer';
-import type { Labeling } from './Labeling';
-import { GeometryType } from './GeometryType';
-import { MapLayerImpl } from './MapLayerImpl';
-import type { VectorLayer } from './VectorLayer';
-import { UimodelMapsPackage } from './UimodelMapsPackage';
+import type { MapLayer } from './MapLayer.js';
+import type { VectorSource } from './VectorSource.js';
+import type { Renderer } from './Renderer.js';
+import type { Labeling } from './Labeling.js';
+import { GeometryType } from './GeometryType.js';
+import { MapLayerImpl } from './MapLayerImpl.js';
+import type { VectorLayer } from './VectorLayer.js';
+import { UimodelMapsPackage } from './UimodelMapsPackage.js';
 
 /**
  * Implementation of VectorLayer

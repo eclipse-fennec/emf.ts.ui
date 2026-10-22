@@ -6,11 +6,11 @@
  */
 
 import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { VegaTransform } from './VegaTransform';
+import type { VegaTransform } from './VegaTransform.js';
 import type { Expression } from '@emfts/uimodel-composer';
-import { VegaTransformImpl } from './VegaTransformImpl';
-import type { VegaFilterTransform } from './VegaFilterTransform';
-import { UimodelVegaPackage } from './UimodelVegaPackage';
+import { VegaTransformImpl } from './VegaTransformImpl.js';
+import type { VegaFilterTransform } from './VegaFilterTransform.js';
+import { UimodelVegaPackage } from './UimodelVegaPackage.js';
 
 /**
  * Implementation of VegaFilterTransform

@@ -5,11 +5,11 @@
  * @generated
  */
 
-import type { EObject, EClass, BasicEObject, EStructuralFeature } from '@emfts/core';
-import type { Expression } from './Expression';
-import type { BaseStyle } from './BaseStyle';
-import type { WidgetComponent } from './WidgetComponent';
-import type { Component } from './Component';
+import type { EObject, EList, EClass, BasicEObject, EStructuralFeature } from '@emfts/core';
+import type { Expression } from './Expression.js';
+import type { BaseStyle } from './BaseStyle.js';
+import type { WidgetComponent } from './WidgetComponent.js';
+import type { Component } from './Component.js';
 
 /**
  * UIModel
@@ -17,11 +17,11 @@ import type { Component } from './Component';
  */
 export interface UIModel extends EObject {
   name?: string;
-  targetClasses: EClass[];
+  targetClasses: EList<EClass>;
   priority?: number;
   filterExpression?: Expression;
-  styles: BaseStyle[];
-  templates: WidgetComponent[];
-  components: Component[];
+  styles: EList<BaseStyle>;
+  templates: EList<WidgetComponent>;
+  components: EList<Component>;
 
 }

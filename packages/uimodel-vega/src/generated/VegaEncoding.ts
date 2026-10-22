@@ -6,17 +6,17 @@
  */
 
 import type { EObject, EStructuralFeature, BasicEObject, EClass } from '@emfts/core';
-import type { VegaChannel } from './VegaChannel';
+import type { VegaChannel } from './VegaChannel.js';
 import type { Expression } from '@emfts/uimodel-composer';
-import type { VegaFieldType } from './VegaFieldType';
-import type { VegaAggregate } from './VegaAggregate';
-import type { VegaTimeUnit } from './VegaTimeUnit';
-import type { VegaSortOrder } from './VegaSortOrder';
-import type { VegaStack } from './VegaStack';
-import type { VegaScale } from './VegaScale';
-import type { VegaAxis } from './VegaAxis';
-import type { VegaLegend } from './VegaLegend';
-import type { VegaCondition } from './VegaCondition';
+import type { VegaFieldType } from './VegaFieldType.js';
+import type { VegaAggregate } from './VegaAggregate.js';
+import type { VegaTimeUnit } from './VegaTimeUnit.js';
+import type { VegaSortOrder } from './VegaSortOrder.js';
+import type { VegaStack } from './VegaStack.js';
+import type { VegaScale } from './VegaScale.js';
+import type { VegaAxis } from './VegaAxis.js';
+import type { VegaLegend } from './VegaLegend.js';
+import type { VegaCondition } from './VegaCondition.js';
 
 /**
  * VegaEncoding

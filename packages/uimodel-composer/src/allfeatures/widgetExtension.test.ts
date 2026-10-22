@@ -56,10 +56,11 @@ class CodeWidgetImpl extends WidgetComponentImpl implements CodeWidget {
     this._language = value;
   }
 
+  // Geerbte Features delegieren an die Basis-Impl: die Supertype steht
+  // zuerst in der EClass, die Feature-IDs stimmen daher überein.
   override eGet(feature: EStructuralFeature): unknown {
     if (feature === (languageAttr as unknown as EStructuralFeature)) return this._language;
-    // geerbte Features über die Accessor-Properties der Basis-Impl
-    return (this as unknown as Record<string, unknown>)[feature.getName() ?? ''];
+    return super.eGet(feature);
   }
 
   override eSet(feature: EStructuralFeature, newValue: unknown): void {
@@ -67,7 +68,12 @@ class CodeWidgetImpl extends WidgetComponentImpl implements CodeWidget {
       this._language = newValue as string;
       return;
     }
-    (this as unknown as Record<string, unknown>)[feature.getName() ?? ''] = newValue;
+    super.eSet(feature, newValue);
+  }
+
+  override eIsSet(feature: EStructuralFeature): boolean {
+    if (feature === (languageAttr as unknown as EStructuralFeature)) return this._language !== undefined;
+    return super.eIsSet(feature);
   }
 }
 
@@ -154,10 +160,10 @@ describe('Widget-Extension durch die Expansions-Pipeline (Issue #9)', () => {
     block.name = 'attrs';
     block.filter = jsExpr('true');
     const proto = codeProto('json');
-    block.cases = [
+    block.cases.push(
       caseFor(proto as WidgetComponent, "self.eType?.name === 'EString'"),
       caseFor(factory.createInputWidget()),
-    ];
+    );
 
     const widgets = expandFeatures(person, block);
     const byName = Object.fromEntries(widgets.map((w) => [w.name, w]));
@@ -174,14 +180,14 @@ describe('Widget-Extension durch die Expansions-Pipeline (Issue #9)', () => {
     const block = factory.createAllFeatures();
     block.name = 'attrs';
     block.filter = jsExpr("self.name === 'firstName'");
-    block.cases = [caseFor(factory.createInputWidget())];
+    block.cases.push(caseFor(factory.createInputWidget()));
 
     const overlay = factory.createUIModelOverlay();
     overlay.name = 'ws';
     overlay.priority = 100;
     const proto = codeProto('ocl');
-    overlay.templates = [proto as WidgetComponent];
-    overlay.cases = [caseFor(proto as WidgetComponent, "self.eType?.name === 'EString'")];
+    overlay.templates.push(proto as WidgetComponent);
+    overlay.cases.push(caseFor(proto as WidgetComponent, "self.eType?.name === 'EString'"));
 
     const ctx: ExpansionContext = {
       blocks: [block],
@@ -203,13 +209,13 @@ describe('Widget-Extension durch die Expansions-Pipeline (Issue #9)', () => {
     const langBinding = factory.createPropertyBinding();
     langBinding.property = 'language';
     langBinding.expression = jsExpr("feature.name === 'firstName' ? 'markdown' : 'json'");
-    proto.bindings = [langBinding];
-    block.cases = [caseFor(proto as WidgetComponent)];
+    proto.bindings.push(langBinding);
+    block.cases.push(caseFor(proto as WidgetComponent));
     // geerbtes Block-Binding auf label
     const labelBinding = factory.createPropertyBinding();
     labelBinding.property = 'label';
     labelBinding.expression = jsExpr("'Code: ' + feature.name");
-    block.bindings = [labelBinding];
+    block.bindings.push(labelBinding);
 
     const [widget] = expandFeatures(person, block);
     expect(widget.bindings.map((b) => b.property).sort()).toEqual(['label', 'language']);

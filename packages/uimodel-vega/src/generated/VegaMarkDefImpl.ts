@@ -7,13 +7,13 @@
 
 import { BasicEObject } from '@emfts/core';
 import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { VegaMarkType } from './VegaMarkType';
-import type { VegaInterpolate } from './VegaInterpolate';
-import type { VegaOrientation } from './VegaOrientation';
-import type { VegaAlign } from './VegaAlign';
-import type { VegaBaseline } from './VegaBaseline';
-import type { VegaMarkDef } from './VegaMarkDef';
-import { UimodelVegaPackage } from './UimodelVegaPackage';
+import { VegaMarkType } from './VegaMarkType.js';
+import { VegaInterpolate } from './VegaInterpolate.js';
+import { VegaOrientation } from './VegaOrientation.js';
+import { VegaAlign } from './VegaAlign.js';
+import { VegaBaseline } from './VegaBaseline.js';
+import type { VegaMarkDef } from './VegaMarkDef.js';
+import { UimodelVegaPackage } from './UimodelVegaPackage.js';
 
 /**
  * Implementation of VegaMarkDef
@@ -50,33 +50,53 @@ export class VegaMarkDefImpl extends BasicEObject implements VegaMarkDef {
   static readonly TOOLTIP: number = 26;
 
   // Private fields
-  private _type?: VegaMarkType;
-  private _opacity?: number;
+  private _type: VegaMarkType = VegaMarkType.BAR;
+  private _typeIsSet = false;
+  private _opacity: number = 0;
+  private _opacityIsSet = false;
   private _filled: boolean = true;
   private _color?: string;
   private _fill?: string;
   private _stroke?: string;
-  private _strokeWidth?: number;
-  private _cornerRadius?: number;
-  private _interpolate?: VegaInterpolate;
-  private _size?: number;
-  private _clip?: boolean;
+  private _strokeWidth: number = 0;
+  private _strokeWidthIsSet = false;
+  private _cornerRadius: number = 0;
+  private _cornerRadiusIsSet = false;
+  private _interpolate: VegaInterpolate = VegaInterpolate.LINEAR;
+  private _interpolateIsSet = false;
+  private _size: number = 0;
+  private _sizeIsSet = false;
+  private _clip: boolean = false;
+  private _clipIsSet = false;
   private _cursor?: string;
-  private _point?: boolean;
-  private _line?: boolean;
-  private _innerRadius?: number;
-  private _outerRadius?: number;
-  private _padAngle?: number;
-  private _orient?: VegaOrientation;
-  private _fontSize?: number;
+  private _point: boolean = false;
+  private _pointIsSet = false;
+  private _line: boolean = false;
+  private _lineIsSet = false;
+  private _innerRadius: number = 0;
+  private _innerRadiusIsSet = false;
+  private _outerRadius: number = 0;
+  private _outerRadiusIsSet = false;
+  private _padAngle: number = 0;
+  private _padAngleIsSet = false;
+  private _orient: VegaOrientation = VegaOrientation.VERTICAL;
+  private _orientIsSet = false;
+  private _fontSize: number = 0;
+  private _fontSizeIsSet = false;
   private _fontWeight?: string;
   private _font?: string;
-  private _align?: VegaAlign;
-  private _baseline?: VegaBaseline;
-  private _dx?: number;
-  private _dy?: number;
-  private _angle?: number;
-  private _tooltip?: boolean;
+  private _align: VegaAlign = VegaAlign.LEFT;
+  private _alignIsSet = false;
+  private _baseline: VegaBaseline = VegaBaseline.TOP;
+  private _baselineIsSet = false;
+  private _dx: number = 0;
+  private _dxIsSet = false;
+  private _dy: number = 0;
+  private _dyIsSet = false;
+  private _angle: number = 0;
+  private _angleIsSet = false;
+  private _tooltip: boolean = false;
+  private _tooltipIsSet = false;
 
   /**
    * Returns the EClass of this object
@@ -93,6 +113,7 @@ export class VegaMarkDefImpl extends BasicEObject implements VegaMarkDef {
   set type(value: VegaMarkType) {
     const oldValue = this._type;
     this._type = value;
+    this._typeIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -117,6 +138,7 @@ export class VegaMarkDefImpl extends BasicEObject implements VegaMarkDef {
   set opacity(value: number) {
     const oldValue = this._opacity;
     this._opacity = value;
+    this._opacityIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -237,6 +259,7 @@ export class VegaMarkDefImpl extends BasicEObject implements VegaMarkDef {
   set strokeWidth(value: number) {
     const oldValue = this._strokeWidth;
     this._strokeWidth = value;
+    this._strokeWidthIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -261,6 +284,7 @@ export class VegaMarkDefImpl extends BasicEObject implements VegaMarkDef {
   set cornerRadius(value: number) {
     const oldValue = this._cornerRadius;
     this._cornerRadius = value;
+    this._cornerRadiusIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -285,6 +309,7 @@ export class VegaMarkDefImpl extends BasicEObject implements VegaMarkDef {
   set interpolate(value: VegaInterpolate) {
     const oldValue = this._interpolate;
     this._interpolate = value;
+    this._interpolateIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -309,6 +334,7 @@ export class VegaMarkDefImpl extends BasicEObject implements VegaMarkDef {
   set size(value: number) {
     const oldValue = this._size;
     this._size = value;
+    this._sizeIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -333,6 +359,7 @@ export class VegaMarkDefImpl extends BasicEObject implements VegaMarkDef {
   set clip(value: boolean) {
     const oldValue = this._clip;
     this._clip = value;
+    this._clipIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -381,6 +408,7 @@ export class VegaMarkDefImpl extends BasicEObject implements VegaMarkDef {
   set point(value: boolean) {
     const oldValue = this._point;
     this._point = value;
+    this._pointIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -405,6 +433,7 @@ export class VegaMarkDefImpl extends BasicEObject implements VegaMarkDef {
   set line(value: boolean) {
     const oldValue = this._line;
     this._line = value;
+    this._lineIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -429,6 +458,7 @@ export class VegaMarkDefImpl extends BasicEObject implements VegaMarkDef {
   set innerRadius(value: number) {
     const oldValue = this._innerRadius;
     this._innerRadius = value;
+    this._innerRadiusIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -453,6 +483,7 @@ export class VegaMarkDefImpl extends BasicEObject implements VegaMarkDef {
   set outerRadius(value: number) {
     const oldValue = this._outerRadius;
     this._outerRadius = value;
+    this._outerRadiusIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -477,6 +508,7 @@ export class VegaMarkDefImpl extends BasicEObject implements VegaMarkDef {
   set padAngle(value: number) {
     const oldValue = this._padAngle;
     this._padAngle = value;
+    this._padAngleIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -501,6 +533,7 @@ export class VegaMarkDefImpl extends BasicEObject implements VegaMarkDef {
   set orient(value: VegaOrientation) {
     const oldValue = this._orient;
     this._orient = value;
+    this._orientIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -525,6 +558,7 @@ export class VegaMarkDefImpl extends BasicEObject implements VegaMarkDef {
   set fontSize(value: number) {
     const oldValue = this._fontSize;
     this._fontSize = value;
+    this._fontSizeIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -597,6 +631,7 @@ export class VegaMarkDefImpl extends BasicEObject implements VegaMarkDef {
   set align(value: VegaAlign) {
     const oldValue = this._align;
     this._align = value;
+    this._alignIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -621,6 +656,7 @@ export class VegaMarkDefImpl extends BasicEObject implements VegaMarkDef {
   set baseline(value: VegaBaseline) {
     const oldValue = this._baseline;
     this._baseline = value;
+    this._baselineIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -645,6 +681,7 @@ export class VegaMarkDefImpl extends BasicEObject implements VegaMarkDef {
   set dx(value: number) {
     const oldValue = this._dx;
     this._dx = value;
+    this._dxIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -669,6 +706,7 @@ export class VegaMarkDefImpl extends BasicEObject implements VegaMarkDef {
   set dy(value: number) {
     const oldValue = this._dy;
     this._dy = value;
+    this._dyIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -693,6 +731,7 @@ export class VegaMarkDefImpl extends BasicEObject implements VegaMarkDef {
   set angle(value: number) {
     const oldValue = this._angle;
     this._angle = value;
+    this._angleIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -717,6 +756,7 @@ export class VegaMarkDefImpl extends BasicEObject implements VegaMarkDef {
   set tooltip(value: boolean) {
     const oldValue = this._tooltip;
     this._tooltip = value;
+    this._tooltipIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -927,9 +967,9 @@ export class VegaMarkDefImpl extends BasicEObject implements VegaMarkDef {
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case VegaMarkDefImpl.TYPE:
-        return this._type !== undefined;
+        return this._typeIsSet;
       case VegaMarkDefImpl.OPACITY:
-        return this._opacity !== undefined;
+        return this._opacityIsSet;
       case VegaMarkDefImpl.FILLED:
         return this._filled !== true;
       case VegaMarkDefImpl.COLOR:
@@ -939,47 +979,47 @@ export class VegaMarkDefImpl extends BasicEObject implements VegaMarkDef {
       case VegaMarkDefImpl.STROKE:
         return this._stroke !== undefined;
       case VegaMarkDefImpl.STROKE_WIDTH:
-        return this._strokeWidth !== undefined;
+        return this._strokeWidthIsSet;
       case VegaMarkDefImpl.CORNER_RADIUS:
-        return this._cornerRadius !== undefined;
+        return this._cornerRadiusIsSet;
       case VegaMarkDefImpl.INTERPOLATE:
-        return this._interpolate !== undefined;
+        return this._interpolateIsSet;
       case VegaMarkDefImpl.SIZE:
-        return this._size !== undefined;
+        return this._sizeIsSet;
       case VegaMarkDefImpl.CLIP:
-        return this._clip !== undefined;
+        return this._clipIsSet;
       case VegaMarkDefImpl.CURSOR:
         return this._cursor !== undefined;
       case VegaMarkDefImpl.POINT:
-        return this._point !== undefined;
+        return this._pointIsSet;
       case VegaMarkDefImpl.LINE:
-        return this._line !== undefined;
+        return this._lineIsSet;
       case VegaMarkDefImpl.INNER_RADIUS:
-        return this._innerRadius !== undefined;
+        return this._innerRadiusIsSet;
       case VegaMarkDefImpl.OUTER_RADIUS:
-        return this._outerRadius !== undefined;
+        return this._outerRadiusIsSet;
       case VegaMarkDefImpl.PAD_ANGLE:
-        return this._padAngle !== undefined;
+        return this._padAngleIsSet;
       case VegaMarkDefImpl.ORIENT:
-        return this._orient !== undefined;
+        return this._orientIsSet;
       case VegaMarkDefImpl.FONT_SIZE:
-        return this._fontSize !== undefined;
+        return this._fontSizeIsSet;
       case VegaMarkDefImpl.FONT_WEIGHT:
         return this._fontWeight !== undefined;
       case VegaMarkDefImpl.FONT:
         return this._font !== undefined;
       case VegaMarkDefImpl.ALIGN:
-        return this._align !== undefined;
+        return this._alignIsSet;
       case VegaMarkDefImpl.BASELINE:
-        return this._baseline !== undefined;
+        return this._baselineIsSet;
       case VegaMarkDefImpl.DX:
-        return this._dx !== undefined;
+        return this._dxIsSet;
       case VegaMarkDefImpl.DY:
-        return this._dy !== undefined;
+        return this._dyIsSet;
       case VegaMarkDefImpl.ANGLE:
-        return this._angle !== undefined;
+        return this._angleIsSet;
       case VegaMarkDefImpl.TOOLTIP:
-        return this._tooltip !== undefined;
+        return this._tooltipIsSet;
       default:
         return super.eIsSet(feature);
     }
@@ -992,10 +1032,12 @@ export class VegaMarkDefImpl extends BasicEObject implements VegaMarkDef {
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case VegaMarkDefImpl.TYPE:
-        this._type = undefined;
+        this._type = VegaMarkType.BAR;
+        this._typeIsSet = false;
         return;
       case VegaMarkDefImpl.OPACITY:
-        this._opacity = undefined;
+        this._opacity = 0;
+        this._opacityIsSet = false;
         return;
       case VegaMarkDefImpl.FILLED:
         this._filled = true;
@@ -1010,43 +1052,55 @@ export class VegaMarkDefImpl extends BasicEObject implements VegaMarkDef {
         this._stroke = undefined;
         return;
       case VegaMarkDefImpl.STROKE_WIDTH:
-        this._strokeWidth = undefined;
+        this._strokeWidth = 0;
+        this._strokeWidthIsSet = false;
         return;
       case VegaMarkDefImpl.CORNER_RADIUS:
-        this._cornerRadius = undefined;
+        this._cornerRadius = 0;
+        this._cornerRadiusIsSet = false;
         return;
       case VegaMarkDefImpl.INTERPOLATE:
-        this._interpolate = undefined;
+        this._interpolate = VegaInterpolate.LINEAR;
+        this._interpolateIsSet = false;
         return;
       case VegaMarkDefImpl.SIZE:
-        this._size = undefined;
+        this._size = 0;
+        this._sizeIsSet = false;
         return;
       case VegaMarkDefImpl.CLIP:
-        this._clip = undefined;
+        this._clip = false;
+        this._clipIsSet = false;
         return;
       case VegaMarkDefImpl.CURSOR:
         this._cursor = undefined;
         return;
       case VegaMarkDefImpl.POINT:
-        this._point = undefined;
+        this._point = false;
+        this._pointIsSet = false;
         return;
       case VegaMarkDefImpl.LINE:
-        this._line = undefined;
+        this._line = false;
+        this._lineIsSet = false;
         return;
       case VegaMarkDefImpl.INNER_RADIUS:
-        this._innerRadius = undefined;
+        this._innerRadius = 0;
+        this._innerRadiusIsSet = false;
         return;
       case VegaMarkDefImpl.OUTER_RADIUS:
-        this._outerRadius = undefined;
+        this._outerRadius = 0;
+        this._outerRadiusIsSet = false;
         return;
       case VegaMarkDefImpl.PAD_ANGLE:
-        this._padAngle = undefined;
+        this._padAngle = 0;
+        this._padAngleIsSet = false;
         return;
       case VegaMarkDefImpl.ORIENT:
-        this._orient = undefined;
+        this._orient = VegaOrientation.VERTICAL;
+        this._orientIsSet = false;
         return;
       case VegaMarkDefImpl.FONT_SIZE:
-        this._fontSize = undefined;
+        this._fontSize = 0;
+        this._fontSizeIsSet = false;
         return;
       case VegaMarkDefImpl.FONT_WEIGHT:
         this._fontWeight = undefined;
@@ -1055,22 +1109,28 @@ export class VegaMarkDefImpl extends BasicEObject implements VegaMarkDef {
         this._font = undefined;
         return;
       case VegaMarkDefImpl.ALIGN:
-        this._align = undefined;
+        this._align = VegaAlign.LEFT;
+        this._alignIsSet = false;
         return;
       case VegaMarkDefImpl.BASELINE:
-        this._baseline = undefined;
+        this._baseline = VegaBaseline.TOP;
+        this._baselineIsSet = false;
         return;
       case VegaMarkDefImpl.DX:
-        this._dx = undefined;
+        this._dx = 0;
+        this._dxIsSet = false;
         return;
       case VegaMarkDefImpl.DY:
-        this._dy = undefined;
+        this._dy = 0;
+        this._dyIsSet = false;
         return;
       case VegaMarkDefImpl.ANGLE:
-        this._angle = undefined;
+        this._angle = 0;
+        this._angleIsSet = false;
         return;
       case VegaMarkDefImpl.TOOLTIP:
-        this._tooltip = undefined;
+        this._tooltip = false;
+        this._tooltipIsSet = false;
         return;
       default:
         super.eUnset(feature);

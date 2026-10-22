@@ -5,12 +5,13 @@
  * @generated
  */
 
-import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { VegaTransform } from './VegaTransform';
-import type { VegaAggregate } from './VegaAggregate';
-import { VegaTransformImpl } from './VegaTransformImpl';
-import type { VegaAggregateTransform } from './VegaAggregateTransform';
-import { UimodelVegaPackage } from './UimodelVegaPackage';
+import { createEObjectEList } from '@emfts/core';
+import type { EClass, EStructuralFeature, EList, EReference } from '@emfts/core';
+import type { VegaTransform } from './VegaTransform.js';
+import { VegaAggregate } from './VegaAggregate.js';
+import { VegaTransformImpl } from './VegaTransformImpl.js';
+import type { VegaAggregateTransform } from './VegaAggregateTransform.js';
+import { UimodelVegaPackage } from './UimodelVegaPackage.js';
 
 /**
  * Implementation of VegaAggregateTransform
@@ -24,8 +25,9 @@ export class VegaAggregateTransformImpl extends VegaTransformImpl implements Veg
   static readonly AS: number = 3;
 
   // Private fields
-  private _groupBy: EStructuralFeature[] = [];
-  private _op?: VegaAggregate;
+  private _groupBy!: EList<EStructuralFeature>;
+  private _op: VegaAggregate = VegaAggregate.NONE;
+  private _opIsSet = false;
   private _field?: EStructuralFeature;
   private _as?: string;
 
@@ -37,28 +39,11 @@ export class VegaAggregateTransformImpl extends VegaTransformImpl implements Veg
   }
 
   // Getters and Setters
-  get groupBy(): EStructuralFeature[] {
-    return this._groupBy;
-  }
-
-  set groupBy(value: EStructuralFeature[]) {
-    const oldValue = this._groupBy;
-    this._groupBy = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(VegaAggregateTransformImpl.GROUP_BY),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => VegaAggregateTransformImpl.GROUP_BY,
-        merge: () => false
-      });
+  get groupBy(): EList<EStructuralFeature> {
+    if (!this._groupBy) {
+      this._groupBy = createEObjectEList(this, this.eClass().getEStructuralFeature('groupBy') as EReference) as unknown as EList<EStructuralFeature>;
     }
+    return this._groupBy;
   }
 
   get op(): VegaAggregate {
@@ -68,6 +53,7 @@ export class VegaAggregateTransformImpl extends VegaTransformImpl implements Veg
   set op(value: VegaAggregate) {
     const oldValue = this._op;
     this._op = value;
+    this._opIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -161,7 +147,8 @@ export class VegaAggregateTransformImpl extends VegaTransformImpl implements Veg
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case VegaAggregateTransformImpl.GROUP_BY:
-        this.groupBy = newValue as EStructuralFeature[];
+        this.groupBy.clear();
+        this.groupBy.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       case VegaAggregateTransformImpl.OP:
@@ -188,9 +175,9 @@ export class VegaAggregateTransformImpl extends VegaTransformImpl implements Veg
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case VegaAggregateTransformImpl.GROUP_BY:
-        return this._groupBy !== undefined && this._groupBy.length > 0;
+        return this._groupBy !== undefined && !this._groupBy.isEmpty();
       case VegaAggregateTransformImpl.OP:
-        return this._op !== undefined;
+        return this._opIsSet;
       case VegaAggregateTransformImpl.FIELD:
         return this._field !== undefined;
       case VegaAggregateTransformImpl.AS:
@@ -207,10 +194,11 @@ export class VegaAggregateTransformImpl extends VegaTransformImpl implements Veg
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case VegaAggregateTransformImpl.GROUP_BY:
-        this._groupBy = [];
+        if (this._groupBy) this._groupBy.clear();
         return;
       case VegaAggregateTransformImpl.OP:
-        this._op = undefined;
+        this._op = VegaAggregate.NONE;
+        this._opIsSet = false;
         return;
       case VegaAggregateTransformImpl.FIELD:
         this._field = undefined;

@@ -5,12 +5,13 @@
  * @generated
  */
 
-import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { VegaTransform } from './VegaTransform';
-import { VegaRegressionMethod } from './VegaRegressionMethod';
-import { VegaTransformImpl } from './VegaTransformImpl';
-import type { VegaRegressionTransform } from './VegaRegressionTransform';
-import { UimodelVegaPackage } from './UimodelVegaPackage';
+import { createBasicEList } from '@emfts/core';
+import type { EClass, EStructuralFeature, EList, EReference } from '@emfts/core';
+import type { VegaTransform } from './VegaTransform.js';
+import { VegaRegressionMethod } from './VegaRegressionMethod.js';
+import { VegaTransformImpl } from './VegaTransformImpl.js';
+import type { VegaRegressionTransform } from './VegaRegressionTransform.js';
+import { UimodelVegaPackage } from './UimodelVegaPackage.js';
 
 /**
  * Implementation of VegaRegressionTransform
@@ -27,7 +28,7 @@ export class VegaRegressionTransformImpl extends VegaTransformImpl implements Ve
   private _on?: EStructuralFeature;
   private _regression?: EStructuralFeature;
   private _method: VegaRegressionMethod = VegaRegressionMethod.LINEAR;
-  private _as: string[] = [];
+  private _as!: EList<string>;
 
   /**
    * Returns the EClass of this object
@@ -109,28 +110,11 @@ export class VegaRegressionTransformImpl extends VegaTransformImpl implements Ve
     }
   }
 
-  get as(): string[] {
-    return this._as;
-  }
-
-  set as(value: string[]) {
-    const oldValue = this._as;
-    this._as = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(VegaRegressionTransformImpl.AS),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => VegaRegressionTransformImpl.AS,
-        merge: () => false
-      });
+  get as(): EList<string> {
+    if (!this._as) {
+      this._as = createBasicEList<any>(this, this.eClass().getEStructuralFeature('as')!);
     }
+    return this._as;
   }
 
   // Reflective API
@@ -173,7 +157,8 @@ export class VegaRegressionTransformImpl extends VegaTransformImpl implements Ve
         super.eSet(feature, newValue);
         break;
       case VegaRegressionTransformImpl.AS:
-        this.as = newValue as string[];
+        this.as.clear();
+        this.as.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       default:
@@ -194,7 +179,7 @@ export class VegaRegressionTransformImpl extends VegaTransformImpl implements Ve
       case VegaRegressionTransformImpl.METHOD:
         return this._method !== VegaRegressionMethod.LINEAR;
       case VegaRegressionTransformImpl.AS:
-        return this._as !== undefined && this._as.length > 0;
+        return this._as !== undefined && !this._as.isEmpty();
       default:
         return super.eIsSet(feature);
     }
@@ -216,7 +201,7 @@ export class VegaRegressionTransformImpl extends VegaTransformImpl implements Ve
         this._method = VegaRegressionMethod.LINEAR;
         return;
       case VegaRegressionTransformImpl.AS:
-        this._as = [];
+        if (this._as) this._as.clear();
         return;
       default:
         super.eUnset(feature);

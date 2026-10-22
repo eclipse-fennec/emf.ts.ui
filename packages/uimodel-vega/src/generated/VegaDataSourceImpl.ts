@@ -6,11 +6,12 @@
  */
 
 import { BasicEObject } from '@emfts/core';
-import type { EClass, EStructuralFeature } from '@emfts/core';
+import { createContainmentEList } from '@emfts/core';
+import type { EClass, EStructuralFeature, EList, EReference } from '@emfts/core';
 import type { Expression } from '@emfts/uimodel-composer';
-import type { VegaTransform } from './VegaTransform';
-import type { VegaDataSource } from './VegaDataSource';
-import { UimodelVegaPackage } from './UimodelVegaPackage';
+import type { VegaTransform } from './VegaTransform.js';
+import type { VegaDataSource } from './VegaDataSource.js';
+import { UimodelVegaPackage } from './UimodelVegaPackage.js';
 
 /**
  * Implementation of VegaDataSource
@@ -26,7 +27,7 @@ export class VegaDataSourceImpl extends BasicEObject implements VegaDataSource {
   // Private fields
   private _feature?: EStructuralFeature;
   private _filterExpression?: Expression;
-  private _transforms: VegaTransform[] = [];
+  private _transforms!: EList<VegaTransform>;
   private _transformExpression?: Expression;
 
   /**
@@ -85,28 +86,11 @@ export class VegaDataSourceImpl extends BasicEObject implements VegaDataSource {
     }
   }
 
-  get transforms(): VegaTransform[] {
-    return this._transforms;
-  }
-
-  set transforms(value: VegaTransform[]) {
-    const oldValue = this._transforms;
-    this._transforms = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(VegaDataSourceImpl.TRANSFORMS),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => VegaDataSourceImpl.TRANSFORMS,
-        merge: () => false
-      });
+  get transforms(): EList<VegaTransform> {
+    if (!this._transforms) {
+      this._transforms = createContainmentEList<any>(this, this.eClass().getEStructuralFeature('transforms') as EReference);
     }
+    return this._transforms;
   }
 
   get transformExpression(): Expression {
@@ -169,7 +153,8 @@ export class VegaDataSourceImpl extends BasicEObject implements VegaDataSource {
         super.eSet(feature, newValue);
         break;
       case VegaDataSourceImpl.TRANSFORMS:
-        this.transforms = newValue as VegaTransform[];
+        this.transforms.clear();
+        this.transforms.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       case VegaDataSourceImpl.TRANSFORM_EXPRESSION:
@@ -192,7 +177,7 @@ export class VegaDataSourceImpl extends BasicEObject implements VegaDataSource {
       case VegaDataSourceImpl.FILTER_EXPRESSION:
         return this._filterExpression !== undefined;
       case VegaDataSourceImpl.TRANSFORMS:
-        return this._transforms !== undefined && this._transforms.length > 0;
+        return this._transforms !== undefined && !this._transforms.isEmpty();
       case VegaDataSourceImpl.TRANSFORM_EXPRESSION:
         return this._transformExpression !== undefined;
       default:
@@ -213,7 +198,7 @@ export class VegaDataSourceImpl extends BasicEObject implements VegaDataSource {
         this._filterExpression = undefined;
         return;
       case VegaDataSourceImpl.TRANSFORMS:
-        this._transforms = [];
+        if (this._transforms) this._transforms.clear();
         return;
       case VegaDataSourceImpl.TRANSFORM_EXPRESSION:
         this._transformExpression = undefined;

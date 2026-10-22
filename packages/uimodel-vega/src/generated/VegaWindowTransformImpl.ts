@@ -5,13 +5,14 @@
  * @generated
  */
 
-import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { VegaTransform } from './VegaTransform';
-import type { VegaWindowOp } from './VegaWindowOp';
-import type { VegaSortField } from './VegaSortField';
-import { VegaTransformImpl } from './VegaTransformImpl';
-import type { VegaWindowTransform } from './VegaWindowTransform';
-import { UimodelVegaPackage } from './UimodelVegaPackage';
+import { createEObjectEList } from '@emfts/core';
+import type { EClass, EStructuralFeature, EList, EReference } from '@emfts/core';
+import type { VegaTransform } from './VegaTransform.js';
+import type { VegaSortField } from './VegaSortField.js';
+import { VegaWindowOp } from './VegaWindowOp.js';
+import { VegaTransformImpl } from './VegaTransformImpl.js';
+import type { VegaWindowTransform } from './VegaWindowTransform.js';
+import { UimodelVegaPackage } from './UimodelVegaPackage.js';
 
 /**
  * Implementation of VegaWindowTransform
@@ -28,13 +29,16 @@ export class VegaWindowTransformImpl extends VegaTransformImpl implements VegaWi
   static readonly FRAME_END: number = 6;
 
   // Private fields
-  private _op?: VegaWindowOp;
+  private _op: VegaWindowOp = VegaWindowOp.ROW_NUMBER;
+  private _opIsSet = false;
   private _field?: EStructuralFeature;
-  private _as: string = "";
-  private _groupBy: EStructuralFeature[] = [];
+  private _as?: string;
+  private _groupBy!: EList<EStructuralFeature>;
   private _sort?: VegaSortField;
-  private _frameStart?: number;
-  private _frameEnd?: number;
+  private _frameStart: number = 0;
+  private _frameStartIsSet = false;
+  private _frameEnd: number = 0;
+  private _frameEndIsSet = false;
 
   /**
    * Returns the EClass of this object
@@ -51,6 +55,7 @@ export class VegaWindowTransformImpl extends VegaTransformImpl implements VegaWi
   set op(value: VegaWindowOp) {
     const oldValue = this._op;
     this._op = value;
+    this._opIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -116,28 +121,11 @@ export class VegaWindowTransformImpl extends VegaTransformImpl implements VegaWi
     }
   }
 
-  get groupBy(): EStructuralFeature[] {
-    return this._groupBy;
-  }
-
-  set groupBy(value: EStructuralFeature[]) {
-    const oldValue = this._groupBy;
-    this._groupBy = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(VegaWindowTransformImpl.GROUP_BY),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => VegaWindowTransformImpl.GROUP_BY,
-        merge: () => false
-      });
+  get groupBy(): EList<EStructuralFeature> {
+    if (!this._groupBy) {
+      this._groupBy = createEObjectEList(this, this.eClass().getEStructuralFeature('groupBy') as EReference) as unknown as EList<EStructuralFeature>;
     }
+    return this._groupBy;
   }
 
   get sort(): VegaSortField {
@@ -171,6 +159,7 @@ export class VegaWindowTransformImpl extends VegaTransformImpl implements VegaWi
   set frameStart(value: number) {
     const oldValue = this._frameStart;
     this._frameStart = value;
+    this._frameStartIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -195,6 +184,7 @@ export class VegaWindowTransformImpl extends VegaTransformImpl implements VegaWi
   set frameEnd(value: number) {
     const oldValue = this._frameEnd;
     this._frameEnd = value;
+    this._frameEndIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -258,7 +248,8 @@ export class VegaWindowTransformImpl extends VegaTransformImpl implements VegaWi
         super.eSet(feature, newValue);
         break;
       case VegaWindowTransformImpl.GROUP_BY:
-        this.groupBy = newValue as EStructuralFeature[];
+        this.groupBy.clear();
+        this.groupBy.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       case VegaWindowTransformImpl.SORT:
@@ -285,19 +276,19 @@ export class VegaWindowTransformImpl extends VegaTransformImpl implements VegaWi
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case VegaWindowTransformImpl.OP:
-        return this._op !== undefined;
+        return this._opIsSet;
       case VegaWindowTransformImpl.FIELD:
         return this._field !== undefined;
       case VegaWindowTransformImpl.AS:
-        return this._as !== "";
+        return this._as !== undefined;
       case VegaWindowTransformImpl.GROUP_BY:
-        return this._groupBy !== undefined && this._groupBy.length > 0;
+        return this._groupBy !== undefined && !this._groupBy.isEmpty();
       case VegaWindowTransformImpl.SORT:
         return this._sort !== undefined;
       case VegaWindowTransformImpl.FRAME_START:
-        return this._frameStart !== undefined;
+        return this._frameStartIsSet;
       case VegaWindowTransformImpl.FRAME_END:
-        return this._frameEnd !== undefined;
+        return this._frameEndIsSet;
       default:
         return super.eIsSet(feature);
     }
@@ -310,25 +301,28 @@ export class VegaWindowTransformImpl extends VegaTransformImpl implements VegaWi
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case VegaWindowTransformImpl.OP:
-        this._op = undefined;
+        this._op = VegaWindowOp.ROW_NUMBER;
+        this._opIsSet = false;
         return;
       case VegaWindowTransformImpl.FIELD:
         this._field = undefined;
         return;
       case VegaWindowTransformImpl.AS:
-        this._as = "";
+        this._as = undefined;
         return;
       case VegaWindowTransformImpl.GROUP_BY:
-        this._groupBy = [];
+        if (this._groupBy) this._groupBy.clear();
         return;
       case VegaWindowTransformImpl.SORT:
         this._sort = undefined;
         return;
       case VegaWindowTransformImpl.FRAME_START:
-        this._frameStart = undefined;
+        this._frameStart = 0;
+        this._frameStartIsSet = false;
         return;
       case VegaWindowTransformImpl.FRAME_END:
-        this._frameEnd = undefined;
+        this._frameEnd = 0;
+        this._frameEndIsSet = false;
         return;
       default:
         super.eUnset(feature);

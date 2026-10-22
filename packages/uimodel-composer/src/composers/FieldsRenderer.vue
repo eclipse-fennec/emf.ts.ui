@@ -16,7 +16,7 @@ import WidgetComposer from './WidgetComposer.vue';
 import GroupComposer from './GroupComposer.vue';
 
 const props = defineProps<{
-  fields: readonly WidgetComponent[] | undefined;
+  fields: Iterable<WidgetComponent> | undefined;
   model: EObject;
 }>();
 

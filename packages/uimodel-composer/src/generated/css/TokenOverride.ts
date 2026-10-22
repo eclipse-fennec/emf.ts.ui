@@ -6,7 +6,7 @@
  */
 
 import type { EObject, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
-import type { DesignToken } from './DesignToken';
+import type { DesignToken } from './DesignToken.js';
 
 /**
  * TokenOverride

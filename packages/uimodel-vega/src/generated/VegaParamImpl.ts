@@ -7,8 +7,8 @@
 
 import { BasicEObject } from '@emfts/core';
 import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { VegaParam } from './VegaParam';
-import { UimodelVegaPackage } from './UimodelVegaPackage';
+import type { VegaParam } from './VegaParam.js';
+import { UimodelVegaPackage } from './UimodelVegaPackage.js';
 
 /**
  * Implementation of VegaParam
@@ -19,7 +19,7 @@ export abstract class VegaParamImpl extends BasicEObject implements VegaParam {
   static readonly NAME: number = 0;
 
   // Private fields
-  private _name: string = "";
+  private _name?: string;
 
   /**
    * Returns the EClass of this object
@@ -90,7 +90,7 @@ export abstract class VegaParamImpl extends BasicEObject implements VegaParam {
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case VegaParamImpl.NAME:
-        return this._name !== "";
+        return this._name !== undefined;
       default:
         return super.eIsSet(feature);
     }
@@ -103,7 +103,7 @@ export abstract class VegaParamImpl extends BasicEObject implements VegaParam {
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case VegaParamImpl.NAME:
-        this._name = "";
+        this._name = undefined;
         return;
       default:
         super.eUnset(feature);

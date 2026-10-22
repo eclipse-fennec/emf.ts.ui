@@ -6,7 +6,7 @@
  */
 
 import type { EObject, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
-import type { VegaTransform } from './VegaTransform';
+import type { VegaTransform } from './VegaTransform.js';
 import type { Expression } from '@emfts/uimodel-composer';
 
 /**

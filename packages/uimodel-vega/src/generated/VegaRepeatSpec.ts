@@ -5,15 +5,15 @@
  * @generated
  */
 
-import type { EObject, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
-import type { VegaSpec } from './VegaSpec';
+import type { EObject, EList, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
+import type { VegaSpec } from './VegaSpec.js';
 
 /**
  * VegaRepeatSpec
  * @generated
  */
 export interface VegaRepeatSpec extends VegaSpec {
-  fields: string[];
+  fields: EList<string>;
   columns?: number;
   spec: VegaSpec;
 

@@ -7,9 +7,9 @@
 
 import { BasicEObject } from '@emfts/core';
 import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { DesignToken } from './DesignToken';
-import type { TokenOverride } from './TokenOverride';
-import { UimodelCssPackage } from './UimodelCssPackage';
+import type { DesignToken } from './DesignToken.js';
+import type { TokenOverride } from './TokenOverride.js';
+import { UimodelCssPackage } from './UimodelCssPackage.js';
 
 /**
  * Implementation of TokenOverride
@@ -22,7 +22,7 @@ export class TokenOverrideImpl extends BasicEObject implements TokenOverride {
 
   // Private fields
   private _token?: DesignToken;
-  private _value: string = "";
+  private _value?: string;
 
   /**
    * Returns the EClass of this object
@@ -125,7 +125,7 @@ export class TokenOverrideImpl extends BasicEObject implements TokenOverride {
       case TokenOverrideImpl.TOKEN:
         return this._token !== undefined;
       case TokenOverrideImpl.VALUE:
-        return this._value !== "";
+        return this._value !== undefined;
       default:
         return super.eIsSet(feature);
     }
@@ -141,7 +141,7 @@ export class TokenOverrideImpl extends BasicEObject implements TokenOverride {
         this._token = undefined;
         return;
       case TokenOverrideImpl.VALUE:
-        this._value = "";
+        this._value = undefined;
         return;
       default:
         super.eUnset(feature);

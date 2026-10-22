@@ -22,13 +22,13 @@
         eType="#//VegaSignalBinding" name="signals" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="title"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EInt" name="width"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EInt" name="height"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute"
         eType="#//VegaAutosize" name="autosize" defaultValueLiteral="PAD"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EInt" name="padding"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="background"/>
@@ -87,9 +87,9 @@
     <eSuperTypes href="#//VegaSpec"/>
     <eStructuralFeatures xsi:type="ecore:EReference" lowerBound="1"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature" name="facetField"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" lowerBound="1"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true" lowerBound="1"
         eType="#//VegaFieldType" name="facetFieldType"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EInt" name="columns"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute"
         eType="#//VegaSortOrder" name="facetSort" defaultValueLiteral="ASCENDING"/>
@@ -102,7 +102,7 @@
     <eSuperTypes href="#//VegaSpec"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" lowerBound="1" upperBound="-1"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="fields"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EInt" name="columns"/>
     <eStructuralFeatures xsi:type="ecore:EReference" lowerBound="1"
         eType="#//VegaSpec" name="spec" containment="true"/>
@@ -112,10 +112,10 @@
   <!-- VegaMarkDef — Mark-Konfiguration                                 -->
   <!-- ================================================================ -->
   <eClassifiers xsi:type="ecore:EClass" name="VegaMarkDef">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" lowerBound="1"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true" lowerBound="1"
         eType="#//VegaMarkType" name="type"/>
     <!-- Visuelle Eigenschaften -->
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="opacity"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="filled"
@@ -126,52 +126,52 @@
         eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="fill"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="stroke"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="strokeWidth"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="cornerRadius"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="#//VegaInterpolate" name="interpolate"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="size"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="clip"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="cursor"/>
     <!-- Line/Area-spezifisch -->
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="point"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="line"/>
     <!-- Arc-spezifisch -->
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="innerRadius"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="outerRadius"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="padAngle"/>
     <!-- Bar-spezifisch -->
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="#//VegaOrientation" name="orient"/>
     <!-- Text-spezifisch -->
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="fontSize"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="fontWeight"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="font"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="#//VegaAlign" name="align"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="#//VegaBaseline" name="baseline"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="dx"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="dy"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="angle"/>
     <!-- Tooltip -->
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="tooltip"/>
   </eClassifiers>
 
@@ -180,7 +180,7 @@
   <!-- ================================================================ -->
   <eClassifiers xsi:type="ecore:EClass" name="VegaEncoding">
     <!-- Welcher Kanal (x, y, color, size, ...) -->
-    <eStructuralFeatures xsi:type="ecore:EAttribute" lowerBound="1"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true" lowerBound="1"
         eType="#//VegaChannel" name="channel"/>
     <!-- Datenbindung: Feature oder Expression (expression hat Vorrang) -->
     <eStructuralFeatures xsi:type="ecore:EReference"
@@ -191,19 +191,19 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="value"/>
     <!-- Datentyp und Aggregation -->
-    <eStructuralFeatures xsi:type="ecore:EAttribute" lowerBound="1"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true" lowerBound="1"
         eType="#//VegaFieldType" name="fieldType"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute"
         eType="#//VegaAggregate" name="aggregate" defaultValueLiteral="NONE"/>
     <!-- Binning -->
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="bin"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="binStep"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EInt" name="binMaxBins"/>
     <!-- Zeiteinheit -->
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="#//VegaTimeUnit" name="timeUnit"/>
     <!-- Beschriftung und Format -->
     <eStructuralFeatures xsi:type="ecore:EAttribute"
@@ -213,13 +213,13 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="formatType"/>
     <!-- Sortierung -->
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="#//VegaSortOrder" name="sort"/>
     <!-- Stacking -->
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="#//VegaStack" name="stack"/>
     <!-- Band-Position (0..1, fuer Band-Scales) -->
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="bandPosition"/>
     <!-- Scale, Axis, Legend Konfiguration -->
     <eStructuralFeatures xsi:type="ecore:EReference"
@@ -251,27 +251,27 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="scheme"/>
     <!-- Scale-Verhalten -->
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="zero"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="nice"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="clamp"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="round"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="reverse"/>
     <!-- Band/Point-Scales -->
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="padding"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="paddingInner"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="paddingOuter"/>
     <!-- Log/Pow-Scales -->
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="exponent"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="base"/>
     <!-- Interpolation (fuer Farbskalen) -->
     <eStructuralFeatures xsi:type="ecore:EAttribute"
@@ -282,73 +282,73 @@
   <!-- VegaAxis                                                         -->
   <!-- ================================================================ -->
   <eClassifiers xsi:type="ecore:EClass" name="VegaAxis">
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="#//VegaAxisOrient" name="orient"/>
     <!-- Titel -->
     <eStructuralFeatures xsi:type="ecore:EAttribute"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="title"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="titleAngle"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="titleColor"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="titleFontSize"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="titleFont"/>
     <!-- Labels -->
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="labels"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="labelAngle"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="labelColor"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="labelFontSize"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="labelFont"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="#//VegaLabelOverlap" name="labelOverlap"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="format"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="formatType"/>
     <!-- Grid -->
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="grid"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="gridColor"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="gridOpacity"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="gridWidth"/>
     <!-- Ticks -->
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="ticks"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EInt" name="tickCount"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="tickSize"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="tickColor"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="tickWidth"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" upperBound="-1"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="values"/>
     <!-- Domain-Linie -->
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="domainLine"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="domainColor"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="domainWidth"/>
     <!-- Layout -->
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="offset"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="minExtent"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="maxExtent"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EInt" name="zindex"/>
   </eClassifiers>
 
@@ -356,35 +356,35 @@
   <!-- VegaLegend                                                       -->
   <!-- ================================================================ -->
   <eClassifiers xsi:type="ecore:EClass" name="VegaLegend">
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="#//VegaLegendOrient" name="orient"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="title"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="titleColor"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="titleFontSize"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="#//VegaLegendType" name="type"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="#//VegaDirection" name="direction"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="labelColor"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="labelFontSize"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="symbolSize"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="symbolType"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="padding"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="offset"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EInt" name="columns"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" upperBound="-1"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="values"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="disable"/>
   </eClassifiers>
 
@@ -404,9 +404,9 @@
     <!-- Alternativ: Feld-basiertes Encoding wenn Bedingung true -->
     <eStructuralFeatures xsi:type="ecore:EReference"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature" name="feature"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="#//VegaFieldType" name="fieldType"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="#//VegaAggregate" name="aggregate"/>
   </eClassifiers>
 
@@ -423,9 +423,9 @@
     <eSuperTypes href="#//VegaParam"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" upperBound="-1"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="fields"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="toggle"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="nearest"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="on"/>
@@ -458,11 +458,11 @@
   <eClassifiers xsi:type="ecore:EClass" name="VegaSelectionMark">
     <eStructuralFeatures xsi:type="ecore:EAttribute"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="fill"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="fillOpacity"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="stroke"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="strokeWidth"/>
   </eClassifiers>
 
@@ -512,7 +512,7 @@
     <eSuperTypes href="#//VegaTransform"/>
     <eStructuralFeatures xsi:type="ecore:EReference" upperBound="-1"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature" name="groupBy"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" lowerBound="1"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true" lowerBound="1"
         eType="#//VegaAggregate" name="op"/>
     <eStructuralFeatures xsi:type="ecore:EReference" lowerBound="1"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature" name="field"/>
@@ -536,9 +536,9 @@
         eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature" name="field"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="as"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EInt" name="maxBins"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="step"/>
   </eClassifiers>
 
@@ -547,7 +547,7 @@
     <eSuperTypes href="#//VegaTransform"/>
     <eStructuralFeatures xsi:type="ecore:EReference" lowerBound="1"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature" name="field"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" lowerBound="1"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true" lowerBound="1"
         eType="#//VegaTimeUnit" name="timeUnit"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="as"/>
@@ -563,7 +563,7 @@
   <!-- Window-Funktionen (Rank, Running Total, etc.) -->
   <eClassifiers xsi:type="ecore:EClass" name="VegaWindowTransform">
     <eSuperTypes href="#//VegaTransform"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" lowerBound="1"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true" lowerBound="1"
         eType="#//VegaWindowOp" name="op"/>
     <eStructuralFeatures xsi:type="ecore:EReference"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature" name="field"/>
@@ -574,9 +574,9 @@
     <eStructuralFeatures xsi:type="ecore:EReference"
         eType="#//VegaSortField" name="sort" containment="true"/>
     <!-- Frame: [start, end] relativ zum aktuellen Datenpunkt. null = unbegrenzt -->
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EInt" name="frameStart"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EInt" name="frameEnd"/>
   </eClassifiers>
 
@@ -628,7 +628,7 @@
   <!-- Stichprobe -->
   <eClassifiers xsi:type="ecore:EClass" name="VegaSampleTransform">
     <eSuperTypes href="#//VegaTransform"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" lowerBound="1"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true" lowerBound="1"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EInt" name="sample"/>
   </eClassifiers>
 
@@ -637,9 +637,9 @@
     <eSuperTypes href="#//VegaTransform"/>
     <eStructuralFeatures xsi:type="ecore:EReference" lowerBound="1"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature" name="field"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="bandwidth"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EInt" name="steps"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" upperBound="-1"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="as"/>
@@ -674,7 +674,7 @@
   <!-- JoinAggregate (Aggregat ohne Reduktion) -->
   <eClassifiers xsi:type="ecore:EClass" name="VegaJoinAggregateTransform">
     <eSuperTypes href="#//VegaTransform"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" lowerBound="1"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true" lowerBound="1"
         eType="#//VegaAggregate" name="op"/>
     <eStructuralFeatures xsi:type="ecore:EReference" lowerBound="1"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature" name="field"/>

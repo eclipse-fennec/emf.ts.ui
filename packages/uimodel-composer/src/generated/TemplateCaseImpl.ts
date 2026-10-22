@@ -7,10 +7,10 @@
 
 import { BasicEObject } from '@emfts/core';
 import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { Expression } from './Expression';
-import type { WidgetComponent } from './WidgetComponent';
-import type { TemplateCase } from './TemplateCase';
-import { UimodelPackage } from './UimodelPackage';
+import type { Expression } from './Expression.js';
+import type { WidgetComponent } from './WidgetComponent.js';
+import type { TemplateCase } from './TemplateCase.js';
+import { UimodelPackage } from './UimodelPackage.js';
 
 /**
  * Implementation of TemplateCase

@@ -6,11 +6,11 @@
  */
 
 import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { WidgetComponent } from './WidgetComponent';
-import type { Expression } from './Expression';
-import { WidgetComponentImpl } from './WidgetComponentImpl';
-import type { DateWidget } from './DateWidget';
-import { UimodelPackage } from './UimodelPackage';
+import type { WidgetComponent } from './WidgetComponent.js';
+import type { Expression } from './Expression.js';
+import { WidgetComponentImpl } from './WidgetComponentImpl.js';
+import type { DateWidget } from './DateWidget.js';
+import { UimodelPackage } from './UimodelPackage.js';
 
 /**
  * Implementation of DateWidget
@@ -24,7 +24,7 @@ export class DateWidgetImpl extends WidgetComponentImpl implements DateWidget {
   static readonly VALUE: number = 17;
 
   // Private fields
-  private _withTime?: boolean;
+  private _withTime: boolean = false;
   private _format: string = "DD.MM.YYYY";
   private _constrains?: Expression;
   private _value?: Date;
@@ -188,7 +188,7 @@ export class DateWidgetImpl extends WidgetComponentImpl implements DateWidget {
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case DateWidgetImpl.WITH_TIME:
-        return this._withTime !== undefined;
+        return this._withTime !== false;
       case DateWidgetImpl.FORMAT:
         return this._format !== "DD.MM.YYYY";
       case DateWidgetImpl.CONSTRAINS:
@@ -207,7 +207,7 @@ export class DateWidgetImpl extends WidgetComponentImpl implements DateWidget {
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case DateWidgetImpl.WITH_TIME:
-        this._withTime = undefined;
+        this._withTime = false;
         return;
       case DateWidgetImpl.FORMAT:
         this._format = "DD.MM.YYYY";

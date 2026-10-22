@@ -6,11 +6,11 @@
  */
 
 import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { Symbol } from './Symbol';
-import { LineStyle } from './LineStyle';
-import { SymbolImpl } from './SymbolImpl';
-import type { LineSymbol } from './LineSymbol';
-import { UimodelMapsPackage } from './UimodelMapsPackage';
+import type { Symbol } from './Symbol.js';
+import { LineStyle } from './LineStyle.js';
+import { SymbolImpl } from './SymbolImpl.js';
+import type { LineSymbol } from './LineSymbol.js';
+import { UimodelMapsPackage } from './UimodelMapsPackage.js';
 
 /**
  * Implementation of LineSymbol

@@ -5,8 +5,14 @@
  * @generated
  */
 
-import { BasicEPackage, BasicEClass, BasicEAttribute, BasicEReference, getEcorePackage } from '@emfts/core';
-import type { EClass, EAttribute, EReference, EEnum } from '@emfts/core';
+import { BasicEPackage, BasicEClass, BasicEAttribute, BasicEReference, EPackageRegistry, getEcorePackage, BasicEEnum, BasicEEnumLiteral } from '@emfts/core';
+import type { EClass, EAttribute, EReference, EEnum, EDataType } from '@emfts/core';
+import { UimodelFactory } from './UimodelFactory.js';
+import { Severity } from './Severity.js';
+import { MapperExecutionOrder } from './MapperExecutionOrder.js';
+import { WidgetType } from './WidgetType.js';
+import { LayoutType } from './LayoutType.js';
+import { InputType } from './InputType.js';
 
 /**
  * Uimodel Package
@@ -167,6 +173,11 @@ export class UimodelPackage extends BasicEPackage {
     VALIDATION_MESSAGE_MAPPER__MAPPED_TEXT: null as unknown as EAttribute | EReference,
     VALIDATION_MESSAGE_MAPPER__MAPPED_TEXT_EXPRESSION: null as unknown as EAttribute | EReference,
     VALIDATION_MESSAGE_MAPPER__MAPPED_SEVERITY: null as unknown as EAttribute | EReference,
+    SEVERITY: null as unknown as EEnum,
+    MAPPER_EXECUTION_ORDER: null as unknown as EEnum,
+    WIDGET_TYPE: null as unknown as EEnum,
+    LAYOUT_TYPE: null as unknown as EEnum,
+    INPUT_TYPE: null as unknown as EEnum,
   };
 
   private constructor() {
@@ -180,6 +191,13 @@ export class UimodelPackage extends BasicEPackage {
    * Initialize package contents
    */
   private init(): void {
+    // Register this package under its nsURI so other generated packages can
+    // resolve their cross-package references from the registry (#36).
+    // eINSTANCE is already assigned at this point
+    EPackageRegistry.INSTANCE.set(UimodelPackage.eNS_URI, this);
+    // Wire the generated factory so loaded/created instances are typed Impls.
+    this.setEFactoryInstance(UimodelFactory.eINSTANCE);
+
     // Create UIModel class
     const uIModelClass = new BasicEClass();
     uIModelClass.setName('UIModel');
@@ -211,6 +229,7 @@ export class UimodelPackage extends BasicEPackage {
     uIModel_priority.setName('priority');
     uIModel_priority.setLowerBound(0);
     uIModel_priority.setUpperBound(1);
+    uIModel_priority.setDefaultValueLiteral("0");
     uIModelClass.getEStructuralFeatures().push(uIModel_priority);
     UimodelPackage.Literals.U_I_MODEL__PRIORITY = uIModel_priority;
 
@@ -343,6 +362,7 @@ export class UimodelPackage extends BasicEPackage {
     formView_mapperOrder.setName('mapperOrder');
     formView_mapperOrder.setLowerBound(0);
     formView_mapperOrder.setUpperBound(1);
+    formView_mapperOrder.setDefaultValueLiteral("FIELD_THEN_FORM");
     formViewClass.getEStructuralFeatures().push(formView_mapperOrder);
     UimodelPackage.Literals.FORM_VIEW__MAPPER_ORDER = formView_mapperOrder;
 
@@ -604,6 +624,7 @@ export class UimodelPackage extends BasicEPackage {
     textAreaWidget_rows.setName('rows');
     textAreaWidget_rows.setLowerBound(0);
     textAreaWidget_rows.setUpperBound(1);
+    textAreaWidget_rows.setDefaultValueLiteral("4");
     textAreaWidgetClass.getEStructuralFeatures().push(textAreaWidget_rows);
     UimodelPackage.Literals.TEXT_AREA_WIDGET__ROWS = textAreaWidget_rows;
 
@@ -653,6 +674,7 @@ export class UimodelPackage extends BasicEPackage {
     numberWidget_step.setName('step');
     numberWidget_step.setLowerBound(0);
     numberWidget_step.setUpperBound(1);
+    numberWidget_step.setDefaultValueLiteral("1");
     numberWidgetClass.getEStructuralFeatures().push(numberWidget_step);
     UimodelPackage.Literals.NUMBER_WIDGET__STEP = numberWidget_step;
 
@@ -711,6 +733,7 @@ export class UimodelPackage extends BasicEPackage {
     dateWidget_format.setName('format');
     dateWidget_format.setLowerBound(0);
     dateWidget_format.setUpperBound(1);
+    dateWidget_format.setDefaultValueLiteral("DD.MM.YYYY");
     dateWidgetClass.getEStructuralFeatures().push(dateWidget_format);
     UimodelPackage.Literals.DATE_WIDGET__FORMAT = dateWidget_format;
 
@@ -754,6 +777,7 @@ export class UimodelPackage extends BasicEPackage {
     comboboxWidget_minSearchLength.setName('minSearchLength');
     comboboxWidget_minSearchLength.setLowerBound(0);
     comboboxWidget_minSearchLength.setUpperBound(1);
+    comboboxWidget_minSearchLength.setDefaultValueLiteral("2");
     comboboxWidgetClass.getEStructuralFeatures().push(comboboxWidget_minSearchLength);
     UimodelPackage.Literals.COMBOBOX_WIDGET__MIN_SEARCH_LENGTH = comboboxWidget_minSearchLength;
 
@@ -866,6 +890,7 @@ export class UimodelPackage extends BasicEPackage {
     allFeatures_priority.setName('priority');
     allFeatures_priority.setLowerBound(0);
     allFeatures_priority.setUpperBound(1);
+    allFeatures_priority.setDefaultValueLiteral("0");
     allFeaturesClass.getEStructuralFeatures().push(allFeatures_priority);
     UimodelPackage.Literals.ALL_FEATURES__PRIORITY = allFeatures_priority;
 
@@ -919,6 +944,7 @@ export class UimodelPackage extends BasicEPackage {
     groupWidget_layout.setName('layout');
     groupWidget_layout.setLowerBound(0);
     groupWidget_layout.setUpperBound(1);
+    groupWidget_layout.setDefaultValueLiteral("VERTICAL");
     groupWidgetClass.getEStructuralFeatures().push(groupWidget_layout);
     UimodelPackage.Literals.GROUP_WIDGET__LAYOUT = groupWidget_layout;
 
@@ -1041,6 +1067,7 @@ export class UimodelPackage extends BasicEPackage {
     uIModelOverlay_priority.setName('priority');
     uIModelOverlay_priority.setLowerBound(0);
     uIModelOverlay_priority.setUpperBound(1);
+    uIModelOverlay_priority.setDefaultValueLiteral("0");
     uIModelOverlayClass.getEStructuralFeatures().push(uIModelOverlay_priority);
     UimodelPackage.Literals.U_I_MODEL_OVERLAY__PRIORITY = uIModelOverlay_priority;
 
@@ -1237,6 +1264,7 @@ export class UimodelPackage extends BasicEPackage {
     expression_language.setName('language');
     expression_language.setLowerBound(1);
     expression_language.setUpperBound(1);
+    expression_language.setDefaultValueLiteral("OCL");
     expressionClass.getEStructuralFeatures().push(expression_language);
     UimodelPackage.Literals.EXPRESSION__LANGUAGE = expression_language;
 
@@ -1270,6 +1298,7 @@ export class UimodelPackage extends BasicEPackage {
     validationExpression_severity.setName('severity');
     validationExpression_severity.setLowerBound(0);
     validationExpression_severity.setUpperBound(1);
+    validationExpression_severity.setDefaultValueLiteral("ERROR");
     validationExpressionClass.getEStructuralFeatures().push(validationExpression_severity);
     UimodelPackage.Literals.VALIDATION_EXPRESSION__SEVERITY = validationExpression_severity;
 
@@ -1340,6 +1369,296 @@ export class UimodelPackage extends BasicEPackage {
     validationMessageMapperClass.getEStructuralFeatures().push(validationMessageMapper_mappedSeverity);
     UimodelPackage.Literals.VALIDATION_MESSAGE_MAPPER__MAPPED_SEVERITY = validationMessageMapper_mappedSeverity;
 
+    // Create Severity enum
+    const severityEnumType = new BasicEEnum();
+    severityEnumType.setName('Severity');
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("INFO");
+      literal.setValue(0);
+      literal.setLiteral("INFO");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(Severity.INFO);
+      severityEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("WARNING");
+      literal.setValue(1);
+      literal.setLiteral("WARNING");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(Severity.WARNING);
+      severityEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("ERROR");
+      literal.setValue(2);
+      literal.setLiteral("ERROR");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(Severity.ERROR);
+      severityEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("FATAL");
+      literal.setValue(3);
+      literal.setLiteral("FATAL");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(Severity.FATAL);
+      severityEnumType.addLiteral(literal);
+    }
+    UimodelPackage.Literals.SEVERITY = severityEnumType;
+    this.getEClassifiers().push(severityEnumType);
+
+    // Create MapperExecutionOrder enum
+    const mapperExecutionOrderEnumType = new BasicEEnum();
+    mapperExecutionOrderEnumType.setName('MapperExecutionOrder');
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("FIELD_THEN_FORM");
+      literal.setValue(0);
+      literal.setLiteral("FIELD_THEN_FORM");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(MapperExecutionOrder.FIELD_THEN_FORM);
+      mapperExecutionOrderEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("FORM_THEN_FIELD");
+      literal.setValue(1);
+      literal.setLiteral("FORM_THEN_FIELD");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(MapperExecutionOrder.FORM_THEN_FIELD);
+      mapperExecutionOrderEnumType.addLiteral(literal);
+    }
+    UimodelPackage.Literals.MAPPER_EXECUTION_ORDER = mapperExecutionOrderEnumType;
+    this.getEClassifiers().push(mapperExecutionOrderEnumType);
+
+    // Create WidgetType enum
+    const widgetTypeEnumType = new BasicEEnum();
+    widgetTypeEnumType.setName('WidgetType');
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("TEXT");
+      literal.setValue(0);
+      literal.setLiteral("TEXT");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(WidgetType.TEXT);
+      widgetTypeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("TEXTAREA");
+      literal.setValue(1);
+      literal.setLiteral("TEXTAREA");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(WidgetType.TEXTAREA);
+      widgetTypeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("COMBO");
+      literal.setValue(2);
+      literal.setLiteral("COMBO");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(WidgetType.COMBO);
+      widgetTypeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("CHECKBOX");
+      literal.setValue(3);
+      literal.setLiteral("CHECKBOX");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(WidgetType.CHECKBOX);
+      widgetTypeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("DATE");
+      literal.setValue(4);
+      literal.setLiteral("DATE");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(WidgetType.DATE);
+      widgetTypeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("NUMBER");
+      literal.setValue(5);
+      literal.setLiteral("NUMBER");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(WidgetType.NUMBER);
+      widgetTypeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("REFERENCE_LINK");
+      literal.setValue(6);
+      literal.setLiteral("REFERENCE_LINK");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(WidgetType.REFERENCE_LINK);
+      widgetTypeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("TABLE");
+      literal.setValue(7);
+      literal.setLiteral("TABLE");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(WidgetType.TABLE);
+      widgetTypeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("CUSTOM");
+      literal.setValue(8);
+      literal.setLiteral("CUSTOM");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(WidgetType.CUSTOM);
+      widgetTypeEnumType.addLiteral(literal);
+    }
+    UimodelPackage.Literals.WIDGET_TYPE = widgetTypeEnumType;
+    this.getEClassifiers().push(widgetTypeEnumType);
+
+    // Create LayoutType enum
+    const layoutTypeEnumType = new BasicEEnum();
+    layoutTypeEnumType.setName('LayoutType');
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("VERTICAL");
+      literal.setValue(0);
+      literal.setLiteral("VERTICAL");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(LayoutType.VERTICAL);
+      layoutTypeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("HORIZONTAL");
+      literal.setValue(1);
+      literal.setLiteral("HORIZONTAL");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(LayoutType.HORIZONTAL);
+      layoutTypeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("GRID");
+      literal.setValue(2);
+      literal.setLiteral("GRID");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(LayoutType.GRID);
+      layoutTypeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("TAB_FOLDER");
+      literal.setValue(3);
+      literal.setLiteral("TAB_FOLDER");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(LayoutType.TAB_FOLDER);
+      layoutTypeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("SECTION");
+      literal.setValue(4);
+      literal.setLiteral("SECTION");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(LayoutType.SECTION);
+      layoutTypeEnumType.addLiteral(literal);
+    }
+    UimodelPackage.Literals.LAYOUT_TYPE = layoutTypeEnumType;
+    this.getEClassifiers().push(layoutTypeEnumType);
+
+    // Create InputType enum
+    const inputTypeEnumType = new BasicEEnum();
+    inputTypeEnumType.setName('InputType');
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("TEXT");
+      literal.setValue(0);
+      literal.setLiteral("TEXT");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(InputType.TEXT);
+      inputTypeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("EMAIL");
+      literal.setValue(1);
+      literal.setLiteral("EMAIL");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(InputType.EMAIL);
+      inputTypeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("URL");
+      literal.setValue(2);
+      literal.setLiteral("URL");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(InputType.URL);
+      inputTypeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("PASSWORD");
+      literal.setValue(3);
+      literal.setLiteral("PASSWORD");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(InputType.PASSWORD);
+      inputTypeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("SEARCH");
+      literal.setValue(4);
+      literal.setLiteral("SEARCH");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(InputType.SEARCH);
+      inputTypeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("PHONE");
+      literal.setValue(5);
+      literal.setLiteral("PHONE");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(InputType.PHONE);
+      inputTypeEnumType.addLiteral(literal);
+    }
+    UimodelPackage.Literals.INPUT_TYPE = inputTypeEnumType;
+    this.getEClassifiers().push(inputTypeEnumType);
+
 
     // ============================================
     // Set ESuperTypes (must be done after all classes are created)
@@ -1370,19 +1689,26 @@ export class UimodelPackage extends BasicEPackage {
     (UimodelPackage.Literals.VALIDATION_EXPRESSION as BasicEClass).getESuperTypes().push(UimodelPackage.Literals.EXPRESSION);
 
     // ============================================
-    // Set ETypes for EReferences (must be done after all classes are created)
+    // Set ETypes for all features (must be done after all classes are created).
+    // An EAttribute without eType leaves the XMI reader no EDataType to
+    // convert against - every value would arrive as a raw string (#37)
     // ============================================
+    (UimodelPackage.Literals.U_I_MODEL__NAME as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
     (UimodelPackage.Literals.U_I_MODEL__TARGET_CLASSES as BasicEReference).setEType(getEcorePackage().getEClassifier('EClass')!);
+    (UimodelPackage.Literals.U_I_MODEL__PRIORITY as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EInt')!);
     (UimodelPackage.Literals.U_I_MODEL__FILTER_EXPRESSION as BasicEReference).setEType(UimodelPackage.Literals.EXPRESSION);
     (UimodelPackage.Literals.U_I_MODEL__STYLES as BasicEReference).setEType(UimodelPackage.Literals.BASE_STYLE);
     (UimodelPackage.Literals.U_I_MODEL__TEMPLATES as BasicEReference).setEType(UimodelPackage.Literals.WIDGET_COMPONENT);
     (UimodelPackage.Literals.U_I_MODEL__COMPONENTS as BasicEReference).setEType(UimodelPackage.Literals.COMPONENT);
+    (UimodelPackage.Literals.COMPONENT__NAME as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelPackage.Literals.COMPONENT__GROUP as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
     (UimodelPackage.Literals.COMPONENT__TARGET_CLASSES as BasicEReference).setEType(getEcorePackage().getEClassifier('EClass')!);
     (UimodelPackage.Literals.COMPONENT__STYLES as BasicEReference).setEType(UimodelPackage.Literals.BASE_STYLE);
     (UimodelPackage.Literals.COMPONENT__CHILDREN as BasicEReference).setEType(UimodelPackage.Literals.COMPONENT);
     (UimodelPackage.Literals.FORM_VIEW__FIELDS as BasicEReference).setEType(UimodelPackage.Literals.WIDGET_COMPONENT);
     (UimodelPackage.Literals.FORM_VIEW__VALIDATIONS as BasicEReference).setEType(UimodelPackage.Literals.VALIDATION_EXPRESSION);
     (UimodelPackage.Literals.FORM_VIEW__VALIDATION_MAPPERS as BasicEReference).setEType(UimodelPackage.Literals.VALIDATION_MESSAGE_MAPPER);
+    (UimodelPackage.Literals.FORM_VIEW__MAPPER_ORDER as BasicEAttribute).setEType(UimodelPackage.Literals.MAPPER_EXECUTION_ORDER);
     (UimodelPackage.Literals.TABLE_VIEW__TABLE_STYLE as BasicEReference).setEType(UimodelPackage.Literals.TABLE_STYLE);
     (UimodelPackage.Literals.SECTION_VIEW__SECTIONS as BasicEReference).setEType(UimodelPackage.Literals.FORM_VIEW);
     (UimodelPackage.Literals.TAB_VIEW__TABS as BasicEReference).setEType(UimodelPackage.Literals.COMPONENT);
@@ -1390,36 +1716,86 @@ export class UimodelPackage extends BasicEPackage {
     (UimodelPackage.Literals.MASTER_DETAIL__MASTER as BasicEReference).setEType(UimodelPackage.Literals.TABLE_VIEW);
     (UimodelPackage.Literals.MASTER_DETAIL__DETAIL as BasicEReference).setEType(UimodelPackage.Literals.COMPONENT);
     (UimodelPackage.Literals.WIDGET_COMPONENT__FEATURE as BasicEReference).setEType(getEcorePackage().getEClassifier('EStructuralFeature')!);
+    (UimodelPackage.Literals.WIDGET_COMPONENT__LABEL as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelPackage.Literals.WIDGET_COMPONENT__PLACEHOLDER as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelPackage.Literals.WIDGET_COMPONENT__READ_ONLY as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EBoolean')!);
+    (UimodelPackage.Literals.WIDGET_COMPONENT__REQUIRED as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EBoolean')!);
     (UimodelPackage.Literals.WIDGET_COMPONENT__VISIBILITY_CONDITION as BasicEReference).setEType(UimodelPackage.Literals.EXPRESSION);
     (UimodelPackage.Literals.WIDGET_COMPONENT__VALIDATIONS as BasicEReference).setEType(UimodelPackage.Literals.VALIDATION_EXPRESSION);
     (UimodelPackage.Literals.WIDGET_COMPONENT__VALIDATION_MAPPERS as BasicEReference).setEType(UimodelPackage.Literals.VALIDATION_MESSAGE_MAPPER);
     (UimodelPackage.Literals.WIDGET_COMPONENT__BINDINGS as BasicEReference).setEType(UimodelPackage.Literals.PROPERTY_BINDING);
+    (UimodelPackage.Literals.PROPERTY_BINDING__PROPERTY as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
     (UimodelPackage.Literals.PROPERTY_BINDING__EXPRESSION as BasicEReference).setEType(UimodelPackage.Literals.EXPRESSION);
+    (UimodelPackage.Literals.INPUT_WIDGET__MAX_LENGTH as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EInt')!);
+    (UimodelPackage.Literals.INPUT_WIDGET__VALUE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelPackage.Literals.INPUT_WIDGET__PASSWORD as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EBoolean')!);
+    (UimodelPackage.Literals.TEXT_AREA_WIDGET__ROWS as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EInt')!);
+    (UimodelPackage.Literals.TEXT_AREA_WIDGET__MAX_LENGTH as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EInt')!);
+    (UimodelPackage.Literals.TEXT_AREA_WIDGET__VALUE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelPackage.Literals.NUMBER_WIDGET__MIN as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelPackage.Literals.NUMBER_WIDGET__MAX as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelPackage.Literals.NUMBER_WIDGET__STEP as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelPackage.Literals.NUMBER_WIDGET__VALUE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EInt')!);
+    (UimodelPackage.Literals.CHECKBOX_WIDGET__AS_TOGGLE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EBoolean')!);
+    (UimodelPackage.Literals.CHECKBOX_WIDGET__VALUE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EBoolean')!);
+    (UimodelPackage.Literals.DATE_WIDGET__WITH_TIME as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EBoolean')!);
+    (UimodelPackage.Literals.DATE_WIDGET__FORMAT as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
     (UimodelPackage.Literals.DATE_WIDGET__CONSTRAINS as BasicEReference).setEType(UimodelPackage.Literals.EXPRESSION);
+    (UimodelPackage.Literals.DATE_WIDGET__VALUE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDate')!);
     (UimodelPackage.Literals.COMBOBOX_WIDGET__OPTION_LABEL as BasicEReference).setEType(UimodelPackage.Literals.EXPRESSION);
+    (UimodelPackage.Literals.COMBOBOX_WIDGET__MIN_SEARCH_LENGTH as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EInt')!);
+    (UimodelPackage.Literals.COMBOBOX_WIDGET__MULTI_SELECT as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EBoolean')!);
     (UimodelPackage.Literals.SELECT_WIDGET__OPTION_LABEL as BasicEReference).setEType(UimodelPackage.Literals.EXPRESSION);
+    (UimodelPackage.Literals.SELECT_WIDGET__MULTI_SELECT as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EBoolean')!);
+    (UimodelPackage.Literals.SELECT_WIDGET__AS_BUTTON_GROUP as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EBoolean')!);
+    (UimodelPackage.Literals.SELECT_WIDGET__VALUES as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
     (UimodelPackage.Literals.ALL_FEATURES__WITH as BasicEReference).setEType(getEcorePackage().getEClassifier('EStructuralFeature')!);
     (UimodelPackage.Literals.ALL_FEATURES__E_TYPE as BasicEReference).setEType(getEcorePackage().getEClassifier('EClassifier')!);
     (UimodelPackage.Literals.ALL_FEATURES__FILTER as BasicEReference).setEType(UimodelPackage.Literals.EXPRESSION);
     (UimodelPackage.Literals.ALL_FEATURES__TEMPLATE as BasicEReference).setEType(UimodelPackage.Literals.WIDGET_COMPONENT);
     (UimodelPackage.Literals.ALL_FEATURES__CASES as BasicEReference).setEType(UimodelPackage.Literals.TEMPLATE_CASE);
+    (UimodelPackage.Literals.ALL_FEATURES__PRIORITY as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EInt')!);
     (UimodelPackage.Literals.TEMPLATE_CASE__WHEN as BasicEReference).setEType(UimodelPackage.Literals.EXPRESSION);
     (UimodelPackage.Literals.TEMPLATE_CASE__WIDGET as BasicEReference).setEType(UimodelPackage.Literals.WIDGET_COMPONENT);
     (UimodelPackage.Literals.GROUP_WIDGET__FIELDS as BasicEReference).setEType(UimodelPackage.Literals.WIDGET_COMPONENT);
+    (UimodelPackage.Literals.GROUP_WIDGET__LAYOUT as BasicEAttribute).setEType(UimodelPackage.Literals.LAYOUT_TYPE);
     (UimodelPackage.Literals.CONDITIONAL__CONDITION as BasicEReference).setEType(UimodelPackage.Literals.EXPRESSION);
     (UimodelPackage.Literals.CONDITIONAL__THEN as BasicEReference).setEType(UimodelPackage.Literals.WIDGET_COMPONENT);
     (UimodelPackage.Literals.CONDITIONAL__ELSE as BasicEReference).setEType(UimodelPackage.Literals.WIDGET_COMPONENT);
     (UimodelPackage.Literals.FOR_EACH__ITEMS as BasicEReference).setEType(UimodelPackage.Literals.EXPRESSION);
     (UimodelPackage.Literals.FOR_EACH__BODY as BasicEReference).setEType(UimodelPackage.Literals.WIDGET_COMPONENT);
+    (UimodelPackage.Literals.FOR_EACH__EMPTY_TEXT as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
     (UimodelPackage.Literals.REFERENCE_LINK_WIDGET__DISPLAY_EXPRESSION as BasicEReference).setEType(UimodelPackage.Literals.EXPRESSION);
+    (UimodelPackage.Literals.REFERENCE_LINK_WIDGET__TARGET_ROUTE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelPackage.Literals.U_I_MODEL_OVERLAY__NAME as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelPackage.Literals.U_I_MODEL_OVERLAY__PRIORITY as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EInt')!);
     (UimodelPackage.Literals.U_I_MODEL_OVERLAY__TEMPLATES as BasicEReference).setEType(UimodelPackage.Literals.WIDGET_COMPONENT);
     (UimodelPackage.Literals.U_I_MODEL_OVERLAY__CASES as BasicEReference).setEType(UimodelPackage.Literals.TEMPLATE_CASE);
+    (UimodelPackage.Literals.STYLE__NAME as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelPackage.Literals.STYLE__GROUP as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
     (UimodelPackage.Literals.BASE_STYLE__EXTENDS as BasicEReference).setEType(UimodelPackage.Literals.BASE_STYLE);
+    (UimodelPackage.Literals.BASE_STYLE__CSS as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelPackage.Literals.BASE_STYLE__VUE_COMPONENT as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
     (UimodelPackage.Literals.BASE_STYLE__VISIBILITY_CONDITION as BasicEReference).setEType(UimodelPackage.Literals.EXPRESSION);
+    (UimodelPackage.Literals.LAYOUT_STYLE__LAYOUT as BasicEAttribute).setEType(UimodelPackage.Literals.LAYOUT_TYPE);
+    (UimodelPackage.Literals.LAYOUT_STYLE__ORDER as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EInt')!);
     (UimodelPackage.Literals.WIDGET_STYLE__FEATURE as BasicEReference).setEType(getEcorePackage().getEClassifier('EStructuralFeature')!);
+    (UimodelPackage.Literals.WIDGET_STYLE__WIDGET_TYPE as BasicEAttribute).setEType(UimodelPackage.Literals.WIDGET_TYPE);
+    (UimodelPackage.Literals.WIDGET_STYLE__LABEL as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelPackage.Literals.WIDGET_STYLE__READ_ONLY as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EBoolean')!);
+    (UimodelPackage.Literals.WIDGET_STYLE__ORDER as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EInt')!);
     (UimodelPackage.Literals.TABLE_STYLE__COLUMNS as BasicEReference).setEType(UimodelPackage.Literals.WIDGET_STYLE);
+    (UimodelPackage.Literals.EXPRESSION__LANGUAGE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelPackage.Literals.EXPRESSION__BODY as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelPackage.Literals.VALIDATION_EXPRESSION__DEFAULT_MESSAGE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelPackage.Literals.VALIDATION_EXPRESSION__SEVERITY as BasicEAttribute).setEType(UimodelPackage.Literals.SEVERITY);
+    (UimodelPackage.Literals.VALIDATION_MESSAGE_MAPPER__ORDER as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EInt')!);
+    (UimodelPackage.Literals.VALIDATION_MESSAGE_MAPPER__MATCH_CODE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelPackage.Literals.VALIDATION_MESSAGE_MAPPER__MATCH_SEVERITY as BasicEAttribute).setEType(UimodelPackage.Literals.SEVERITY);
     (UimodelPackage.Literals.VALIDATION_MESSAGE_MAPPER__MATCH_EXPRESSION as BasicEReference).setEType(UimodelPackage.Literals.EXPRESSION);
+    (UimodelPackage.Literals.VALIDATION_MESSAGE_MAPPER__MAPPED_TEXT as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
     (UimodelPackage.Literals.VALIDATION_MESSAGE_MAPPER__MAPPED_TEXT_EXPRESSION as BasicEReference).setEType(UimodelPackage.Literals.EXPRESSION);
+    (UimodelPackage.Literals.VALIDATION_MESSAGE_MAPPER__MAPPED_SEVERITY as BasicEAttribute).setEType(UimodelPackage.Literals.SEVERITY);
 
     // ============================================
     // Register XML name mappings from ExtendedMetaData annotations

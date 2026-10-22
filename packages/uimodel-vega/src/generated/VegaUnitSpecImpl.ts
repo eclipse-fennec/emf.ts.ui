@@ -5,13 +5,14 @@
  * @generated
  */
 
-import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { VegaSpec } from './VegaSpec';
-import type { VegaMarkDef } from './VegaMarkDef';
-import type { VegaEncoding } from './VegaEncoding';
-import { VegaSpecImpl } from './VegaSpecImpl';
-import type { VegaUnitSpec } from './VegaUnitSpec';
-import { UimodelVegaPackage } from './UimodelVegaPackage';
+import { createContainmentEList } from '@emfts/core';
+import type { EClass, EStructuralFeature, EList, EReference } from '@emfts/core';
+import type { VegaSpec } from './VegaSpec.js';
+import type { VegaMarkDef } from './VegaMarkDef.js';
+import type { VegaEncoding } from './VegaEncoding.js';
+import { VegaSpecImpl } from './VegaSpecImpl.js';
+import type { VegaUnitSpec } from './VegaUnitSpec.js';
+import { UimodelVegaPackage } from './UimodelVegaPackage.js';
 
 /**
  * Implementation of VegaUnitSpec
@@ -24,7 +25,7 @@ export class VegaUnitSpecImpl extends VegaSpecImpl implements VegaUnitSpec {
 
   // Private fields
   private _mark?: VegaMarkDef;
-  private _encodings: VegaEncoding[] = [];
+  private _encodings!: EList<VegaEncoding>;
 
   /**
    * Returns the EClass of this object
@@ -58,28 +59,11 @@ export class VegaUnitSpecImpl extends VegaSpecImpl implements VegaUnitSpec {
     }
   }
 
-  get encodings(): VegaEncoding[] {
-    return this._encodings;
-  }
-
-  set encodings(value: VegaEncoding[]) {
-    const oldValue = this._encodings;
-    this._encodings = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(VegaUnitSpecImpl.ENCODINGS),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => VegaUnitSpecImpl.ENCODINGS,
-        merge: () => false
-      });
+  get encodings(): EList<VegaEncoding> {
+    if (!this._encodings) {
+      this._encodings = createContainmentEList<any>(this, this.eClass().getEStructuralFeature('encodings') as EReference);
     }
+    return this._encodings;
   }
 
   // Reflective API
@@ -110,7 +94,8 @@ export class VegaUnitSpecImpl extends VegaSpecImpl implements VegaUnitSpec {
         super.eSet(feature, newValue);
         break;
       case VegaUnitSpecImpl.ENCODINGS:
-        this.encodings = newValue as VegaEncoding[];
+        this.encodings.clear();
+        this.encodings.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       default:
@@ -127,7 +112,7 @@ export class VegaUnitSpecImpl extends VegaSpecImpl implements VegaUnitSpec {
       case VegaUnitSpecImpl.MARK:
         return this._mark !== undefined;
       case VegaUnitSpecImpl.ENCODINGS:
-        return this._encodings !== undefined && this._encodings.length > 0;
+        return this._encodings !== undefined && !this._encodings.isEmpty();
       default:
         return super.eIsSet(feature);
     }
@@ -143,7 +128,7 @@ export class VegaUnitSpecImpl extends VegaSpecImpl implements VegaUnitSpec {
         this._mark = undefined;
         return;
       case VegaUnitSpecImpl.ENCODINGS:
-        this._encodings = [];
+        if (this._encodings) this._encodings.clear();
         return;
       default:
         super.eUnset(feature);

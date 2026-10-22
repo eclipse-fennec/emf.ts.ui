@@ -17,13 +17,15 @@ import { containmentFeatures } from './reflect';
  * Minimales Set-Command über eSet mit Alt-Wert-Snapshot.
  *
  * Hintergrund: Die SetCommand/AddCommand/RemoveCommand aus @emfts/command
- * sind gegen die EList-API (contains/add/toArray) geschrieben — die
- * generierten emf-mode-Impls halten Many-Features aber als schlichte
- * Arrays. Dieses Command arbeitet mit eGet/eSet und geklonten Arrays
- * und ist damit gegen beide Repräsentationen robust.
+ * sind gegen die EList-API (contains/add/toArray) geschrieben. Dieses
+ * Command arbeitet mit eGet/eSet und geklonten Arrays und ist damit
+ * gegen Plain-Arrays wie EList robust.
  */
 class FeatureSetCommand implements Command {
   private oldValue: unknown;
+  // Ungesetzt ≠ Default (unsettable-Attribute): undo stellt per eUnset
+  // wieder her, statt den Default-Wert explizit zu setzen
+  private wasSet = true;
 
   constructor(
     private readonly owner: EObject,
@@ -40,6 +42,7 @@ class FeatureSetCommand implements Command {
   }
 
   execute(): void {
+    this.wasSet = this.owner.eIsSet(this.feature);
     this.oldValue = this.snapshot(this.owner.eGet(this.feature));
     this.owner.eSet(this.feature, this.newValue);
   }
@@ -49,7 +52,8 @@ class FeatureSetCommand implements Command {
   }
 
   undo(): void {
-    this.owner.eSet(this.feature, this.oldValue);
+    if (this.wasSet) this.owner.eSet(this.feature, this.oldValue);
+    else this.owner.eUnset(this.feature);
   }
 
   redo(): void {
@@ -144,10 +148,8 @@ export function createEditor(data: LoadedEditorData): EditorContext {
     return true;
   }
 
-  // Die generierten emf-mode-Impls halten Many-Features als schlichte
-  // Arrays (keine EList mit contains/add) — Add/RemoveCommand aus
-  // @emfts/command greifen darauf nicht. Many-Änderungen laufen daher
-  // als SetCommand mit geklontem Array: undo-fähig und notify-sicher.
+  // Many-Änderungen laufen als SetCommand mit geklontem Array:
+  // undo-fähig und notify-sicher.
   function listSet(owner: EObject, feature: EStructuralFeature, next: unknown[]): boolean {
     return execute(new FeatureSetCommand(owner, feature, next));
   }

@@ -78,8 +78,8 @@ function block(init: Partial<{ name: string; group: string; priority: number; fi
   b.name = init.name ?? 'block';
   if (init.group) b.group = init.group;
   if (init.priority !== undefined) b.priority = init.priority;
-  if (init.withF) b.with = init.withF;
-  if (init.eTypes) b.eType = init.eTypes as never;
+  if (init.withF) b.with.push(...init.withF);
+  if (init.eTypes) b.eType.push(...(init.eTypes as never[]));
   if (init.filterJs) {
     const expr = factory.createExpression();
     expr.language = 'JS';
@@ -100,7 +100,7 @@ function addCase(b: AllFeatures, widget: import('../generated/WidgetComponent').
     expr.body = whenJs;
     templateCase.when = expr;
   }
-  b.cases = [...(b.cases ?? []), templateCase];
+  b.cases.push(templateCase);
   return b;
 }
 
@@ -263,7 +263,7 @@ describe('expandFeatures', () => {
     proto.maxLength = 500;
     const style = factory.createWidgetStyle();
     style.name = 'proto-style';
-    proto.styles = [style];
+    proto.styles.push(style);
 
     const b = block({ name: 'described', filterJs: "self.name === 'firstName' || self.name === 'id'" });
     b.template = proto;
@@ -335,7 +335,7 @@ describe('Block-Level-Bindings', () => {
     const b = block({ name: 'attrs', filterJs: "self.name === 'active' || self.name === 'firstName'" });
     addCase(b, factory.createCheckboxWidget(), "self.eType?.name === 'EBoolean'");
     addCase(b, factory.createInputWidget());
-    b.bindings = [labelBinding('feature.name.toUpperCase()')];
+    b.bindings.push(labelBinding('feature.name.toUpperCase()'));
     const widgets = expandFeatures(person, b);
     // Fallliste wählt pro Feature den Widget-Typ
     expect(widgets.map((w) => w.eClass().getName())).toEqual(['InputWidget', 'CheckboxWidget']);
@@ -350,10 +350,10 @@ describe('Block-Level-Bindings', () => {
     const factory = UimodelFactory.eINSTANCE;
     const proto = factory.createInputWidget();
     proto.name = 'proto';
-    proto.bindings = [labelBinding("'vom Template'")];
+    proto.bindings.push(labelBinding("'vom Template'"));
     const b = block({ name: 'attrs', filterJs: "self.name === 'firstName'" });
     b.template = proto;
-    b.bindings = [labelBinding("'vom Block'"), (() => {
+    b.bindings.push(labelBinding("'vom Block'"), (() => {
       const other = factory.createPropertyBinding();
       other.property = 'placeholder';
       const expr = factory.createExpression();
@@ -361,7 +361,7 @@ describe('Block-Level-Bindings', () => {
       expr.body = "'aus Block'";
       other.expression = expr;
       return other;
-    })()];
+    })());
     const [widget] = expandFeatures(person, b);
     const byProp = Object.fromEntries(widget.bindings.map((x) => [x.property, x.expression?.body]));
     expect(byProp.label).toBe("'vom Template'");
@@ -375,7 +375,7 @@ describe('UIModelOverlay (Issue #8)', () => {
     const o = factory.createUIModelOverlay();
     o.name = name;
     o.priority = priority;
-    o.templates = [widget];
+    o.templates.push(widget);
     const c = factory.createTemplateCase();
     c.widget = widget;
     if (whenJs) {
@@ -384,7 +384,7 @@ describe('UIModelOverlay (Issue #8)', () => {
       expr.body = whenJs;
       c.when = expr;
     }
-    o.cases = [c];
+    o.cases.push(c);
     return o;
   }
 
@@ -440,9 +440,9 @@ describe('collectExpansionContext', () => {
     const bound = factory.createInputWidget();
     bound.name = 'firstName';
     bound.feature = f.firstName;
-    form.fields = [bound];
+    form.fields.push(bound);
     const b = blockWithDefault({ name: 'rest', filterJs: 'true' });
-    uiModel.components = [form, b];
+    uiModel.components.push(form, b);
 
     const ctx = collectExpansionContext(uiModel as never);
     expect(ctx.blocks).toEqual([b]);

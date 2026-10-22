@@ -5,9 +5,9 @@
  * @generated
  */
 
-import type { EObject, EStructuralFeature, BasicEObject, EClass } from '@emfts/core';
-import type { VegaTransform } from './VegaTransform';
-import type { VegaLookupData } from './VegaLookupData';
+import type { EObject, EList, EStructuralFeature, BasicEObject, EClass } from '@emfts/core';
+import type { VegaTransform } from './VegaTransform.js';
+import type { VegaLookupData } from './VegaLookupData.js';
 
 /**
  * VegaLookupTransform
@@ -16,7 +16,7 @@ import type { VegaLookupData } from './VegaLookupData';
 export interface VegaLookupTransform extends VegaTransform {
   lookup: EStructuralFeature;
   from: VegaLookupData;
-  as: string[];
+  as: EList<string>;
   default?: string;
 
 }

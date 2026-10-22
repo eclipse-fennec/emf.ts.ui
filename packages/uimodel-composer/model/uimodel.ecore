@@ -86,8 +86,8 @@
     <eStructuralFeatures xsi:type="ecore:EReference" eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature" name="feature"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="label"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="placeholder"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="readOnly"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="required"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true" eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="readOnly"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true" eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="required"/>
     <eStructuralFeatures xsi:type="ecore:EReference" eType="http://uimodel/1.0#//Expression" name="visibilityCondition" containment="true"/>
     <!-- Feld-Validierungen; Kontext: das EObject der besitzenden Component -->
     <eStructuralFeatures xsi:type="ecore:EReference" upperBound="-1"
@@ -310,16 +310,16 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="LayoutStyle">
     <eSuperTypes href="http://uimodel/1.0#//BaseStyle"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" eType="http://uimodel/1.0#//LayoutType" name="layout"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" eType="http://www.eclipse.org/emf/2002/Ecore#//EInt" name="order"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true" eType="http://uimodel/1.0#//LayoutType" name="layout"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true" eType="http://www.eclipse.org/emf/2002/Ecore#//EInt" name="order"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="WidgetStyle">
     <eSuperTypes href="http://uimodel/1.0#//BaseStyle"/>
     <eStructuralFeatures xsi:type="ecore:EReference" eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature" name="feature"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" eType="http://uimodel/1.0#//WidgetType" name="widgetType"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true" eType="http://uimodel/1.0#//WidgetType" name="widgetType"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="label"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="readOnly"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" eType="http://www.eclipse.org/emf/2002/Ecore#//EInt" name="order"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true" eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="readOnly"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true" eType="http://www.eclipse.org/emf/2002/Ecore#//EInt" name="order"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="TableStyle">
     <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
@@ -362,7 +362,7 @@
     <!-- Match-Kriterien (AND): nur gesetzte Felder werden geprüft -->
     <eStructuralFeatures xsi:type="ecore:EAttribute"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="matchCode"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://uimodel/1.0#//Severity" name="matchSeverity"/>
     <eStructuralFeatures xsi:type="ecore:EReference"
         eType="http://uimodel/1.0#//Expression" name="matchExpression" containment="true"/>
@@ -373,7 +373,7 @@
     <!-- Dynamischer Ersatztext via Expression; Kontext: die originale ValidationMessage -->
     <eStructuralFeatures xsi:type="ecore:EReference"
         eType="http://uimodel/1.0#//Expression" name="mappedTextExpression" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://uimodel/1.0#//Severity" name="mappedSeverity"/>
   </eClassifiers>
 

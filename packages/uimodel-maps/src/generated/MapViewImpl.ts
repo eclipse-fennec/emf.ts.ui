@@ -5,14 +5,15 @@
  * @generated
  */
 
-import type { EClass, EStructuralFeature } from '@emfts/core';
+import { createContainmentEList } from '@emfts/core';
+import type { EClass, EStructuralFeature, EList, EReference } from '@emfts/core';
 import type { Component } from '@emfts/uimodel-composer';
-import type { MapLayer } from './MapLayer';
-import type { MapSelectionBinding } from './MapSelectionBinding';
-import type { MapExtent } from './MapExtent';
+import type { MapLayer } from './MapLayer.js';
+import type { MapSelectionBinding } from './MapSelectionBinding.js';
+import type { MapExtent } from './MapExtent.js';
 import { ComponentImpl } from '@emfts/uimodel-composer';
-import type { MapView } from './MapView';
-import { UimodelMapsPackage } from './UimodelMapsPackage';
+import type { MapView } from './MapView.js';
+import { UimodelMapsPackage } from './UimodelMapsPackage.js';
 
 /**
  * Implementation of MapView
@@ -38,21 +39,21 @@ export class MapViewImpl extends ComponentImpl implements MapView {
   static readonly SHOW_ATTRIBUTION: number = 20;
 
   // Private fields
-  private _layers: MapLayer[] = [];
-  private _bindings: MapSelectionBinding[] = [];
+  private _layers!: EList<MapLayer>;
+  private _bindings!: EList<MapSelectionBinding>;
   private _title?: string;
   private _crs: string = "EPSG:3857";
-  private _centerLon?: number;
-  private _centerLat?: number;
+  private _centerLon: number = 0;
+  private _centerLat: number = 0;
   private _zoom: number = 2;
-  private _minZoom?: number;
-  private _maxZoom?: number;
+  private _minZoom: number = 0;
+  private _maxZoom: number = 0;
   private _extent?: MapExtent;
-  private _width?: number;
+  private _width: number = 0;
   private _height: number = 400;
   private _background?: string;
   private _showZoomControl: boolean = true;
-  private _showScaleLine?: boolean;
+  private _showScaleLine: boolean = false;
   private _showAttribution: boolean = true;
 
   /**
@@ -63,52 +64,18 @@ export class MapViewImpl extends ComponentImpl implements MapView {
   }
 
   // Getters and Setters
-  get layers(): MapLayer[] {
+  get layers(): EList<MapLayer> {
+    if (!this._layers) {
+      this._layers = createContainmentEList<any>(this, this.eClass().getEStructuralFeature('layers') as EReference);
+    }
     return this._layers;
   }
 
-  set layers(value: MapLayer[]) {
-    const oldValue = this._layers;
-    this._layers = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(MapViewImpl.LAYERS),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => MapViewImpl.LAYERS,
-        merge: () => false
-      });
+  get bindings(): EList<MapSelectionBinding> {
+    if (!this._bindings) {
+      this._bindings = createContainmentEList<any>(this, this.eClass().getEStructuralFeature('bindings') as EReference);
     }
-  }
-
-  get bindings(): MapSelectionBinding[] {
     return this._bindings;
-  }
-
-  set bindings(value: MapSelectionBinding[]) {
-    const oldValue = this._bindings;
-    this._bindings = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(MapViewImpl.BINDINGS),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => MapViewImpl.BINDINGS,
-        merge: () => false
-      });
-    }
   }
 
   get title(): string {
@@ -499,11 +466,13 @@ export class MapViewImpl extends ComponentImpl implements MapView {
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case MapViewImpl.LAYERS:
-        this.layers = newValue as MapLayer[];
+        this.layers.clear();
+        this.layers.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       case MapViewImpl.BINDINGS:
-        this.bindings = newValue as MapSelectionBinding[];
+        this.bindings.clear();
+        this.bindings.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       case MapViewImpl.TITLE:
@@ -574,27 +543,27 @@ export class MapViewImpl extends ComponentImpl implements MapView {
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case MapViewImpl.LAYERS:
-        return this._layers !== undefined && this._layers.length > 0;
+        return this._layers !== undefined && !this._layers.isEmpty();
       case MapViewImpl.BINDINGS:
-        return this._bindings !== undefined && this._bindings.length > 0;
+        return this._bindings !== undefined && !this._bindings.isEmpty();
       case MapViewImpl.TITLE:
         return this._title !== undefined;
       case MapViewImpl.CRS:
         return this._crs !== "EPSG:3857";
       case MapViewImpl.CENTER_LON:
-        return this._centerLon !== undefined;
+        return this._centerLon !== 0;
       case MapViewImpl.CENTER_LAT:
-        return this._centerLat !== undefined;
+        return this._centerLat !== 0;
       case MapViewImpl.ZOOM:
         return this._zoom !== 2;
       case MapViewImpl.MIN_ZOOM:
-        return this._minZoom !== undefined;
+        return this._minZoom !== 0;
       case MapViewImpl.MAX_ZOOM:
-        return this._maxZoom !== undefined;
+        return this._maxZoom !== 0;
       case MapViewImpl.EXTENT:
         return this._extent !== undefined;
       case MapViewImpl.WIDTH:
-        return this._width !== undefined;
+        return this._width !== 0;
       case MapViewImpl.HEIGHT:
         return this._height !== 400;
       case MapViewImpl.BACKGROUND:
@@ -602,7 +571,7 @@ export class MapViewImpl extends ComponentImpl implements MapView {
       case MapViewImpl.SHOW_ZOOM_CONTROL:
         return this._showZoomControl !== true;
       case MapViewImpl.SHOW_SCALE_LINE:
-        return this._showScaleLine !== undefined;
+        return this._showScaleLine !== false;
       case MapViewImpl.SHOW_ATTRIBUTION:
         return this._showAttribution !== true;
       default:
@@ -617,10 +586,10 @@ export class MapViewImpl extends ComponentImpl implements MapView {
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case MapViewImpl.LAYERS:
-        this._layers = [];
+        if (this._layers) this._layers.clear();
         return;
       case MapViewImpl.BINDINGS:
-        this._bindings = [];
+        if (this._bindings) this._bindings.clear();
         return;
       case MapViewImpl.TITLE:
         this._title = undefined;
@@ -629,25 +598,25 @@ export class MapViewImpl extends ComponentImpl implements MapView {
         this._crs = "EPSG:3857";
         return;
       case MapViewImpl.CENTER_LON:
-        this._centerLon = undefined;
+        this._centerLon = 0;
         return;
       case MapViewImpl.CENTER_LAT:
-        this._centerLat = undefined;
+        this._centerLat = 0;
         return;
       case MapViewImpl.ZOOM:
         this._zoom = 2;
         return;
       case MapViewImpl.MIN_ZOOM:
-        this._minZoom = undefined;
+        this._minZoom = 0;
         return;
       case MapViewImpl.MAX_ZOOM:
-        this._maxZoom = undefined;
+        this._maxZoom = 0;
         return;
       case MapViewImpl.EXTENT:
         this._extent = undefined;
         return;
       case MapViewImpl.WIDTH:
-        this._width = undefined;
+        this._width = 0;
         return;
       case MapViewImpl.HEIGHT:
         this._height = 400;
@@ -659,7 +628,7 @@ export class MapViewImpl extends ComponentImpl implements MapView {
         this._showZoomControl = true;
         return;
       case MapViewImpl.SHOW_SCALE_LINE:
-        this._showScaleLine = undefined;
+        this._showScaleLine = false;
         return;
       case MapViewImpl.SHOW_ATTRIBUTION:
         this._showAttribution = true;

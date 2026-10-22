@@ -64,7 +64,7 @@ function widgetWithBinding(property: string, body: string): InputWidget {
   const binding = factory.createPropertyBinding();
   binding.property = property;
   binding.expression = jsExpr(body);
-  widget.bindings = [binding];
+  widget.bindings.push(binding);
   return widget;
 }
 

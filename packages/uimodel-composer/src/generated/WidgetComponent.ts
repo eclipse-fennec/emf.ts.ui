@@ -5,12 +5,12 @@
  * @generated
  */
 
-import type { EObject, EStructuralFeature, BasicEObject, EClass } from '@emfts/core';
-import type { Component } from './Component';
-import type { Expression } from './Expression';
-import type { ValidationExpression } from './ValidationExpression';
-import type { ValidationMessageMapper } from './ValidationMessageMapper';
-import type { PropertyBinding } from './PropertyBinding';
+import type { EObject, EList, EStructuralFeature, BasicEObject, EClass } from '@emfts/core';
+import type { Component } from './Component.js';
+import type { Expression } from './Expression.js';
+import type { ValidationExpression } from './ValidationExpression.js';
+import type { ValidationMessageMapper } from './ValidationMessageMapper.js';
+import type { PropertyBinding } from './PropertyBinding.js';
 
 /**
  * WidgetComponent
@@ -23,8 +23,8 @@ export interface WidgetComponent extends Component {
   readOnly?: boolean;
   required?: boolean;
   visibilityCondition?: Expression;
-  validations: ValidationExpression[];
-  validationMappers: ValidationMessageMapper[];
-  bindings: PropertyBinding[];
+  validations: EList<ValidationExpression>;
+  validationMappers: EList<ValidationMessageMapper>;
+  bindings: EList<PropertyBinding>;
 
 }

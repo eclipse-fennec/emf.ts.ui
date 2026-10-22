@@ -5,14 +5,14 @@
  * @generated
  */
 
-import type { EObject, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
-import type { VegaTransform } from './VegaTransform';
+import type { EObject, EList, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
+import type { VegaTransform } from './VegaTransform.js';
 
 /**
  * VegaSpec
  * @generated
  */
 export interface VegaSpec extends EObject {
-  transforms: VegaTransform[];
+  transforms: EList<VegaTransform>;
 
 }

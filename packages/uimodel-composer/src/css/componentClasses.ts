@@ -41,7 +41,7 @@ function isCssStyle(style: BaseStyle): style is CssStyle {
  * Sammelt die uic-Klassen aller referenzierten CssStyles inklusive
  * ihrer extends-Ketten (Eltern zuerst), zyklussicher.
  */
-export function referencedStyleClasses(styles: readonly BaseStyle[] | undefined): string[] {
+export function referencedStyleClasses(styles: Iterable<BaseStyle> | undefined): string[] {
   const classes: string[] = [];
   const seen = new Set<BaseStyle>();
 

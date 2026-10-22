@@ -6,11 +6,11 @@
  */
 
 import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { WidgetComponent } from './WidgetComponent';
-import type { Expression } from './Expression';
-import { WidgetComponentImpl } from './WidgetComponentImpl';
-import type { ReferenceLinkWidget } from './ReferenceLinkWidget';
-import { UimodelPackage } from './UimodelPackage';
+import type { WidgetComponent } from './WidgetComponent.js';
+import type { Expression } from './Expression.js';
+import { WidgetComponentImpl } from './WidgetComponentImpl.js';
+import type { ReferenceLinkWidget } from './ReferenceLinkWidget.js';
+import { UimodelPackage } from './UimodelPackage.js';
 
 /**
  * Implementation of ReferenceLinkWidget

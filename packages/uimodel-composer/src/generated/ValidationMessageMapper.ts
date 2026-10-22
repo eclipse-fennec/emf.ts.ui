@@ -6,8 +6,8 @@
  */
 
 import type { EObject, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
-import type { Severity } from './Severity';
-import type { Expression } from './Expression';
+import type { Severity } from './Severity.js';
+import type { Expression } from './Expression.js';
 
 /**
  * ValidationMessageMapper

@@ -6,10 +6,11 @@
  */
 
 import { BasicEObject } from '@emfts/core';
-import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { TokenOverride } from './TokenOverride';
-import type { Theme } from './Theme';
-import { UimodelCssPackage } from './UimodelCssPackage';
+import { createContainmentEList } from '@emfts/core';
+import type { EClass, EStructuralFeature, EList, EReference } from '@emfts/core';
+import type { TokenOverride } from './TokenOverride.js';
+import type { Theme } from './Theme.js';
+import { UimodelCssPackage } from './UimodelCssPackage.js';
 
 /**
  * Implementation of Theme
@@ -22,9 +23,9 @@ export class ThemeImpl extends BasicEObject implements Theme {
   static readonly OVERRIDES: number = 2;
 
   // Private fields
-  private _name: string = "";
-  private _dark?: boolean;
-  private _overrides: TokenOverride[] = [];
+  private _name?: string;
+  private _dark: boolean = false;
+  private _overrides!: EList<TokenOverride>;
 
   /**
    * Returns the EClass of this object
@@ -82,28 +83,11 @@ export class ThemeImpl extends BasicEObject implements Theme {
     }
   }
 
-  get overrides(): TokenOverride[] {
-    return this._overrides;
-  }
-
-  set overrides(value: TokenOverride[]) {
-    const oldValue = this._overrides;
-    this._overrides = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(ThemeImpl.OVERRIDES),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => ThemeImpl.OVERRIDES,
-        merge: () => false
-      });
+  get overrides(): EList<TokenOverride> {
+    if (!this._overrides) {
+      this._overrides = createContainmentEList<any>(this, this.eClass().getEStructuralFeature('overrides') as EReference);
     }
+    return this._overrides;
   }
 
   // Reflective API
@@ -140,7 +124,8 @@ export class ThemeImpl extends BasicEObject implements Theme {
         super.eSet(feature, newValue);
         break;
       case ThemeImpl.OVERRIDES:
-        this.overrides = newValue as TokenOverride[];
+        this.overrides.clear();
+        this.overrides.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       default:
@@ -155,11 +140,11 @@ export class ThemeImpl extends BasicEObject implements Theme {
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case ThemeImpl.NAME:
-        return this._name !== "";
+        return this._name !== undefined;
       case ThemeImpl.DARK:
-        return this._dark !== undefined;
+        return this._dark !== false;
       case ThemeImpl.OVERRIDES:
-        return this._overrides !== undefined && this._overrides.length > 0;
+        return this._overrides !== undefined && !this._overrides.isEmpty();
       default:
         return super.eIsSet(feature);
     }
@@ -172,13 +157,13 @@ export class ThemeImpl extends BasicEObject implements Theme {
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case ThemeImpl.NAME:
-        this._name = "";
+        this._name = undefined;
         return;
       case ThemeImpl.DARK:
-        this._dark = undefined;
+        this._dark = false;
         return;
       case ThemeImpl.OVERRIDES:
-        this._overrides = [];
+        if (this._overrides) this._overrides.clear();
         return;
       default:
         super.eUnset(feature);

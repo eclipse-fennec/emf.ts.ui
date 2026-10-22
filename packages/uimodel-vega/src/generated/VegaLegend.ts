@@ -5,10 +5,10 @@
  * @generated
  */
 
-import type { EObject, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
-import type { VegaLegendOrient } from './VegaLegendOrient';
-import type { VegaLegendType } from './VegaLegendType';
-import type { VegaDirection } from './VegaDirection';
+import type { EObject, EList, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
+import type { VegaLegendOrient } from './VegaLegendOrient.js';
+import type { VegaLegendType } from './VegaLegendType.js';
+import type { VegaDirection } from './VegaDirection.js';
 
 /**
  * VegaLegend
@@ -28,7 +28,7 @@ export interface VegaLegend extends EObject {
   padding?: number;
   offset?: number;
   columns?: number;
-  values: string[];
+  values: EList<string>;
   disable?: boolean;
 
 }

@@ -6,9 +6,9 @@
  */
 
 import type { EObject, EStructuralFeature, BasicEObject, EClass } from '@emfts/core';
-import type { VegaSpec } from './VegaSpec';
-import type { VegaFieldType } from './VegaFieldType';
-import type { VegaSortOrder } from './VegaSortOrder';
+import type { VegaSpec } from './VegaSpec.js';
+import type { VegaFieldType } from './VegaFieldType.js';
+import type { VegaSortOrder } from './VegaSortOrder.js';
 
 /**
  * VegaFacetSpec

@@ -6,12 +6,13 @@
  */
 
 import { BasicEObject } from '@emfts/core';
-import type { EClass, EStructuralFeature } from '@emfts/core';
+import { createContainmentEList } from '@emfts/core';
+import type { EClass, EStructuralFeature, EList, EReference } from '@emfts/core';
 import type { Expression } from '..';
-import type { CssDeclaration } from './CssDeclaration';
-import type { CssState } from './CssState';
-import type { StyleRule } from './StyleRule';
-import { UimodelCssPackage } from './UimodelCssPackage';
+import type { CssDeclaration } from './CssDeclaration.js';
+import type { CssState } from './CssState.js';
+import type { StyleRule } from './StyleRule.js';
+import { UimodelCssPackage } from './UimodelCssPackage.js';
 
 /**
  * Implementation of StyleRule
@@ -39,8 +40,8 @@ export class StyleRuleImpl extends BasicEObject implements StyleRule {
   private _priority: number = 0;
   private _media?: string;
   private _condition?: Expression;
-  private _declarations: CssDeclaration[] = [];
-  private _states: CssState[] = [];
+  private _declarations!: EList<CssDeclaration>;
+  private _states!: EList<CssState>;
 
   /**
    * Returns the EClass of this object
@@ -242,52 +243,18 @@ export class StyleRuleImpl extends BasicEObject implements StyleRule {
     }
   }
 
-  get declarations(): CssDeclaration[] {
+  get declarations(): EList<CssDeclaration> {
+    if (!this._declarations) {
+      this._declarations = createContainmentEList<any>(this, this.eClass().getEStructuralFeature('declarations') as EReference);
+    }
     return this._declarations;
   }
 
-  set declarations(value: CssDeclaration[]) {
-    const oldValue = this._declarations;
-    this._declarations = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(StyleRuleImpl.DECLARATIONS),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => StyleRuleImpl.DECLARATIONS,
-        merge: () => false
-      });
+  get states(): EList<CssState> {
+    if (!this._states) {
+      this._states = createContainmentEList<any>(this, this.eClass().getEStructuralFeature('states') as EReference);
     }
-  }
-
-  get states(): CssState[] {
     return this._states;
-  }
-
-  set states(value: CssState[]) {
-    const oldValue = this._states;
-    this._states = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(StyleRuleImpl.STATES),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => StyleRuleImpl.STATES,
-        merge: () => false
-      });
-    }
   }
 
   // Reflective API
@@ -362,11 +329,13 @@ export class StyleRuleImpl extends BasicEObject implements StyleRule {
         super.eSet(feature, newValue);
         break;
       case StyleRuleImpl.DECLARATIONS:
-        this.declarations = newValue as CssDeclaration[];
+        this.declarations.clear();
+        this.declarations.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       case StyleRuleImpl.STATES:
-        this.states = newValue as CssState[];
+        this.states.clear();
+        this.states.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       default:
@@ -397,9 +366,9 @@ export class StyleRuleImpl extends BasicEObject implements StyleRule {
       case StyleRuleImpl.CONDITION:
         return this._condition !== undefined;
       case StyleRuleImpl.DECLARATIONS:
-        return this._declarations !== undefined && this._declarations.length > 0;
+        return this._declarations !== undefined && !this._declarations.isEmpty();
       case StyleRuleImpl.STATES:
-        return this._states !== undefined && this._states.length > 0;
+        return this._states !== undefined && !this._states.isEmpty();
       default:
         return super.eIsSet(feature);
     }
@@ -436,10 +405,10 @@ export class StyleRuleImpl extends BasicEObject implements StyleRule {
         this._condition = undefined;
         return;
       case StyleRuleImpl.DECLARATIONS:
-        this._declarations = [];
+        if (this._declarations) this._declarations.clear();
         return;
       case StyleRuleImpl.STATES:
-        this._states = [];
+        if (this._states) this._states.clear();
         return;
       default:
         super.eUnset(feature);

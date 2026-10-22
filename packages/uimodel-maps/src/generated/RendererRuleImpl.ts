@@ -8,9 +8,9 @@
 import { BasicEObject } from '@emfts/core';
 import type { EClass, EStructuralFeature } from '@emfts/core';
 import type { Expression } from '@emfts/uimodel-composer';
-import type { Symbol } from './Symbol';
-import type { RendererRule } from './RendererRule';
-import { UimodelMapsPackage } from './UimodelMapsPackage';
+import type { Symbol } from './Symbol.js';
+import type { RendererRule } from './RendererRule.js';
+import { UimodelMapsPackage } from './UimodelMapsPackage.js';
 
 /**
  * Implementation of RendererRule
@@ -28,9 +28,9 @@ export class RendererRuleImpl extends BasicEObject implements RendererRule {
   // Private fields
   private _filterExpression?: Expression;
   private _label?: string;
-  private _elseRule?: boolean;
-  private _minZoom?: number;
-  private _maxZoom?: number;
+  private _elseRule: boolean = false;
+  private _minZoom: number = 0;
+  private _maxZoom: number = 0;
   private _symbol?: Symbol;
 
   /**
@@ -256,11 +256,11 @@ export class RendererRuleImpl extends BasicEObject implements RendererRule {
       case RendererRuleImpl.LABEL:
         return this._label !== undefined;
       case RendererRuleImpl.ELSE_RULE:
-        return this._elseRule !== undefined;
+        return this._elseRule !== false;
       case RendererRuleImpl.MIN_ZOOM:
-        return this._minZoom !== undefined;
+        return this._minZoom !== 0;
       case RendererRuleImpl.MAX_ZOOM:
-        return this._maxZoom !== undefined;
+        return this._maxZoom !== 0;
       case RendererRuleImpl.SYMBOL:
         return this._symbol !== undefined;
       default:
@@ -281,13 +281,13 @@ export class RendererRuleImpl extends BasicEObject implements RendererRule {
         this._label = undefined;
         return;
       case RendererRuleImpl.ELSE_RULE:
-        this._elseRule = undefined;
+        this._elseRule = false;
         return;
       case RendererRuleImpl.MIN_ZOOM:
-        this._minZoom = undefined;
+        this._minZoom = 0;
         return;
       case RendererRuleImpl.MAX_ZOOM:
-        this._maxZoom = undefined;
+        this._maxZoom = 0;
         return;
       case RendererRuleImpl.SYMBOL:
         this._symbol = undefined;

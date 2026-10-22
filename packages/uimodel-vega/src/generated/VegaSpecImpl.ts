@@ -6,10 +6,11 @@
  */
 
 import { BasicEObject } from '@emfts/core';
-import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { VegaTransform } from './VegaTransform';
-import type { VegaSpec } from './VegaSpec';
-import { UimodelVegaPackage } from './UimodelVegaPackage';
+import { createContainmentEList } from '@emfts/core';
+import type { EClass, EStructuralFeature, EList, EReference } from '@emfts/core';
+import type { VegaTransform } from './VegaTransform.js';
+import type { VegaSpec } from './VegaSpec.js';
+import { UimodelVegaPackage } from './UimodelVegaPackage.js';
 
 /**
  * Implementation of VegaSpec
@@ -20,7 +21,7 @@ export abstract class VegaSpecImpl extends BasicEObject implements VegaSpec {
   static readonly TRANSFORMS: number = 0;
 
   // Private fields
-  private _transforms: VegaTransform[] = [];
+  private _transforms!: EList<VegaTransform>;
 
   /**
    * Returns the EClass of this object
@@ -30,28 +31,11 @@ export abstract class VegaSpecImpl extends BasicEObject implements VegaSpec {
   }
 
   // Getters and Setters
-  get transforms(): VegaTransform[] {
-    return this._transforms;
-  }
-
-  set transforms(value: VegaTransform[]) {
-    const oldValue = this._transforms;
-    this._transforms = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(VegaSpecImpl.TRANSFORMS),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => VegaSpecImpl.TRANSFORMS,
-        merge: () => false
-      });
+  get transforms(): EList<VegaTransform> {
+    if (!this._transforms) {
+      this._transforms = createContainmentEList<any>(this, this.eClass().getEStructuralFeature('transforms') as EReference);
     }
+    return this._transforms;
   }
 
   // Reflective API
@@ -76,7 +60,8 @@ export abstract class VegaSpecImpl extends BasicEObject implements VegaSpec {
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case VegaSpecImpl.TRANSFORMS:
-        this.transforms = newValue as VegaTransform[];
+        this.transforms.clear();
+        this.transforms.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       default:
@@ -91,7 +76,7 @@ export abstract class VegaSpecImpl extends BasicEObject implements VegaSpec {
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case VegaSpecImpl.TRANSFORMS:
-        return this._transforms !== undefined && this._transforms.length > 0;
+        return this._transforms !== undefined && !this._transforms.isEmpty();
       default:
         return super.eIsSet(feature);
     }
@@ -104,7 +89,7 @@ export abstract class VegaSpecImpl extends BasicEObject implements VegaSpec {
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case VegaSpecImpl.TRANSFORMS:
-        this._transforms = [];
+        if (this._transforms) this._transforms.clear();
         return;
       default:
         super.eUnset(feature);

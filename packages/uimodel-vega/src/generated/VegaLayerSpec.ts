@@ -5,16 +5,16 @@
  * @generated
  */
 
-import type { EObject, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
-import type { VegaSpec } from './VegaSpec';
-import type { VegaEncoding } from './VegaEncoding';
+import type { EObject, EList, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
+import type { VegaSpec } from './VegaSpec.js';
+import type { VegaEncoding } from './VegaEncoding.js';
 
 /**
  * VegaLayerSpec
  * @generated
  */
 export interface VegaLayerSpec extends VegaSpec {
-  layers: VegaSpec[];
-  encodings: VegaEncoding[];
+  layers: EList<VegaSpec>;
+  encodings: EList<VegaEncoding>;
 
 }

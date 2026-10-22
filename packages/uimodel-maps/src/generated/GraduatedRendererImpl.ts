@@ -5,13 +5,14 @@
  * @generated
  */
 
-import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { Renderer } from './Renderer';
-import type { GraduatedClass } from './GraduatedClass';
-import { ClassificationMethod } from './ClassificationMethod';
-import { RendererImpl } from './RendererImpl';
-import type { GraduatedRenderer } from './GraduatedRenderer';
-import { UimodelMapsPackage } from './UimodelMapsPackage';
+import { createContainmentEList } from '@emfts/core';
+import type { EClass, EStructuralFeature, EList, EReference } from '@emfts/core';
+import type { Renderer } from './Renderer.js';
+import type { GraduatedClass } from './GraduatedClass.js';
+import { ClassificationMethod } from './ClassificationMethod.js';
+import { RendererImpl } from './RendererImpl.js';
+import type { GraduatedRenderer } from './GraduatedRenderer.js';
+import { UimodelMapsPackage } from './UimodelMapsPackage.js';
 
 /**
  * Implementation of GraduatedRenderer
@@ -28,7 +29,7 @@ export class GraduatedRendererImpl extends RendererImpl implements GraduatedRend
   private _classificationFeature?: EStructuralFeature;
   private _method: ClassificationMethod = ClassificationMethod.MANUAL;
   private _colorRamp?: string;
-  private _classes: GraduatedClass[] = [];
+  private _classes!: EList<GraduatedClass>;
 
   /**
    * Returns the EClass of this object
@@ -110,28 +111,11 @@ export class GraduatedRendererImpl extends RendererImpl implements GraduatedRend
     }
   }
 
-  get classes(): GraduatedClass[] {
-    return this._classes;
-  }
-
-  set classes(value: GraduatedClass[]) {
-    const oldValue = this._classes;
-    this._classes = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(GraduatedRendererImpl.CLASSES),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => GraduatedRendererImpl.CLASSES,
-        merge: () => false
-      });
+  get classes(): EList<GraduatedClass> {
+    if (!this._classes) {
+      this._classes = createContainmentEList<any>(this, this.eClass().getEStructuralFeature('classes') as EReference);
     }
+    return this._classes;
   }
 
   // Reflective API
@@ -174,7 +158,8 @@ export class GraduatedRendererImpl extends RendererImpl implements GraduatedRend
         super.eSet(feature, newValue);
         break;
       case GraduatedRendererImpl.CLASSES:
-        this.classes = newValue as GraduatedClass[];
+        this.classes.clear();
+        this.classes.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       default:
@@ -195,7 +180,7 @@ export class GraduatedRendererImpl extends RendererImpl implements GraduatedRend
       case GraduatedRendererImpl.COLOR_RAMP:
         return this._colorRamp !== undefined;
       case GraduatedRendererImpl.CLASSES:
-        return this._classes !== undefined && this._classes.length > 0;
+        return this._classes !== undefined && !this._classes.isEmpty();
       default:
         return super.eIsSet(feature);
     }
@@ -217,7 +202,7 @@ export class GraduatedRendererImpl extends RendererImpl implements GraduatedRend
         this._colorRamp = undefined;
         return;
       case GraduatedRendererImpl.CLASSES:
-        this._classes = [];
+        if (this._classes) this._classes.clear();
         return;
       default:
         super.eUnset(feature);

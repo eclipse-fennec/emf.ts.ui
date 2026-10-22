@@ -7,9 +7,9 @@
 
 import { BasicEObject } from '@emfts/core';
 import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { Expression } from './Expression';
-import type { PropertyBinding } from './PropertyBinding';
-import { UimodelPackage } from './UimodelPackage';
+import type { Expression } from './Expression.js';
+import type { PropertyBinding } from './PropertyBinding.js';
+import { UimodelPackage } from './UimodelPackage.js';
 
 /**
  * Implementation of PropertyBinding
@@ -21,7 +21,7 @@ export class PropertyBindingImpl extends BasicEObject implements PropertyBinding
   static readonly EXPRESSION: number = 1;
 
   // Private fields
-  private _property: string = "";
+  private _property?: string;
   private _expression?: Expression;
 
   /**
@@ -123,7 +123,7 @@ export class PropertyBindingImpl extends BasicEObject implements PropertyBinding
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case PropertyBindingImpl.PROPERTY:
-        return this._property !== "";
+        return this._property !== undefined;
       case PropertyBindingImpl.EXPRESSION:
         return this._expression !== undefined;
       default:
@@ -138,7 +138,7 @@ export class PropertyBindingImpl extends BasicEObject implements PropertyBinding
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case PropertyBindingImpl.PROPERTY:
-        this._property = "";
+        this._property = undefined;
         return;
       case PropertyBindingImpl.EXPRESSION:
         this._expression = undefined;

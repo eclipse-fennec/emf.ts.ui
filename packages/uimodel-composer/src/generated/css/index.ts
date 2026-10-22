@@ -6,28 +6,28 @@
  */
 
 // Package and Factory
-export { UimodelCssPackage } from './UimodelCssPackage';
-export { UimodelCssFactory } from './UimodelCssFactory';
+export { UimodelCssPackage } from './UimodelCssPackage.js';
+export { UimodelCssFactory } from './UimodelCssFactory.js';
 
 // Interfaces
-export type { StyleSheet } from './StyleSheet';
-export type { DesignToken } from './DesignToken';
-export type { Theme } from './Theme';
-export type { TokenOverride } from './TokenOverride';
-export type { CssDeclaration } from './CssDeclaration';
-export type { CssState } from './CssState';
-export type { CssStyle } from './CssStyle';
-export type { StyleRule } from './StyleRule';
+export type { StyleSheet } from './StyleSheet.js';
+export type { DesignToken } from './DesignToken.js';
+export type { Theme } from './Theme.js';
+export type { TokenOverride } from './TokenOverride.js';
+export type { CssDeclaration } from './CssDeclaration.js';
+export type { CssState } from './CssState.js';
+export type { CssStyle } from './CssStyle.js';
+export type { StyleRule } from './StyleRule.js';
 
 // Implementations (including abstract classes, as they're extended by subclasses)
-export { StyleSheetImpl } from './StyleSheetImpl';
-export { DesignTokenImpl } from './DesignTokenImpl';
-export { ThemeImpl } from './ThemeImpl';
-export { TokenOverrideImpl } from './TokenOverrideImpl';
-export { CssDeclarationImpl } from './CssDeclarationImpl';
-export { CssStateImpl } from './CssStateImpl';
-export { CssStyleImpl } from './CssStyleImpl';
-export { StyleRuleImpl } from './StyleRuleImpl';
+export { StyleSheetImpl } from './StyleSheetImpl.js';
+export { DesignTokenImpl } from './DesignTokenImpl.js';
+export { ThemeImpl } from './ThemeImpl.js';
+export { TokenOverrideImpl } from './TokenOverrideImpl.js';
+export { CssDeclarationImpl } from './CssDeclarationImpl.js';
+export { CssStateImpl } from './CssStateImpl.js';
+export { CssStyleImpl } from './CssStyleImpl.js';
+export { StyleRuleImpl } from './StyleRuleImpl.js';
 
 // Enums
-export { PseudoState, getPseudoState, getPseudoStateByLiteral } from './PseudoState';
+export { PseudoState, getPseudoState, getPseudoStateByLiteral } from './PseudoState.js';

@@ -5,12 +5,13 @@
  * @generated
  */
 
-import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { WidgetComponent } from './WidgetComponent';
-import { LayoutType } from './LayoutType';
-import { WidgetComponentImpl } from './WidgetComponentImpl';
-import type { GroupWidget } from './GroupWidget';
-import { UimodelPackage } from './UimodelPackage';
+import { createContainmentEList } from '@emfts/core';
+import type { EClass, EStructuralFeature, EList, EReference } from '@emfts/core';
+import type { WidgetComponent } from './WidgetComponent.js';
+import { LayoutType } from './LayoutType.js';
+import { WidgetComponentImpl } from './WidgetComponentImpl.js';
+import type { GroupWidget } from './GroupWidget.js';
+import { UimodelPackage } from './UimodelPackage.js';
 
 /**
  * Implementation of GroupWidget
@@ -22,7 +23,7 @@ export class GroupWidgetImpl extends WidgetComponentImpl implements GroupWidget 
   static readonly LAYOUT: number = 15;
 
   // Private fields
-  private _fields: WidgetComponent[] = [];
+  private _fields!: EList<WidgetComponent>;
   private _layout: LayoutType = LayoutType.VERTICAL;
 
   /**
@@ -33,28 +34,11 @@ export class GroupWidgetImpl extends WidgetComponentImpl implements GroupWidget 
   }
 
   // Getters and Setters
-  get fields(): WidgetComponent[] {
-    return this._fields;
-  }
-
-  set fields(value: WidgetComponent[]) {
-    const oldValue = this._fields;
-    this._fields = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(GroupWidgetImpl.FIELDS),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => GroupWidgetImpl.FIELDS,
-        merge: () => false
-      });
+  get fields(): EList<WidgetComponent> {
+    if (!this._fields) {
+      this._fields = createContainmentEList<any>(this, this.eClass().getEStructuralFeature('fields') as EReference);
     }
+    return this._fields;
   }
 
   get layout(): LayoutType {
@@ -105,7 +89,8 @@ export class GroupWidgetImpl extends WidgetComponentImpl implements GroupWidget 
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case GroupWidgetImpl.FIELDS:
-        this.fields = newValue as WidgetComponent[];
+        this.fields.clear();
+        this.fields.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       case GroupWidgetImpl.LAYOUT:
@@ -124,7 +109,7 @@ export class GroupWidgetImpl extends WidgetComponentImpl implements GroupWidget 
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case GroupWidgetImpl.FIELDS:
-        return this._fields !== undefined && this._fields.length > 0;
+        return this._fields !== undefined && !this._fields.isEmpty();
       case GroupWidgetImpl.LAYOUT:
         return this._layout !== LayoutType.VERTICAL;
       default:
@@ -139,7 +124,7 @@ export class GroupWidgetImpl extends WidgetComponentImpl implements GroupWidget 
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case GroupWidgetImpl.FIELDS:
-        this._fields = [];
+        if (this._fields) this._fields.clear();
         return;
       case GroupWidgetImpl.LAYOUT:
         this._layout = LayoutType.VERTICAL;
