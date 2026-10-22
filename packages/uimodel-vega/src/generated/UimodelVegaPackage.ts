@@ -423,6 +423,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaView_width.setName('width');
     vegaView_width.setLowerBound(0);
     vegaView_width.setUpperBound(1);
+    vegaView_width.setUnsettable(true);
     vegaViewClass.getEStructuralFeatures().push(vegaView_width);
     UimodelVegaPackage.Literals.VEGA_VIEW__WIDTH = vegaView_width;
 
@@ -431,6 +432,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaView_height.setName('height');
     vegaView_height.setLowerBound(0);
     vegaView_height.setUpperBound(1);
+    vegaView_height.setUnsettable(true);
     vegaViewClass.getEStructuralFeatures().push(vegaView_height);
     UimodelVegaPackage.Literals.VEGA_VIEW__HEIGHT = vegaView_height;
 
@@ -448,6 +450,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaView_padding.setName('padding');
     vegaView_padding.setLowerBound(0);
     vegaView_padding.setUpperBound(1);
+    vegaView_padding.setUnsettable(true);
     vegaViewClass.getEStructuralFeatures().push(vegaView_padding);
     UimodelVegaPackage.Literals.VEGA_VIEW__PADDING = vegaView_padding;
 
@@ -607,6 +610,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaFacetSpec_facetFieldType.setName('facetFieldType');
     vegaFacetSpec_facetFieldType.setLowerBound(1);
     vegaFacetSpec_facetFieldType.setUpperBound(1);
+    vegaFacetSpec_facetFieldType.setUnsettable(true);
     vegaFacetSpecClass.getEStructuralFeatures().push(vegaFacetSpec_facetFieldType);
     UimodelVegaPackage.Literals.VEGA_FACET_SPEC__FACET_FIELD_TYPE = vegaFacetSpec_facetFieldType;
 
@@ -615,6 +619,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaFacetSpec_columns.setName('columns');
     vegaFacetSpec_columns.setLowerBound(0);
     vegaFacetSpec_columns.setUpperBound(1);
+    vegaFacetSpec_columns.setUnsettable(true);
     vegaFacetSpecClass.getEStructuralFeatures().push(vegaFacetSpec_columns);
     UimodelVegaPackage.Literals.VEGA_FACET_SPEC__COLUMNS = vegaFacetSpec_columns;
 
@@ -658,6 +663,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaRepeatSpec_columns.setName('columns');
     vegaRepeatSpec_columns.setLowerBound(0);
     vegaRepeatSpec_columns.setUpperBound(1);
+    vegaRepeatSpec_columns.setUnsettable(true);
     vegaRepeatSpecClass.getEStructuralFeatures().push(vegaRepeatSpec_columns);
     UimodelVegaPackage.Literals.VEGA_REPEAT_SPEC__COLUMNS = vegaRepeatSpec_columns;
 
@@ -684,6 +690,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaMarkDef_type.setName('type');
     vegaMarkDef_type.setLowerBound(1);
     vegaMarkDef_type.setUpperBound(1);
+    vegaMarkDef_type.setUnsettable(true);
     vegaMarkDefClass.getEStructuralFeatures().push(vegaMarkDef_type);
     UimodelVegaPackage.Literals.VEGA_MARK_DEF__TYPE = vegaMarkDef_type;
 
@@ -692,6 +699,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaMarkDef_opacity.setName('opacity');
     vegaMarkDef_opacity.setLowerBound(0);
     vegaMarkDef_opacity.setUpperBound(1);
+    vegaMarkDef_opacity.setUnsettable(true);
     vegaMarkDefClass.getEStructuralFeatures().push(vegaMarkDef_opacity);
     UimodelVegaPackage.Literals.VEGA_MARK_DEF__OPACITY = vegaMarkDef_opacity;
 
@@ -733,6 +741,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaMarkDef_strokeWidth.setName('strokeWidth');
     vegaMarkDef_strokeWidth.setLowerBound(0);
     vegaMarkDef_strokeWidth.setUpperBound(1);
+    vegaMarkDef_strokeWidth.setUnsettable(true);
     vegaMarkDefClass.getEStructuralFeatures().push(vegaMarkDef_strokeWidth);
     UimodelVegaPackage.Literals.VEGA_MARK_DEF__STROKE_WIDTH = vegaMarkDef_strokeWidth;
 
@@ -741,6 +750,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaMarkDef_cornerRadius.setName('cornerRadius');
     vegaMarkDef_cornerRadius.setLowerBound(0);
     vegaMarkDef_cornerRadius.setUpperBound(1);
+    vegaMarkDef_cornerRadius.setUnsettable(true);
     vegaMarkDefClass.getEStructuralFeatures().push(vegaMarkDef_cornerRadius);
     UimodelVegaPackage.Literals.VEGA_MARK_DEF__CORNER_RADIUS = vegaMarkDef_cornerRadius;
 
@@ -749,6 +759,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaMarkDef_interpolate.setName('interpolate');
     vegaMarkDef_interpolate.setLowerBound(0);
     vegaMarkDef_interpolate.setUpperBound(1);
+    vegaMarkDef_interpolate.setUnsettable(true);
     vegaMarkDefClass.getEStructuralFeatures().push(vegaMarkDef_interpolate);
     UimodelVegaPackage.Literals.VEGA_MARK_DEF__INTERPOLATE = vegaMarkDef_interpolate;
 
@@ -757,6 +768,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaMarkDef_size.setName('size');
     vegaMarkDef_size.setLowerBound(0);
     vegaMarkDef_size.setUpperBound(1);
+    vegaMarkDef_size.setUnsettable(true);
     vegaMarkDefClass.getEStructuralFeatures().push(vegaMarkDef_size);
     UimodelVegaPackage.Literals.VEGA_MARK_DEF__SIZE = vegaMarkDef_size;
 
@@ -765,6 +777,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaMarkDef_clip.setName('clip');
     vegaMarkDef_clip.setLowerBound(0);
     vegaMarkDef_clip.setUpperBound(1);
+    vegaMarkDef_clip.setUnsettable(true);
     vegaMarkDefClass.getEStructuralFeatures().push(vegaMarkDef_clip);
     UimodelVegaPackage.Literals.VEGA_MARK_DEF__CLIP = vegaMarkDef_clip;
 
@@ -781,6 +794,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaMarkDef_point.setName('point');
     vegaMarkDef_point.setLowerBound(0);
     vegaMarkDef_point.setUpperBound(1);
+    vegaMarkDef_point.setUnsettable(true);
     vegaMarkDefClass.getEStructuralFeatures().push(vegaMarkDef_point);
     UimodelVegaPackage.Literals.VEGA_MARK_DEF__POINT = vegaMarkDef_point;
 
@@ -789,6 +803,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaMarkDef_line.setName('line');
     vegaMarkDef_line.setLowerBound(0);
     vegaMarkDef_line.setUpperBound(1);
+    vegaMarkDef_line.setUnsettable(true);
     vegaMarkDefClass.getEStructuralFeatures().push(vegaMarkDef_line);
     UimodelVegaPackage.Literals.VEGA_MARK_DEF__LINE = vegaMarkDef_line;
 
@@ -797,6 +812,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaMarkDef_innerRadius.setName('innerRadius');
     vegaMarkDef_innerRadius.setLowerBound(0);
     vegaMarkDef_innerRadius.setUpperBound(1);
+    vegaMarkDef_innerRadius.setUnsettable(true);
     vegaMarkDefClass.getEStructuralFeatures().push(vegaMarkDef_innerRadius);
     UimodelVegaPackage.Literals.VEGA_MARK_DEF__INNER_RADIUS = vegaMarkDef_innerRadius;
 
@@ -805,6 +821,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaMarkDef_outerRadius.setName('outerRadius');
     vegaMarkDef_outerRadius.setLowerBound(0);
     vegaMarkDef_outerRadius.setUpperBound(1);
+    vegaMarkDef_outerRadius.setUnsettable(true);
     vegaMarkDefClass.getEStructuralFeatures().push(vegaMarkDef_outerRadius);
     UimodelVegaPackage.Literals.VEGA_MARK_DEF__OUTER_RADIUS = vegaMarkDef_outerRadius;
 
@@ -813,6 +830,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaMarkDef_padAngle.setName('padAngle');
     vegaMarkDef_padAngle.setLowerBound(0);
     vegaMarkDef_padAngle.setUpperBound(1);
+    vegaMarkDef_padAngle.setUnsettable(true);
     vegaMarkDefClass.getEStructuralFeatures().push(vegaMarkDef_padAngle);
     UimodelVegaPackage.Literals.VEGA_MARK_DEF__PAD_ANGLE = vegaMarkDef_padAngle;
 
@@ -821,6 +839,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaMarkDef_orient.setName('orient');
     vegaMarkDef_orient.setLowerBound(0);
     vegaMarkDef_orient.setUpperBound(1);
+    vegaMarkDef_orient.setUnsettable(true);
     vegaMarkDefClass.getEStructuralFeatures().push(vegaMarkDef_orient);
     UimodelVegaPackage.Literals.VEGA_MARK_DEF__ORIENT = vegaMarkDef_orient;
 
@@ -829,6 +848,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaMarkDef_fontSize.setName('fontSize');
     vegaMarkDef_fontSize.setLowerBound(0);
     vegaMarkDef_fontSize.setUpperBound(1);
+    vegaMarkDef_fontSize.setUnsettable(true);
     vegaMarkDefClass.getEStructuralFeatures().push(vegaMarkDef_fontSize);
     UimodelVegaPackage.Literals.VEGA_MARK_DEF__FONT_SIZE = vegaMarkDef_fontSize;
 
@@ -853,6 +873,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaMarkDef_align.setName('align');
     vegaMarkDef_align.setLowerBound(0);
     vegaMarkDef_align.setUpperBound(1);
+    vegaMarkDef_align.setUnsettable(true);
     vegaMarkDefClass.getEStructuralFeatures().push(vegaMarkDef_align);
     UimodelVegaPackage.Literals.VEGA_MARK_DEF__ALIGN = vegaMarkDef_align;
 
@@ -861,6 +882,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaMarkDef_baseline.setName('baseline');
     vegaMarkDef_baseline.setLowerBound(0);
     vegaMarkDef_baseline.setUpperBound(1);
+    vegaMarkDef_baseline.setUnsettable(true);
     vegaMarkDefClass.getEStructuralFeatures().push(vegaMarkDef_baseline);
     UimodelVegaPackage.Literals.VEGA_MARK_DEF__BASELINE = vegaMarkDef_baseline;
 
@@ -869,6 +891,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaMarkDef_dx.setName('dx');
     vegaMarkDef_dx.setLowerBound(0);
     vegaMarkDef_dx.setUpperBound(1);
+    vegaMarkDef_dx.setUnsettable(true);
     vegaMarkDefClass.getEStructuralFeatures().push(vegaMarkDef_dx);
     UimodelVegaPackage.Literals.VEGA_MARK_DEF__DX = vegaMarkDef_dx;
 
@@ -877,6 +900,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaMarkDef_dy.setName('dy');
     vegaMarkDef_dy.setLowerBound(0);
     vegaMarkDef_dy.setUpperBound(1);
+    vegaMarkDef_dy.setUnsettable(true);
     vegaMarkDefClass.getEStructuralFeatures().push(vegaMarkDef_dy);
     UimodelVegaPackage.Literals.VEGA_MARK_DEF__DY = vegaMarkDef_dy;
 
@@ -885,6 +909,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaMarkDef_angle.setName('angle');
     vegaMarkDef_angle.setLowerBound(0);
     vegaMarkDef_angle.setUpperBound(1);
+    vegaMarkDef_angle.setUnsettable(true);
     vegaMarkDefClass.getEStructuralFeatures().push(vegaMarkDef_angle);
     UimodelVegaPackage.Literals.VEGA_MARK_DEF__ANGLE = vegaMarkDef_angle;
 
@@ -893,6 +918,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaMarkDef_tooltip.setName('tooltip');
     vegaMarkDef_tooltip.setLowerBound(0);
     vegaMarkDef_tooltip.setUpperBound(1);
+    vegaMarkDef_tooltip.setUnsettable(true);
     vegaMarkDefClass.getEStructuralFeatures().push(vegaMarkDef_tooltip);
     UimodelVegaPackage.Literals.VEGA_MARK_DEF__TOOLTIP = vegaMarkDef_tooltip;
 
@@ -910,6 +936,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaEncoding_channel.setName('channel');
     vegaEncoding_channel.setLowerBound(1);
     vegaEncoding_channel.setUpperBound(1);
+    vegaEncoding_channel.setUnsettable(true);
     vegaEncodingClass.getEStructuralFeatures().push(vegaEncoding_channel);
     UimodelVegaPackage.Literals.VEGA_ENCODING__CHANNEL = vegaEncoding_channel;
 
@@ -944,6 +971,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaEncoding_fieldType.setName('fieldType');
     vegaEncoding_fieldType.setLowerBound(1);
     vegaEncoding_fieldType.setUpperBound(1);
+    vegaEncoding_fieldType.setUnsettable(true);
     vegaEncodingClass.getEStructuralFeatures().push(vegaEncoding_fieldType);
     UimodelVegaPackage.Literals.VEGA_ENCODING__FIELD_TYPE = vegaEncoding_fieldType;
 
@@ -961,6 +989,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaEncoding_bin.setName('bin');
     vegaEncoding_bin.setLowerBound(0);
     vegaEncoding_bin.setUpperBound(1);
+    vegaEncoding_bin.setUnsettable(true);
     vegaEncodingClass.getEStructuralFeatures().push(vegaEncoding_bin);
     UimodelVegaPackage.Literals.VEGA_ENCODING__BIN = vegaEncoding_bin;
 
@@ -969,6 +998,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaEncoding_binStep.setName('binStep');
     vegaEncoding_binStep.setLowerBound(0);
     vegaEncoding_binStep.setUpperBound(1);
+    vegaEncoding_binStep.setUnsettable(true);
     vegaEncodingClass.getEStructuralFeatures().push(vegaEncoding_binStep);
     UimodelVegaPackage.Literals.VEGA_ENCODING__BIN_STEP = vegaEncoding_binStep;
 
@@ -977,6 +1007,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaEncoding_binMaxBins.setName('binMaxBins');
     vegaEncoding_binMaxBins.setLowerBound(0);
     vegaEncoding_binMaxBins.setUpperBound(1);
+    vegaEncoding_binMaxBins.setUnsettable(true);
     vegaEncodingClass.getEStructuralFeatures().push(vegaEncoding_binMaxBins);
     UimodelVegaPackage.Literals.VEGA_ENCODING__BIN_MAX_BINS = vegaEncoding_binMaxBins;
 
@@ -985,6 +1016,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaEncoding_timeUnit.setName('timeUnit');
     vegaEncoding_timeUnit.setLowerBound(0);
     vegaEncoding_timeUnit.setUpperBound(1);
+    vegaEncoding_timeUnit.setUnsettable(true);
     vegaEncodingClass.getEStructuralFeatures().push(vegaEncoding_timeUnit);
     UimodelVegaPackage.Literals.VEGA_ENCODING__TIME_UNIT = vegaEncoding_timeUnit;
 
@@ -1017,6 +1049,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaEncoding_sort.setName('sort');
     vegaEncoding_sort.setLowerBound(0);
     vegaEncoding_sort.setUpperBound(1);
+    vegaEncoding_sort.setUnsettable(true);
     vegaEncodingClass.getEStructuralFeatures().push(vegaEncoding_sort);
     UimodelVegaPackage.Literals.VEGA_ENCODING__SORT = vegaEncoding_sort;
 
@@ -1025,6 +1058,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaEncoding_stack.setName('stack');
     vegaEncoding_stack.setLowerBound(0);
     vegaEncoding_stack.setUpperBound(1);
+    vegaEncoding_stack.setUnsettable(true);
     vegaEncodingClass.getEStructuralFeatures().push(vegaEncoding_stack);
     UimodelVegaPackage.Literals.VEGA_ENCODING__STACK = vegaEncoding_stack;
 
@@ -1033,6 +1067,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaEncoding_bandPosition.setName('bandPosition');
     vegaEncoding_bandPosition.setLowerBound(0);
     vegaEncoding_bandPosition.setUpperBound(1);
+    vegaEncoding_bandPosition.setUnsettable(true);
     vegaEncodingClass.getEStructuralFeatures().push(vegaEncoding_bandPosition);
     UimodelVegaPackage.Literals.VEGA_ENCODING__BAND_POSITION = vegaEncoding_bandPosition;
 
@@ -1128,6 +1163,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaScale_zero.setName('zero');
     vegaScale_zero.setLowerBound(0);
     vegaScale_zero.setUpperBound(1);
+    vegaScale_zero.setUnsettable(true);
     vegaScaleClass.getEStructuralFeatures().push(vegaScale_zero);
     UimodelVegaPackage.Literals.VEGA_SCALE__ZERO = vegaScale_zero;
 
@@ -1136,6 +1172,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaScale_nice.setName('nice');
     vegaScale_nice.setLowerBound(0);
     vegaScale_nice.setUpperBound(1);
+    vegaScale_nice.setUnsettable(true);
     vegaScaleClass.getEStructuralFeatures().push(vegaScale_nice);
     UimodelVegaPackage.Literals.VEGA_SCALE__NICE = vegaScale_nice;
 
@@ -1144,6 +1181,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaScale_clamp.setName('clamp');
     vegaScale_clamp.setLowerBound(0);
     vegaScale_clamp.setUpperBound(1);
+    vegaScale_clamp.setUnsettable(true);
     vegaScaleClass.getEStructuralFeatures().push(vegaScale_clamp);
     UimodelVegaPackage.Literals.VEGA_SCALE__CLAMP = vegaScale_clamp;
 
@@ -1152,6 +1190,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaScale_round.setName('round');
     vegaScale_round.setLowerBound(0);
     vegaScale_round.setUpperBound(1);
+    vegaScale_round.setUnsettable(true);
     vegaScaleClass.getEStructuralFeatures().push(vegaScale_round);
     UimodelVegaPackage.Literals.VEGA_SCALE__ROUND = vegaScale_round;
 
@@ -1160,6 +1199,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaScale_reverse.setName('reverse');
     vegaScale_reverse.setLowerBound(0);
     vegaScale_reverse.setUpperBound(1);
+    vegaScale_reverse.setUnsettable(true);
     vegaScaleClass.getEStructuralFeatures().push(vegaScale_reverse);
     UimodelVegaPackage.Literals.VEGA_SCALE__REVERSE = vegaScale_reverse;
 
@@ -1168,6 +1208,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaScale_padding.setName('padding');
     vegaScale_padding.setLowerBound(0);
     vegaScale_padding.setUpperBound(1);
+    vegaScale_padding.setUnsettable(true);
     vegaScaleClass.getEStructuralFeatures().push(vegaScale_padding);
     UimodelVegaPackage.Literals.VEGA_SCALE__PADDING = vegaScale_padding;
 
@@ -1176,6 +1217,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaScale_paddingInner.setName('paddingInner');
     vegaScale_paddingInner.setLowerBound(0);
     vegaScale_paddingInner.setUpperBound(1);
+    vegaScale_paddingInner.setUnsettable(true);
     vegaScaleClass.getEStructuralFeatures().push(vegaScale_paddingInner);
     UimodelVegaPackage.Literals.VEGA_SCALE__PADDING_INNER = vegaScale_paddingInner;
 
@@ -1184,6 +1226,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaScale_paddingOuter.setName('paddingOuter');
     vegaScale_paddingOuter.setLowerBound(0);
     vegaScale_paddingOuter.setUpperBound(1);
+    vegaScale_paddingOuter.setUnsettable(true);
     vegaScaleClass.getEStructuralFeatures().push(vegaScale_paddingOuter);
     UimodelVegaPackage.Literals.VEGA_SCALE__PADDING_OUTER = vegaScale_paddingOuter;
 
@@ -1192,6 +1235,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaScale_exponent.setName('exponent');
     vegaScale_exponent.setLowerBound(0);
     vegaScale_exponent.setUpperBound(1);
+    vegaScale_exponent.setUnsettable(true);
     vegaScaleClass.getEStructuralFeatures().push(vegaScale_exponent);
     UimodelVegaPackage.Literals.VEGA_SCALE__EXPONENT = vegaScale_exponent;
 
@@ -1200,6 +1244,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaScale_base.setName('base');
     vegaScale_base.setLowerBound(0);
     vegaScale_base.setUpperBound(1);
+    vegaScale_base.setUnsettable(true);
     vegaScaleClass.getEStructuralFeatures().push(vegaScale_base);
     UimodelVegaPackage.Literals.VEGA_SCALE__BASE = vegaScale_base;
 
@@ -1225,6 +1270,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaAxis_orient.setName('orient');
     vegaAxis_orient.setLowerBound(0);
     vegaAxis_orient.setUpperBound(1);
+    vegaAxis_orient.setUnsettable(true);
     vegaAxisClass.getEStructuralFeatures().push(vegaAxis_orient);
     UimodelVegaPackage.Literals.VEGA_AXIS__ORIENT = vegaAxis_orient;
 
@@ -1241,6 +1287,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaAxis_titleAngle.setName('titleAngle');
     vegaAxis_titleAngle.setLowerBound(0);
     vegaAxis_titleAngle.setUpperBound(1);
+    vegaAxis_titleAngle.setUnsettable(true);
     vegaAxisClass.getEStructuralFeatures().push(vegaAxis_titleAngle);
     UimodelVegaPackage.Literals.VEGA_AXIS__TITLE_ANGLE = vegaAxis_titleAngle;
 
@@ -1257,6 +1304,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaAxis_titleFontSize.setName('titleFontSize');
     vegaAxis_titleFontSize.setLowerBound(0);
     vegaAxis_titleFontSize.setUpperBound(1);
+    vegaAxis_titleFontSize.setUnsettable(true);
     vegaAxisClass.getEStructuralFeatures().push(vegaAxis_titleFontSize);
     UimodelVegaPackage.Literals.VEGA_AXIS__TITLE_FONT_SIZE = vegaAxis_titleFontSize;
 
@@ -1273,6 +1321,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaAxis_labels.setName('labels');
     vegaAxis_labels.setLowerBound(0);
     vegaAxis_labels.setUpperBound(1);
+    vegaAxis_labels.setUnsettable(true);
     vegaAxisClass.getEStructuralFeatures().push(vegaAxis_labels);
     UimodelVegaPackage.Literals.VEGA_AXIS__LABELS = vegaAxis_labels;
 
@@ -1281,6 +1330,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaAxis_labelAngle.setName('labelAngle');
     vegaAxis_labelAngle.setLowerBound(0);
     vegaAxis_labelAngle.setUpperBound(1);
+    vegaAxis_labelAngle.setUnsettable(true);
     vegaAxisClass.getEStructuralFeatures().push(vegaAxis_labelAngle);
     UimodelVegaPackage.Literals.VEGA_AXIS__LABEL_ANGLE = vegaAxis_labelAngle;
 
@@ -1297,6 +1347,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaAxis_labelFontSize.setName('labelFontSize');
     vegaAxis_labelFontSize.setLowerBound(0);
     vegaAxis_labelFontSize.setUpperBound(1);
+    vegaAxis_labelFontSize.setUnsettable(true);
     vegaAxisClass.getEStructuralFeatures().push(vegaAxis_labelFontSize);
     UimodelVegaPackage.Literals.VEGA_AXIS__LABEL_FONT_SIZE = vegaAxis_labelFontSize;
 
@@ -1313,6 +1364,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaAxis_labelOverlap.setName('labelOverlap');
     vegaAxis_labelOverlap.setLowerBound(0);
     vegaAxis_labelOverlap.setUpperBound(1);
+    vegaAxis_labelOverlap.setUnsettable(true);
     vegaAxisClass.getEStructuralFeatures().push(vegaAxis_labelOverlap);
     UimodelVegaPackage.Literals.VEGA_AXIS__LABEL_OVERLAP = vegaAxis_labelOverlap;
 
@@ -1337,6 +1389,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaAxis_grid.setName('grid');
     vegaAxis_grid.setLowerBound(0);
     vegaAxis_grid.setUpperBound(1);
+    vegaAxis_grid.setUnsettable(true);
     vegaAxisClass.getEStructuralFeatures().push(vegaAxis_grid);
     UimodelVegaPackage.Literals.VEGA_AXIS__GRID = vegaAxis_grid;
 
@@ -1353,6 +1406,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaAxis_gridOpacity.setName('gridOpacity');
     vegaAxis_gridOpacity.setLowerBound(0);
     vegaAxis_gridOpacity.setUpperBound(1);
+    vegaAxis_gridOpacity.setUnsettable(true);
     vegaAxisClass.getEStructuralFeatures().push(vegaAxis_gridOpacity);
     UimodelVegaPackage.Literals.VEGA_AXIS__GRID_OPACITY = vegaAxis_gridOpacity;
 
@@ -1361,6 +1415,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaAxis_gridWidth.setName('gridWidth');
     vegaAxis_gridWidth.setLowerBound(0);
     vegaAxis_gridWidth.setUpperBound(1);
+    vegaAxis_gridWidth.setUnsettable(true);
     vegaAxisClass.getEStructuralFeatures().push(vegaAxis_gridWidth);
     UimodelVegaPackage.Literals.VEGA_AXIS__GRID_WIDTH = vegaAxis_gridWidth;
 
@@ -1369,6 +1424,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaAxis_ticks.setName('ticks');
     vegaAxis_ticks.setLowerBound(0);
     vegaAxis_ticks.setUpperBound(1);
+    vegaAxis_ticks.setUnsettable(true);
     vegaAxisClass.getEStructuralFeatures().push(vegaAxis_ticks);
     UimodelVegaPackage.Literals.VEGA_AXIS__TICKS = vegaAxis_ticks;
 
@@ -1377,6 +1433,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaAxis_tickCount.setName('tickCount');
     vegaAxis_tickCount.setLowerBound(0);
     vegaAxis_tickCount.setUpperBound(1);
+    vegaAxis_tickCount.setUnsettable(true);
     vegaAxisClass.getEStructuralFeatures().push(vegaAxis_tickCount);
     UimodelVegaPackage.Literals.VEGA_AXIS__TICK_COUNT = vegaAxis_tickCount;
 
@@ -1385,6 +1442,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaAxis_tickSize.setName('tickSize');
     vegaAxis_tickSize.setLowerBound(0);
     vegaAxis_tickSize.setUpperBound(1);
+    vegaAxis_tickSize.setUnsettable(true);
     vegaAxisClass.getEStructuralFeatures().push(vegaAxis_tickSize);
     UimodelVegaPackage.Literals.VEGA_AXIS__TICK_SIZE = vegaAxis_tickSize;
 
@@ -1401,6 +1459,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaAxis_tickWidth.setName('tickWidth');
     vegaAxis_tickWidth.setLowerBound(0);
     vegaAxis_tickWidth.setUpperBound(1);
+    vegaAxis_tickWidth.setUnsettable(true);
     vegaAxisClass.getEStructuralFeatures().push(vegaAxis_tickWidth);
     UimodelVegaPackage.Literals.VEGA_AXIS__TICK_WIDTH = vegaAxis_tickWidth;
 
@@ -1417,6 +1476,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaAxis_domainLine.setName('domainLine');
     vegaAxis_domainLine.setLowerBound(0);
     vegaAxis_domainLine.setUpperBound(1);
+    vegaAxis_domainLine.setUnsettable(true);
     vegaAxisClass.getEStructuralFeatures().push(vegaAxis_domainLine);
     UimodelVegaPackage.Literals.VEGA_AXIS__DOMAIN_LINE = vegaAxis_domainLine;
 
@@ -1433,6 +1493,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaAxis_domainWidth.setName('domainWidth');
     vegaAxis_domainWidth.setLowerBound(0);
     vegaAxis_domainWidth.setUpperBound(1);
+    vegaAxis_domainWidth.setUnsettable(true);
     vegaAxisClass.getEStructuralFeatures().push(vegaAxis_domainWidth);
     UimodelVegaPackage.Literals.VEGA_AXIS__DOMAIN_WIDTH = vegaAxis_domainWidth;
 
@@ -1441,6 +1502,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaAxis_offset.setName('offset');
     vegaAxis_offset.setLowerBound(0);
     vegaAxis_offset.setUpperBound(1);
+    vegaAxis_offset.setUnsettable(true);
     vegaAxisClass.getEStructuralFeatures().push(vegaAxis_offset);
     UimodelVegaPackage.Literals.VEGA_AXIS__OFFSET = vegaAxis_offset;
 
@@ -1449,6 +1511,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaAxis_minExtent.setName('minExtent');
     vegaAxis_minExtent.setLowerBound(0);
     vegaAxis_minExtent.setUpperBound(1);
+    vegaAxis_minExtent.setUnsettable(true);
     vegaAxisClass.getEStructuralFeatures().push(vegaAxis_minExtent);
     UimodelVegaPackage.Literals.VEGA_AXIS__MIN_EXTENT = vegaAxis_minExtent;
 
@@ -1457,6 +1520,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaAxis_maxExtent.setName('maxExtent');
     vegaAxis_maxExtent.setLowerBound(0);
     vegaAxis_maxExtent.setUpperBound(1);
+    vegaAxis_maxExtent.setUnsettable(true);
     vegaAxisClass.getEStructuralFeatures().push(vegaAxis_maxExtent);
     UimodelVegaPackage.Literals.VEGA_AXIS__MAX_EXTENT = vegaAxis_maxExtent;
 
@@ -1465,6 +1529,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaAxis_zindex.setName('zindex');
     vegaAxis_zindex.setLowerBound(0);
     vegaAxis_zindex.setUpperBound(1);
+    vegaAxis_zindex.setUnsettable(true);
     vegaAxisClass.getEStructuralFeatures().push(vegaAxis_zindex);
     UimodelVegaPackage.Literals.VEGA_AXIS__ZINDEX = vegaAxis_zindex;
 
@@ -1482,6 +1547,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaLegend_orient.setName('orient');
     vegaLegend_orient.setLowerBound(0);
     vegaLegend_orient.setUpperBound(1);
+    vegaLegend_orient.setUnsettable(true);
     vegaLegendClass.getEStructuralFeatures().push(vegaLegend_orient);
     UimodelVegaPackage.Literals.VEGA_LEGEND__ORIENT = vegaLegend_orient;
 
@@ -1506,6 +1572,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaLegend_titleFontSize.setName('titleFontSize');
     vegaLegend_titleFontSize.setLowerBound(0);
     vegaLegend_titleFontSize.setUpperBound(1);
+    vegaLegend_titleFontSize.setUnsettable(true);
     vegaLegendClass.getEStructuralFeatures().push(vegaLegend_titleFontSize);
     UimodelVegaPackage.Literals.VEGA_LEGEND__TITLE_FONT_SIZE = vegaLegend_titleFontSize;
 
@@ -1514,6 +1581,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaLegend_type.setName('type');
     vegaLegend_type.setLowerBound(0);
     vegaLegend_type.setUpperBound(1);
+    vegaLegend_type.setUnsettable(true);
     vegaLegendClass.getEStructuralFeatures().push(vegaLegend_type);
     UimodelVegaPackage.Literals.VEGA_LEGEND__TYPE = vegaLegend_type;
 
@@ -1522,6 +1590,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaLegend_direction.setName('direction');
     vegaLegend_direction.setLowerBound(0);
     vegaLegend_direction.setUpperBound(1);
+    vegaLegend_direction.setUnsettable(true);
     vegaLegendClass.getEStructuralFeatures().push(vegaLegend_direction);
     UimodelVegaPackage.Literals.VEGA_LEGEND__DIRECTION = vegaLegend_direction;
 
@@ -1538,6 +1607,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaLegend_labelFontSize.setName('labelFontSize');
     vegaLegend_labelFontSize.setLowerBound(0);
     vegaLegend_labelFontSize.setUpperBound(1);
+    vegaLegend_labelFontSize.setUnsettable(true);
     vegaLegendClass.getEStructuralFeatures().push(vegaLegend_labelFontSize);
     UimodelVegaPackage.Literals.VEGA_LEGEND__LABEL_FONT_SIZE = vegaLegend_labelFontSize;
 
@@ -1546,6 +1616,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaLegend_symbolSize.setName('symbolSize');
     vegaLegend_symbolSize.setLowerBound(0);
     vegaLegend_symbolSize.setUpperBound(1);
+    vegaLegend_symbolSize.setUnsettable(true);
     vegaLegendClass.getEStructuralFeatures().push(vegaLegend_symbolSize);
     UimodelVegaPackage.Literals.VEGA_LEGEND__SYMBOL_SIZE = vegaLegend_symbolSize;
 
@@ -1562,6 +1633,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaLegend_padding.setName('padding');
     vegaLegend_padding.setLowerBound(0);
     vegaLegend_padding.setUpperBound(1);
+    vegaLegend_padding.setUnsettable(true);
     vegaLegendClass.getEStructuralFeatures().push(vegaLegend_padding);
     UimodelVegaPackage.Literals.VEGA_LEGEND__PADDING = vegaLegend_padding;
 
@@ -1570,6 +1642,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaLegend_offset.setName('offset');
     vegaLegend_offset.setLowerBound(0);
     vegaLegend_offset.setUpperBound(1);
+    vegaLegend_offset.setUnsettable(true);
     vegaLegendClass.getEStructuralFeatures().push(vegaLegend_offset);
     UimodelVegaPackage.Literals.VEGA_LEGEND__OFFSET = vegaLegend_offset;
 
@@ -1578,6 +1651,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaLegend_columns.setName('columns');
     vegaLegend_columns.setLowerBound(0);
     vegaLegend_columns.setUpperBound(1);
+    vegaLegend_columns.setUnsettable(true);
     vegaLegendClass.getEStructuralFeatures().push(vegaLegend_columns);
     UimodelVegaPackage.Literals.VEGA_LEGEND__COLUMNS = vegaLegend_columns;
 
@@ -1594,6 +1668,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaLegend_disable.setName('disable');
     vegaLegend_disable.setLowerBound(0);
     vegaLegend_disable.setUpperBound(1);
+    vegaLegend_disable.setUnsettable(true);
     vegaLegendClass.getEStructuralFeatures().push(vegaLegend_disable);
     UimodelVegaPackage.Literals.VEGA_LEGEND__DISABLE = vegaLegend_disable;
 
@@ -1645,6 +1720,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaCondition_fieldType.setName('fieldType');
     vegaCondition_fieldType.setLowerBound(0);
     vegaCondition_fieldType.setUpperBound(1);
+    vegaCondition_fieldType.setUnsettable(true);
     vegaConditionClass.getEStructuralFeatures().push(vegaCondition_fieldType);
     UimodelVegaPackage.Literals.VEGA_CONDITION__FIELD_TYPE = vegaCondition_fieldType;
 
@@ -1653,6 +1729,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaCondition_aggregate.setName('aggregate');
     vegaCondition_aggregate.setLowerBound(0);
     vegaCondition_aggregate.setUpperBound(1);
+    vegaCondition_aggregate.setUnsettable(true);
     vegaConditionClass.getEStructuralFeatures().push(vegaCondition_aggregate);
     UimodelVegaPackage.Literals.VEGA_CONDITION__AGGREGATE = vegaCondition_aggregate;
 
@@ -1695,6 +1772,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaPointParam_toggle.setName('toggle');
     vegaPointParam_toggle.setLowerBound(0);
     vegaPointParam_toggle.setUpperBound(1);
+    vegaPointParam_toggle.setUnsettable(true);
     vegaPointParamClass.getEStructuralFeatures().push(vegaPointParam_toggle);
     UimodelVegaPackage.Literals.VEGA_POINT_PARAM__TOGGLE = vegaPointParam_toggle;
 
@@ -1703,6 +1781,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaPointParam_nearest.setName('nearest');
     vegaPointParam_nearest.setLowerBound(0);
     vegaPointParam_nearest.setUpperBound(1);
+    vegaPointParam_nearest.setUnsettable(true);
     vegaPointParamClass.getEStructuralFeatures().push(vegaPointParam_nearest);
     UimodelVegaPackage.Literals.VEGA_POINT_PARAM__NEAREST = vegaPointParam_nearest;
 
@@ -1812,6 +1891,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaSelectionMark_fillOpacity.setName('fillOpacity');
     vegaSelectionMark_fillOpacity.setLowerBound(0);
     vegaSelectionMark_fillOpacity.setUpperBound(1);
+    vegaSelectionMark_fillOpacity.setUnsettable(true);
     vegaSelectionMarkClass.getEStructuralFeatures().push(vegaSelectionMark_fillOpacity);
     UimodelVegaPackage.Literals.VEGA_SELECTION_MARK__FILL_OPACITY = vegaSelectionMark_fillOpacity;
 
@@ -1828,6 +1908,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaSelectionMark_strokeWidth.setName('strokeWidth');
     vegaSelectionMark_strokeWidth.setLowerBound(0);
     vegaSelectionMark_strokeWidth.setUpperBound(1);
+    vegaSelectionMark_strokeWidth.setUnsettable(true);
     vegaSelectionMarkClass.getEStructuralFeatures().push(vegaSelectionMark_strokeWidth);
     UimodelVegaPackage.Literals.VEGA_SELECTION_MARK__STROKE_WIDTH = vegaSelectionMark_strokeWidth;
 
@@ -1968,6 +2049,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaAggregateTransform_op.setName('op');
     vegaAggregateTransform_op.setLowerBound(1);
     vegaAggregateTransform_op.setUpperBound(1);
+    vegaAggregateTransform_op.setUnsettable(true);
     vegaAggregateTransformClass.getEStructuralFeatures().push(vegaAggregateTransform_op);
     UimodelVegaPackage.Literals.VEGA_AGGREGATE_TRANSFORM__OP = vegaAggregateTransform_op;
 
@@ -2045,6 +2127,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaBinTransform_maxBins.setName('maxBins');
     vegaBinTransform_maxBins.setLowerBound(0);
     vegaBinTransform_maxBins.setUpperBound(1);
+    vegaBinTransform_maxBins.setUnsettable(true);
     vegaBinTransformClass.getEStructuralFeatures().push(vegaBinTransform_maxBins);
     UimodelVegaPackage.Literals.VEGA_BIN_TRANSFORM__MAX_BINS = vegaBinTransform_maxBins;
 
@@ -2053,6 +2136,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaBinTransform_step.setName('step');
     vegaBinTransform_step.setLowerBound(0);
     vegaBinTransform_step.setUpperBound(1);
+    vegaBinTransform_step.setUnsettable(true);
     vegaBinTransformClass.getEStructuralFeatures().push(vegaBinTransform_step);
     UimodelVegaPackage.Literals.VEGA_BIN_TRANSFORM__STEP = vegaBinTransform_step;
 
@@ -2079,6 +2163,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaTimeUnitTransform_timeUnit.setName('timeUnit');
     vegaTimeUnitTransform_timeUnit.setLowerBound(1);
     vegaTimeUnitTransform_timeUnit.setUpperBound(1);
+    vegaTimeUnitTransform_timeUnit.setUnsettable(true);
     vegaTimeUnitTransformClass.getEStructuralFeatures().push(vegaTimeUnitTransform_timeUnit);
     UimodelVegaPackage.Literals.VEGA_TIME_UNIT_TRANSFORM__TIME_UNIT = vegaTimeUnitTransform_timeUnit;
 
@@ -2122,6 +2207,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaWindowTransform_op.setName('op');
     vegaWindowTransform_op.setLowerBound(1);
     vegaWindowTransform_op.setUpperBound(1);
+    vegaWindowTransform_op.setUnsettable(true);
     vegaWindowTransformClass.getEStructuralFeatures().push(vegaWindowTransform_op);
     UimodelVegaPackage.Literals.VEGA_WINDOW_TRANSFORM__OP = vegaWindowTransform_op;
 
@@ -2165,6 +2251,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaWindowTransform_frameStart.setName('frameStart');
     vegaWindowTransform_frameStart.setLowerBound(0);
     vegaWindowTransform_frameStart.setUpperBound(1);
+    vegaWindowTransform_frameStart.setUnsettable(true);
     vegaWindowTransformClass.getEStructuralFeatures().push(vegaWindowTransform_frameStart);
     UimodelVegaPackage.Literals.VEGA_WINDOW_TRANSFORM__FRAME_START = vegaWindowTransform_frameStart;
 
@@ -2173,6 +2260,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaWindowTransform_frameEnd.setName('frameEnd');
     vegaWindowTransform_frameEnd.setLowerBound(0);
     vegaWindowTransform_frameEnd.setUpperBound(1);
+    vegaWindowTransform_frameEnd.setUnsettable(true);
     vegaWindowTransformClass.getEStructuralFeatures().push(vegaWindowTransform_frameEnd);
     UimodelVegaPackage.Literals.VEGA_WINDOW_TRANSFORM__FRAME_END = vegaWindowTransform_frameEnd;
 
@@ -2329,6 +2417,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaSampleTransform_sample.setName('sample');
     vegaSampleTransform_sample.setLowerBound(1);
     vegaSampleTransform_sample.setUpperBound(1);
+    vegaSampleTransform_sample.setUnsettable(true);
     vegaSampleTransformClass.getEStructuralFeatures().push(vegaSampleTransform_sample);
     UimodelVegaPackage.Literals.VEGA_SAMPLE_TRANSFORM__SAMPLE = vegaSampleTransform_sample;
 
@@ -2355,6 +2444,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaDensityTransform_bandwidth.setName('bandwidth');
     vegaDensityTransform_bandwidth.setLowerBound(0);
     vegaDensityTransform_bandwidth.setUpperBound(1);
+    vegaDensityTransform_bandwidth.setUnsettable(true);
     vegaDensityTransformClass.getEStructuralFeatures().push(vegaDensityTransform_bandwidth);
     UimodelVegaPackage.Literals.VEGA_DENSITY_TRANSFORM__BANDWIDTH = vegaDensityTransform_bandwidth;
 
@@ -2363,6 +2453,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaDensityTransform_steps.setName('steps');
     vegaDensityTransform_steps.setLowerBound(0);
     vegaDensityTransform_steps.setUpperBound(1);
+    vegaDensityTransform_steps.setUnsettable(true);
     vegaDensityTransformClass.getEStructuralFeatures().push(vegaDensityTransform_steps);
     UimodelVegaPackage.Literals.VEGA_DENSITY_TRANSFORM__STEPS = vegaDensityTransform_steps;
 
@@ -2476,6 +2567,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaJoinAggregateTransform_op.setName('op');
     vegaJoinAggregateTransform_op.setLowerBound(1);
     vegaJoinAggregateTransform_op.setUpperBound(1);
+    vegaJoinAggregateTransform_op.setUnsettable(true);
     vegaJoinAggregateTransformClass.getEStructuralFeatures().push(vegaJoinAggregateTransform_op);
     UimodelVegaPackage.Literals.VEGA_JOIN_AGGREGATE_TRANSFORM__OP = vegaJoinAggregateTransform_op;
 
@@ -4592,6 +4684,10 @@ export class UimodelVegaPackage extends BasicEPackage {
     (UimodelVegaPackage.Literals.VEGA_JOIN_AGGREGATE_TRANSFORM__GROUP_BY as BasicEReference).setEType(getEcorePackage().getEClassifier('EStructuralFeature')!);
     (UimodelVegaPackage.Literals.VEGA_SORT_FIELD__FIELD as BasicEReference).setEType(getEcorePackage().getEClassifier('EStructuralFeature')!);
     (UimodelVegaPackage.Literals.VEGA_SORT_FIELD__ORDER as BasicEAttribute).setEType(UimodelVegaPackage.Literals.VEGA_SORT_ORDER);
+
+    // ============================================
+    // Set EOpposites (must be done after all features are created) (#59)
+    // ============================================
 
     // ============================================
     // Register XML name mappings from ExtendedMetaData annotations

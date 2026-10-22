@@ -504,6 +504,7 @@ export class UimodelPackage extends BasicEPackage {
     widgetComponent_readOnly.setName('readOnly');
     widgetComponent_readOnly.setLowerBound(0);
     widgetComponent_readOnly.setUpperBound(1);
+    widgetComponent_readOnly.setUnsettable(true);
     widgetComponentClass.getEStructuralFeatures().push(widgetComponent_readOnly);
     UimodelPackage.Literals.WIDGET_COMPONENT__READ_ONLY = widgetComponent_readOnly;
 
@@ -512,6 +513,7 @@ export class UimodelPackage extends BasicEPackage {
     widgetComponent_required.setName('required');
     widgetComponent_required.setLowerBound(0);
     widgetComponent_required.setUpperBound(1);
+    widgetComponent_required.setUnsettable(true);
     widgetComponentClass.getEStructuralFeatures().push(widgetComponent_required);
     UimodelPackage.Literals.WIDGET_COMPONENT__REQUIRED = widgetComponent_required;
 
@@ -1171,6 +1173,7 @@ export class UimodelPackage extends BasicEPackage {
     layoutStyle_layout.setName('layout');
     layoutStyle_layout.setLowerBound(0);
     layoutStyle_layout.setUpperBound(1);
+    layoutStyle_layout.setUnsettable(true);
     layoutStyleClass.getEStructuralFeatures().push(layoutStyle_layout);
     UimodelPackage.Literals.LAYOUT_STYLE__LAYOUT = layoutStyle_layout;
 
@@ -1179,6 +1182,7 @@ export class UimodelPackage extends BasicEPackage {
     layoutStyle_order.setName('order');
     layoutStyle_order.setLowerBound(0);
     layoutStyle_order.setUpperBound(1);
+    layoutStyle_order.setUnsettable(true);
     layoutStyleClass.getEStructuralFeatures().push(layoutStyle_order);
     UimodelPackage.Literals.LAYOUT_STYLE__ORDER = layoutStyle_order;
 
@@ -1205,6 +1209,7 @@ export class UimodelPackage extends BasicEPackage {
     widgetStyle_widgetType.setName('widgetType');
     widgetStyle_widgetType.setLowerBound(0);
     widgetStyle_widgetType.setUpperBound(1);
+    widgetStyle_widgetType.setUnsettable(true);
     widgetStyleClass.getEStructuralFeatures().push(widgetStyle_widgetType);
     UimodelPackage.Literals.WIDGET_STYLE__WIDGET_TYPE = widgetStyle_widgetType;
 
@@ -1221,6 +1226,7 @@ export class UimodelPackage extends BasicEPackage {
     widgetStyle_readOnly.setName('readOnly');
     widgetStyle_readOnly.setLowerBound(0);
     widgetStyle_readOnly.setUpperBound(1);
+    widgetStyle_readOnly.setUnsettable(true);
     widgetStyleClass.getEStructuralFeatures().push(widgetStyle_readOnly);
     UimodelPackage.Literals.WIDGET_STYLE__READ_ONLY = widgetStyle_readOnly;
 
@@ -1229,6 +1235,7 @@ export class UimodelPackage extends BasicEPackage {
     widgetStyle_order.setName('order');
     widgetStyle_order.setLowerBound(0);
     widgetStyle_order.setUpperBound(1);
+    widgetStyle_order.setUnsettable(true);
     widgetStyleClass.getEStructuralFeatures().push(widgetStyle_order);
     UimodelPackage.Literals.WIDGET_STYLE__ORDER = widgetStyle_order;
 
@@ -1332,6 +1339,7 @@ export class UimodelPackage extends BasicEPackage {
     validationMessageMapper_matchSeverity.setName('matchSeverity');
     validationMessageMapper_matchSeverity.setLowerBound(0);
     validationMessageMapper_matchSeverity.setUpperBound(1);
+    validationMessageMapper_matchSeverity.setUnsettable(true);
     validationMessageMapperClass.getEStructuralFeatures().push(validationMessageMapper_matchSeverity);
     UimodelPackage.Literals.VALIDATION_MESSAGE_MAPPER__MATCH_SEVERITY = validationMessageMapper_matchSeverity;
 
@@ -1366,6 +1374,7 @@ export class UimodelPackage extends BasicEPackage {
     validationMessageMapper_mappedSeverity.setName('mappedSeverity');
     validationMessageMapper_mappedSeverity.setLowerBound(0);
     validationMessageMapper_mappedSeverity.setUpperBound(1);
+    validationMessageMapper_mappedSeverity.setUnsettable(true);
     validationMessageMapperClass.getEStructuralFeatures().push(validationMessageMapper_mappedSeverity);
     UimodelPackage.Literals.VALIDATION_MESSAGE_MAPPER__MAPPED_SEVERITY = validationMessageMapper_mappedSeverity;
 
@@ -1796,6 +1805,10 @@ export class UimodelPackage extends BasicEPackage {
     (UimodelPackage.Literals.VALIDATION_MESSAGE_MAPPER__MAPPED_TEXT as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
     (UimodelPackage.Literals.VALIDATION_MESSAGE_MAPPER__MAPPED_TEXT_EXPRESSION as BasicEReference).setEType(UimodelPackage.Literals.EXPRESSION);
     (UimodelPackage.Literals.VALIDATION_MESSAGE_MAPPER__MAPPED_SEVERITY as BasicEAttribute).setEType(UimodelPackage.Literals.SEVERITY);
+
+    // ============================================
+    // Set EOpposites (must be done after all features are created) (#59)
+    // ============================================
 
     // ============================================
     // Register XML name mappings from ExtendedMetaData annotations

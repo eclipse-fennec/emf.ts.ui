@@ -246,6 +246,7 @@ export class UimodelMapsPackage extends BasicEPackage {
     mapView_centerLon.setName('centerLon');
     mapView_centerLon.setLowerBound(0);
     mapView_centerLon.setUpperBound(1);
+    mapView_centerLon.setUnsettable(true);
     mapViewClass.getEStructuralFeatures().push(mapView_centerLon);
     UimodelMapsPackage.Literals.MAP_VIEW__CENTER_LON = mapView_centerLon;
 
@@ -254,6 +255,7 @@ export class UimodelMapsPackage extends BasicEPackage {
     mapView_centerLat.setName('centerLat');
     mapView_centerLat.setLowerBound(0);
     mapView_centerLat.setUpperBound(1);
+    mapView_centerLat.setUnsettable(true);
     mapViewClass.getEStructuralFeatures().push(mapView_centerLat);
     UimodelMapsPackage.Literals.MAP_VIEW__CENTER_LAT = mapView_centerLat;
 
@@ -271,6 +273,7 @@ export class UimodelMapsPackage extends BasicEPackage {
     mapView_minZoom.setName('minZoom');
     mapView_minZoom.setLowerBound(0);
     mapView_minZoom.setUpperBound(1);
+    mapView_minZoom.setUnsettable(true);
     mapViewClass.getEStructuralFeatures().push(mapView_minZoom);
     UimodelMapsPackage.Literals.MAP_VIEW__MIN_ZOOM = mapView_minZoom;
 
@@ -279,6 +282,7 @@ export class UimodelMapsPackage extends BasicEPackage {
     mapView_maxZoom.setName('maxZoom');
     mapView_maxZoom.setLowerBound(0);
     mapView_maxZoom.setUpperBound(1);
+    mapView_maxZoom.setUnsettable(true);
     mapViewClass.getEStructuralFeatures().push(mapView_maxZoom);
     UimodelMapsPackage.Literals.MAP_VIEW__MAX_ZOOM = mapView_maxZoom;
 
@@ -296,6 +300,7 @@ export class UimodelMapsPackage extends BasicEPackage {
     mapView_width.setName('width');
     mapView_width.setLowerBound(0);
     mapView_width.setUpperBound(1);
+    mapView_width.setUnsettable(true);
     mapViewClass.getEStructuralFeatures().push(mapView_width);
     UimodelMapsPackage.Literals.MAP_VIEW__WIDTH = mapView_width;
 
@@ -330,6 +335,7 @@ export class UimodelMapsPackage extends BasicEPackage {
     mapView_showScaleLine.setName('showScaleLine');
     mapView_showScaleLine.setLowerBound(0);
     mapView_showScaleLine.setUpperBound(1);
+    mapView_showScaleLine.setUnsettable(true);
     mapViewClass.getEStructuralFeatures().push(mapView_showScaleLine);
     UimodelMapsPackage.Literals.MAP_VIEW__SHOW_SCALE_LINE = mapView_showScaleLine;
 
@@ -356,6 +362,7 @@ export class UimodelMapsPackage extends BasicEPackage {
     mapExtent_minLon.setName('minLon');
     mapExtent_minLon.setLowerBound(0);
     mapExtent_minLon.setUpperBound(1);
+    mapExtent_minLon.setUnsettable(true);
     mapExtentClass.getEStructuralFeatures().push(mapExtent_minLon);
     UimodelMapsPackage.Literals.MAP_EXTENT__MIN_LON = mapExtent_minLon;
 
@@ -364,6 +371,7 @@ export class UimodelMapsPackage extends BasicEPackage {
     mapExtent_minLat.setName('minLat');
     mapExtent_minLat.setLowerBound(0);
     mapExtent_minLat.setUpperBound(1);
+    mapExtent_minLat.setUnsettable(true);
     mapExtentClass.getEStructuralFeatures().push(mapExtent_minLat);
     UimodelMapsPackage.Literals.MAP_EXTENT__MIN_LAT = mapExtent_minLat;
 
@@ -372,6 +380,7 @@ export class UimodelMapsPackage extends BasicEPackage {
     mapExtent_maxLon.setName('maxLon');
     mapExtent_maxLon.setLowerBound(0);
     mapExtent_maxLon.setUpperBound(1);
+    mapExtent_maxLon.setUnsettable(true);
     mapExtentClass.getEStructuralFeatures().push(mapExtent_maxLon);
     UimodelMapsPackage.Literals.MAP_EXTENT__MAX_LON = mapExtent_maxLon;
 
@@ -380,6 +389,7 @@ export class UimodelMapsPackage extends BasicEPackage {
     mapExtent_maxLat.setName('maxLat');
     mapExtent_maxLat.setLowerBound(0);
     mapExtent_maxLat.setUpperBound(1);
+    mapExtent_maxLat.setUnsettable(true);
     mapExtentClass.getEStructuralFeatures().push(mapExtent_maxLat);
     UimodelMapsPackage.Literals.MAP_EXTENT__MAX_LAT = mapExtent_maxLat;
 
@@ -423,6 +433,7 @@ export class UimodelMapsPackage extends BasicEPackage {
     mapLayer_minZoom.setName('minZoom');
     mapLayer_minZoom.setLowerBound(0);
     mapLayer_minZoom.setUpperBound(1);
+    mapLayer_minZoom.setUnsettable(true);
     mapLayerClass.getEStructuralFeatures().push(mapLayer_minZoom);
     UimodelMapsPackage.Literals.MAP_LAYER__MIN_ZOOM = mapLayer_minZoom;
 
@@ -431,6 +442,7 @@ export class UimodelMapsPackage extends BasicEPackage {
     mapLayer_maxZoom.setName('maxZoom');
     mapLayer_maxZoom.setLowerBound(0);
     mapLayer_maxZoom.setUpperBound(1);
+    mapLayer_maxZoom.setUnsettable(true);
     mapLayerClass.getEStructuralFeatures().push(mapLayer_maxZoom);
     UimodelMapsPackage.Literals.MAP_LAYER__MAX_ZOOM = mapLayer_maxZoom;
 
@@ -464,6 +476,7 @@ export class UimodelMapsPackage extends BasicEPackage {
     xYZTileLayer_maxZoomLevel.setName('maxZoomLevel');
     xYZTileLayer_maxZoomLevel.setLowerBound(0);
     xYZTileLayer_maxZoomLevel.setUpperBound(1);
+    xYZTileLayer_maxZoomLevel.setUnsettable(true);
     xYZTileLayerClass.getEStructuralFeatures().push(xYZTileLayer_maxZoomLevel);
     UimodelMapsPackage.Literals.X_Y_Z_TILE_LAYER__MAX_ZOOM_LEVEL = xYZTileLayer_maxZoomLevel;
 
@@ -842,6 +855,7 @@ export class UimodelMapsPackage extends BasicEPackage {
     graduatedClass_lowerBound.setName('lowerBound');
     graduatedClass_lowerBound.setLowerBound(0);
     graduatedClass_lowerBound.setUpperBound(1);
+    graduatedClass_lowerBound.setUnsettable(true);
     graduatedClassClass.getEStructuralFeatures().push(graduatedClass_lowerBound);
     UimodelMapsPackage.Literals.GRADUATED_CLASS__LOWER_BOUND = graduatedClass_lowerBound;
 
@@ -850,6 +864,7 @@ export class UimodelMapsPackage extends BasicEPackage {
     graduatedClass_upperBound.setName('upperBound');
     graduatedClass_upperBound.setLowerBound(0);
     graduatedClass_upperBound.setUpperBound(1);
+    graduatedClass_upperBound.setUnsettable(true);
     graduatedClassClass.getEStructuralFeatures().push(graduatedClass_upperBound);
     UimodelMapsPackage.Literals.GRADUATED_CLASS__UPPER_BOUND = graduatedClass_upperBound;
 
@@ -919,6 +934,7 @@ export class UimodelMapsPackage extends BasicEPackage {
     rendererRule_elseRule.setName('elseRule');
     rendererRule_elseRule.setLowerBound(0);
     rendererRule_elseRule.setUpperBound(1);
+    rendererRule_elseRule.setUnsettable(true);
     rendererRuleClass.getEStructuralFeatures().push(rendererRule_elseRule);
     UimodelMapsPackage.Literals.RENDERER_RULE__ELSE_RULE = rendererRule_elseRule;
 
@@ -927,6 +943,7 @@ export class UimodelMapsPackage extends BasicEPackage {
     rendererRule_minZoom.setName('minZoom');
     rendererRule_minZoom.setLowerBound(0);
     rendererRule_minZoom.setUpperBound(1);
+    rendererRule_minZoom.setUnsettable(true);
     rendererRuleClass.getEStructuralFeatures().push(rendererRule_minZoom);
     UimodelMapsPackage.Literals.RENDERER_RULE__MIN_ZOOM = rendererRule_minZoom;
 
@@ -935,6 +952,7 @@ export class UimodelMapsPackage extends BasicEPackage {
     rendererRule_maxZoom.setName('maxZoom');
     rendererRule_maxZoom.setLowerBound(0);
     rendererRule_maxZoom.setUpperBound(1);
+    rendererRule_maxZoom.setUnsettable(true);
     rendererRuleClass.getEStructuralFeatures().push(rendererRule_maxZoom);
     UimodelMapsPackage.Literals.RENDERER_RULE__MAX_ZOOM = rendererRule_maxZoom;
 
@@ -1024,6 +1042,7 @@ export class UimodelMapsPackage extends BasicEPackage {
     markerSymbol_rotation.setName('rotation');
     markerSymbol_rotation.setLowerBound(0);
     markerSymbol_rotation.setUpperBound(1);
+    markerSymbol_rotation.setUnsettable(true);
     markerSymbolClass.getEStructuralFeatures().push(markerSymbol_rotation);
     UimodelMapsPackage.Literals.MARKER_SYMBOL__ROTATION = markerSymbol_rotation;
 
@@ -1167,6 +1186,7 @@ export class UimodelMapsPackage extends BasicEPackage {
     labeling_offsetX.setName('offsetX');
     labeling_offsetX.setLowerBound(0);
     labeling_offsetX.setUpperBound(1);
+    labeling_offsetX.setUnsettable(true);
     labelingClass.getEStructuralFeatures().push(labeling_offsetX);
     UimodelMapsPackage.Literals.LABELING__OFFSET_X = labeling_offsetX;
 
@@ -1175,6 +1195,7 @@ export class UimodelMapsPackage extends BasicEPackage {
     labeling_offsetY.setName('offsetY');
     labeling_offsetY.setLowerBound(0);
     labeling_offsetY.setUpperBound(1);
+    labeling_offsetY.setUnsettable(true);
     labelingClass.getEStructuralFeatures().push(labeling_offsetY);
     UimodelMapsPackage.Literals.LABELING__OFFSET_Y = labeling_offsetY;
 
@@ -1191,6 +1212,7 @@ export class UimodelMapsPackage extends BasicEPackage {
     labeling_haloWidth.setName('haloWidth');
     labeling_haloWidth.setLowerBound(0);
     labeling_haloWidth.setUpperBound(1);
+    labeling_haloWidth.setUnsettable(true);
     labelingClass.getEStructuralFeatures().push(labeling_haloWidth);
     UimodelMapsPackage.Literals.LABELING__HALO_WIDTH = labeling_haloWidth;
 
@@ -1671,6 +1693,10 @@ export class UimodelMapsPackage extends BasicEPackage {
     (UimodelMapsPackage.Literals.LABELING__HALO_WIDTH as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
     (UimodelMapsPackage.Literals.MAP_SELECTION_BINDING__TARGET_FEATURE as BasicEReference).setEType(getEcorePackage().getEClassifier('EStructuralFeature')!);
     (UimodelMapsPackage.Literals.MAP_SELECTION_BINDING__SOURCE_FEATURE as BasicEReference).setEType(getEcorePackage().getEClassifier('EStructuralFeature')!);
+
+    // ============================================
+    // Set EOpposites (must be done after all features are created) (#59)
+    // ============================================
 
     // ============================================
     // Register XML name mappings from ExtendedMetaData annotations

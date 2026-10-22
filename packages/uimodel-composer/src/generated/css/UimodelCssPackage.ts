@@ -561,6 +561,10 @@ export class UimodelCssPackage extends BasicEPackage {
     (UimodelCssPackage.Literals.STYLE_RULE__STATES as BasicEReference).setEType(UimodelCssPackage.Literals.CSS_STATE);
 
     // ============================================
+    // Set EOpposites (must be done after all features are created) (#59)
+    // ============================================
+
+    // ============================================
     // Register XML name mappings from ExtendedMetaData annotations
     // ============================================
   }
