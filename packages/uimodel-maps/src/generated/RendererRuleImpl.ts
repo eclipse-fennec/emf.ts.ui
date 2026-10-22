@@ -29,8 +29,11 @@ export class RendererRuleImpl extends BasicEObject implements RendererRule {
   private _filterExpression?: Expression;
   private _label?: string;
   private _elseRule: boolean = false;
+  private _elseRuleIsSet = false;
   private _minZoom: number = 0;
+  private _minZoomIsSet = false;
   private _maxZoom: number = 0;
+  private _maxZoomIsSet = false;
   private _symbol?: Symbol;
 
   /**
@@ -96,6 +99,7 @@ export class RendererRuleImpl extends BasicEObject implements RendererRule {
   set elseRule(value: boolean) {
     const oldValue = this._elseRule;
     this._elseRule = value;
+    this._elseRuleIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -120,6 +124,7 @@ export class RendererRuleImpl extends BasicEObject implements RendererRule {
   set minZoom(value: number) {
     const oldValue = this._minZoom;
     this._minZoom = value;
+    this._minZoomIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -144,6 +149,7 @@ export class RendererRuleImpl extends BasicEObject implements RendererRule {
   set maxZoom(value: number) {
     const oldValue = this._maxZoom;
     this._maxZoom = value;
+    this._maxZoomIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -256,11 +262,11 @@ export class RendererRuleImpl extends BasicEObject implements RendererRule {
       case RendererRuleImpl.LABEL:
         return this._label !== undefined;
       case RendererRuleImpl.ELSE_RULE:
-        return this._elseRule !== false;
+        return this._elseRuleIsSet;
       case RendererRuleImpl.MIN_ZOOM:
-        return this._minZoom !== 0;
+        return this._minZoomIsSet;
       case RendererRuleImpl.MAX_ZOOM:
-        return this._maxZoom !== 0;
+        return this._maxZoomIsSet;
       case RendererRuleImpl.SYMBOL:
         return this._symbol !== undefined;
       default:
@@ -282,12 +288,15 @@ export class RendererRuleImpl extends BasicEObject implements RendererRule {
         return;
       case RendererRuleImpl.ELSE_RULE:
         this._elseRule = false;
+        this._elseRuleIsSet = false;
         return;
       case RendererRuleImpl.MIN_ZOOM:
         this._minZoom = 0;
+        this._minZoomIsSet = false;
         return;
       case RendererRuleImpl.MAX_ZOOM:
         this._maxZoom = 0;
+        this._maxZoomIsSet = false;
         return;
       case RendererRuleImpl.SYMBOL:
         this._symbol = undefined;

@@ -22,21 +22,21 @@
         eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="crs"
         defaultValueLiteral="EPSG:3857"/>
     <!-- Initiales Zentrum in Laengen-/Breitengrad (EPSG:4326) -->
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="centerLon"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="centerLat"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="zoom"
         defaultValueLiteral="2"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="minZoom"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="maxZoom"/>
     <!-- Optionaler initialer Ausschnitt; ueberschreibt center/zoom -->
     <eStructuralFeatures xsi:type="ecore:EReference"
         eType="#//MapExtent" name="extent" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EInt" name="width"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EInt" name="height"
@@ -47,7 +47,7 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="showZoomControl"
         defaultValueLiteral="true"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="showScaleLine"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="showAttribution"
@@ -56,13 +56,13 @@
 
   <!-- Karten-Ausschnitt in Laengen-/Breitengrad (EPSG:4326) -->
   <eClassifiers xsi:type="ecore:EClass" name="MapExtent">
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="minLon"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="minLat"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="maxLon"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="maxLat"/>
   </eClassifiers>
 
@@ -79,9 +79,9 @@
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="opacity"
         defaultValueLiteral="1.0"/>
     <!-- Zoom-abhaengige Sichtbarkeit (QGIS scale-based visibility) -->
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="minZoom"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="maxZoom"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="attribution"/>
@@ -92,7 +92,7 @@
     <eSuperTypes href="#//MapLayer"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="urlTemplate"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EInt" name="maxZoomLevel"/>
   </eClassifiers>
 
@@ -246,11 +246,11 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="label"/>
     <!-- Fallback-Regel, wenn keine andere zutrifft (QGIS 'ELSE') -->
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="elseRule"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="minZoom"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="maxZoom"/>
     <eStructuralFeatures xsi:type="ecore:EReference" lowerBound="1"
         eType="#//Symbol" name="symbol" containment="true"/>
@@ -282,7 +282,7 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="strokeWidth"
         defaultValueLiteral="1.0"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="rotation"/>
   </eClassifiers>
 
@@ -333,13 +333,13 @@
         defaultValueLiteral="#333333"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute"
         eType="#//LabelPlacement" name="placement" defaultValueLiteral="OVER_POINT"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="offsetX"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="offsetY"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="haloColor"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="haloWidth"/>
   </eClassifiers>
 

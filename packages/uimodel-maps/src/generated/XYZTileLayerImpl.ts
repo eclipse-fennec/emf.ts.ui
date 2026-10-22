@@ -23,6 +23,7 @@ export class XYZTileLayerImpl extends MapLayerImpl implements XYZTileLayer {
   // Private fields
   private _urlTemplate?: string;
   private _maxZoomLevel: number = 0;
+  private _maxZoomLevelIsSet = false;
 
   /**
    * Returns the EClass of this object
@@ -63,6 +64,7 @@ export class XYZTileLayerImpl extends MapLayerImpl implements XYZTileLayer {
   set maxZoomLevel(value: number) {
     const oldValue = this._maxZoomLevel;
     this._maxZoomLevel = value;
+    this._maxZoomLevelIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -125,7 +127,7 @@ export class XYZTileLayerImpl extends MapLayerImpl implements XYZTileLayer {
       case XYZTileLayerImpl.URL_TEMPLATE:
         return this._urlTemplate !== undefined;
       case XYZTileLayerImpl.MAX_ZOOM_LEVEL:
-        return this._maxZoomLevel !== 0;
+        return this._maxZoomLevelIsSet;
       default:
         return super.eIsSet(feature);
     }
@@ -142,6 +144,7 @@ export class XYZTileLayerImpl extends MapLayerImpl implements XYZTileLayer {
         return;
       case XYZTileLayerImpl.MAX_ZOOM_LEVEL:
         this._maxZoomLevel = 0;
+        this._maxZoomLevelIsSet = false;
         return;
       default:
         super.eUnset(feature);

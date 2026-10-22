@@ -19,18 +19,21 @@ let popupOverlay: any = null;
 
 // ── helpers (analog VegaViewComposer) ───────────────────────────────
 
+/**
+ * Reads a MapView config feature. Unset features stay undefined so the
+ * builders leave them out and OpenLayers applies its own defaults.
+ * Attributes start at their metamodel default (false, 0, first literal),
+ * so "unset" is eIsSet, not undefined — the maps attributes are
+ * unsettable, so an explicit maxZoom=0 still counts as set. A
+ * defaultValueLiteral declared in the .ecore is passed on as before.
+ */
 function eGet(obj: EObject, name: string): any {
   const eClass = obj.eClass?.();
   if (!eClass) return undefined;
   const feature = eClass.getEStructuralFeature(name);
   if (!feature) return undefined;
+  if (!obj.eIsSet(feature) && feature.getDefaultValueLiteral?.() == null) return undefined;
   return obj.eGet(feature);
-}
-
-/** Like eNum, but undefined when the feature is not set (unsettable bounds). */
-function eNumIfSet(obj: EObject, name: string): number | undefined {
-  const feature = obj.eClass?.()?.getEStructuralFeature(name);
-  return feature && obj.eIsSet(feature) ? eNum(obj, name) : undefined;
 }
 
 /** Read a feature and coerce to a finite number (XMI stores numeric attrs as strings). */
@@ -379,9 +382,8 @@ function pickSymbol(renderer: EObject, feature: any): EObject | undefined {
     const num = classF ? Number(feature.get(classF.getName?.() ?? '')) : NaN;
     const classes = toList(eGet(renderer, 'classes'));
     const match = classes.find((c) => {
-      // unset bounds are open: attributes start at 0, so ask eIsSet
-      const lo = eNumIfSet(c, 'lowerBound') ?? -Infinity;
-      const hi = eNumIfSet(c, 'upperBound') ?? Infinity;
+      const lo = eNum(c, 'lowerBound') ?? -Infinity;
+      const hi = eNum(c, 'upperBound') ?? Infinity;
       return num >= lo && num <= hi;
     });
     return match ? (eGet(match, 'symbol') as EObject) : undefined;

@@ -28,7 +28,9 @@ export abstract class MapLayerImpl extends BasicEObject implements MapLayer {
   private _visible: boolean = true;
   private _opacity: number = 1.0;
   private _minZoom: number = 0;
+  private _minZoomIsSet = false;
   private _maxZoom: number = 0;
+  private _maxZoomIsSet = false;
   private _attribution?: string;
 
   /**
@@ -118,6 +120,7 @@ export abstract class MapLayerImpl extends BasicEObject implements MapLayer {
   set minZoom(value: number) {
     const oldValue = this._minZoom;
     this._minZoom = value;
+    this._minZoomIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -142,6 +145,7 @@ export abstract class MapLayerImpl extends BasicEObject implements MapLayer {
   set maxZoom(value: number) {
     const oldValue = this._maxZoom;
     this._maxZoom = value;
+    this._maxZoomIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -256,9 +260,9 @@ export abstract class MapLayerImpl extends BasicEObject implements MapLayer {
       case MapLayerImpl.OPACITY:
         return this._opacity !== 1.0;
       case MapLayerImpl.MIN_ZOOM:
-        return this._minZoom !== 0;
+        return this._minZoomIsSet;
       case MapLayerImpl.MAX_ZOOM:
-        return this._maxZoom !== 0;
+        return this._maxZoomIsSet;
       case MapLayerImpl.ATTRIBUTION:
         return this._attribution !== undefined;
       default:
@@ -283,9 +287,11 @@ export abstract class MapLayerImpl extends BasicEObject implements MapLayer {
         return;
       case MapLayerImpl.MIN_ZOOM:
         this._minZoom = 0;
+        this._minZoomIsSet = false;
         return;
       case MapLayerImpl.MAX_ZOOM:
         this._maxZoom = 0;
+        this._maxZoomIsSet = false;
         return;
       case MapLayerImpl.ATTRIBUTION:
         this._attribution = undefined;

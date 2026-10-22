@@ -44,16 +44,22 @@ export class MapViewImpl extends ComponentImpl implements MapView {
   private _title?: string;
   private _crs: string = "EPSG:3857";
   private _centerLon: number = 0;
+  private _centerLonIsSet = false;
   private _centerLat: number = 0;
+  private _centerLatIsSet = false;
   private _zoom: number = 2;
   private _minZoom: number = 0;
+  private _minZoomIsSet = false;
   private _maxZoom: number = 0;
+  private _maxZoomIsSet = false;
   private _extent?: MapExtent;
   private _width: number = 0;
+  private _widthIsSet = false;
   private _height: number = 400;
   private _background?: string;
   private _showZoomControl: boolean = true;
   private _showScaleLine: boolean = false;
+  private _showScaleLineIsSet = false;
   private _showAttribution: boolean = true;
 
   /**
@@ -133,6 +139,7 @@ export class MapViewImpl extends ComponentImpl implements MapView {
   set centerLon(value: number) {
     const oldValue = this._centerLon;
     this._centerLon = value;
+    this._centerLonIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -157,6 +164,7 @@ export class MapViewImpl extends ComponentImpl implements MapView {
   set centerLat(value: number) {
     const oldValue = this._centerLat;
     this._centerLat = value;
+    this._centerLatIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -205,6 +213,7 @@ export class MapViewImpl extends ComponentImpl implements MapView {
   set minZoom(value: number) {
     const oldValue = this._minZoom;
     this._minZoom = value;
+    this._minZoomIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -229,6 +238,7 @@ export class MapViewImpl extends ComponentImpl implements MapView {
   set maxZoom(value: number) {
     const oldValue = this._maxZoom;
     this._maxZoom = value;
+    this._maxZoomIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -277,6 +287,7 @@ export class MapViewImpl extends ComponentImpl implements MapView {
   set width(value: number) {
     const oldValue = this._width;
     this._width = value;
+    this._widthIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -373,6 +384,7 @@ export class MapViewImpl extends ComponentImpl implements MapView {
   set showScaleLine(value: boolean) {
     const oldValue = this._showScaleLine;
     this._showScaleLine = value;
+    this._showScaleLineIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -551,19 +563,19 @@ export class MapViewImpl extends ComponentImpl implements MapView {
       case MapViewImpl.CRS:
         return this._crs !== "EPSG:3857";
       case MapViewImpl.CENTER_LON:
-        return this._centerLon !== 0;
+        return this._centerLonIsSet;
       case MapViewImpl.CENTER_LAT:
-        return this._centerLat !== 0;
+        return this._centerLatIsSet;
       case MapViewImpl.ZOOM:
         return this._zoom !== 2;
       case MapViewImpl.MIN_ZOOM:
-        return this._minZoom !== 0;
+        return this._minZoomIsSet;
       case MapViewImpl.MAX_ZOOM:
-        return this._maxZoom !== 0;
+        return this._maxZoomIsSet;
       case MapViewImpl.EXTENT:
         return this._extent !== undefined;
       case MapViewImpl.WIDTH:
-        return this._width !== 0;
+        return this._widthIsSet;
       case MapViewImpl.HEIGHT:
         return this._height !== 400;
       case MapViewImpl.BACKGROUND:
@@ -571,7 +583,7 @@ export class MapViewImpl extends ComponentImpl implements MapView {
       case MapViewImpl.SHOW_ZOOM_CONTROL:
         return this._showZoomControl !== true;
       case MapViewImpl.SHOW_SCALE_LINE:
-        return this._showScaleLine !== false;
+        return this._showScaleLineIsSet;
       case MapViewImpl.SHOW_ATTRIBUTION:
         return this._showAttribution !== true;
       default:
@@ -599,24 +611,29 @@ export class MapViewImpl extends ComponentImpl implements MapView {
         return;
       case MapViewImpl.CENTER_LON:
         this._centerLon = 0;
+        this._centerLonIsSet = false;
         return;
       case MapViewImpl.CENTER_LAT:
         this._centerLat = 0;
+        this._centerLatIsSet = false;
         return;
       case MapViewImpl.ZOOM:
         this._zoom = 2;
         return;
       case MapViewImpl.MIN_ZOOM:
         this._minZoom = 0;
+        this._minZoomIsSet = false;
         return;
       case MapViewImpl.MAX_ZOOM:
         this._maxZoom = 0;
+        this._maxZoomIsSet = false;
         return;
       case MapViewImpl.EXTENT:
         this._extent = undefined;
         return;
       case MapViewImpl.WIDTH:
         this._width = 0;
+        this._widthIsSet = false;
         return;
       case MapViewImpl.HEIGHT:
         this._height = 400;
@@ -629,6 +646,7 @@ export class MapViewImpl extends ComponentImpl implements MapView {
         return;
       case MapViewImpl.SHOW_SCALE_LINE:
         this._showScaleLine = false;
+        this._showScaleLineIsSet = false;
         return;
       case MapViewImpl.SHOW_ATTRIBUTION:
         this._showAttribution = true;

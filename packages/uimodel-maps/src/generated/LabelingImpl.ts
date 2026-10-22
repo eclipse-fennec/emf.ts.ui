@@ -35,9 +35,12 @@ export class LabelingImpl extends BasicEObject implements Labeling {
   private _color: string = "#333333";
   private _placement: LabelPlacement = LabelPlacement.OVER_POINT;
   private _offsetX: number = 0;
+  private _offsetXIsSet = false;
   private _offsetY: number = 0;
+  private _offsetYIsSet = false;
   private _haloColor?: string;
   private _haloWidth: number = 0;
+  private _haloWidthIsSet = false;
 
   /**
    * Returns the EClass of this object
@@ -174,6 +177,7 @@ export class LabelingImpl extends BasicEObject implements Labeling {
   set offsetX(value: number) {
     const oldValue = this._offsetX;
     this._offsetX = value;
+    this._offsetXIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -198,6 +202,7 @@ export class LabelingImpl extends BasicEObject implements Labeling {
   set offsetY(value: number) {
     const oldValue = this._offsetY;
     this._offsetY = value;
+    this._offsetYIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -246,6 +251,7 @@ export class LabelingImpl extends BasicEObject implements Labeling {
   set haloWidth(value: number) {
     const oldValue = this._haloWidth;
     this._haloWidth = value;
+    this._haloWidthIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -358,13 +364,13 @@ export class LabelingImpl extends BasicEObject implements Labeling {
       case LabelingImpl.PLACEMENT:
         return this._placement !== LabelPlacement.OVER_POINT;
       case LabelingImpl.OFFSET_X:
-        return this._offsetX !== 0;
+        return this._offsetXIsSet;
       case LabelingImpl.OFFSET_Y:
-        return this._offsetY !== 0;
+        return this._offsetYIsSet;
       case LabelingImpl.HALO_COLOR:
         return this._haloColor !== undefined;
       case LabelingImpl.HALO_WIDTH:
-        return this._haloWidth !== 0;
+        return this._haloWidthIsSet;
       default:
         return super.eIsSet(feature);
     }
@@ -393,15 +399,18 @@ export class LabelingImpl extends BasicEObject implements Labeling {
         return;
       case LabelingImpl.OFFSET_X:
         this._offsetX = 0;
+        this._offsetXIsSet = false;
         return;
       case LabelingImpl.OFFSET_Y:
         this._offsetY = 0;
+        this._offsetYIsSet = false;
         return;
       case LabelingImpl.HALO_COLOR:
         this._haloColor = undefined;
         return;
       case LabelingImpl.HALO_WIDTH:
         this._haloWidth = 0;
+        this._haloWidthIsSet = false;
         return;
       default:
         super.eUnset(feature);
