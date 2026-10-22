@@ -5,11 +5,12 @@
  * @generated
  */
 
-import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { VegaTransform } from './VegaTransform';
-import { VegaTransformImpl } from './VegaTransformImpl';
-import type { VegaFoldTransform } from './VegaFoldTransform';
-import { UimodelVegaPackage } from './UimodelVegaPackage';
+import { createBasicEList } from '@emfts/core';
+import type { EClass, EStructuralFeature, EList, EReference } from '@emfts/core';
+import type { VegaTransform } from './VegaTransform.js';
+import { VegaTransformImpl } from './VegaTransformImpl.js';
+import type { VegaFoldTransform } from './VegaFoldTransform.js';
+import { UimodelVegaPackage } from './UimodelVegaPackage.js';
 
 /**
  * Implementation of VegaFoldTransform
@@ -21,8 +22,8 @@ export class VegaFoldTransformImpl extends VegaTransformImpl implements VegaFold
   static readonly AS: number = 1;
 
   // Private fields
-  private _fields: string[] = [];
-  private _as: string[] = [];
+  private _fields!: EList<string>;
+  private _as!: EList<string>;
 
   /**
    * Returns the EClass of this object
@@ -32,52 +33,18 @@ export class VegaFoldTransformImpl extends VegaTransformImpl implements VegaFold
   }
 
   // Getters and Setters
-  get fields(): string[] {
+  get fields(): EList<string> {
+    if (!this._fields) {
+      this._fields = createBasicEList<any>(this, this.eClass().getEStructuralFeature('fields')!);
+    }
     return this._fields;
   }
 
-  set fields(value: string[]) {
-    const oldValue = this._fields;
-    this._fields = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(VegaFoldTransformImpl.FIELDS),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => VegaFoldTransformImpl.FIELDS,
-        merge: () => false
-      });
+  get as(): EList<string> {
+    if (!this._as) {
+      this._as = createBasicEList<any>(this, this.eClass().getEStructuralFeature('as')!);
     }
-  }
-
-  get as(): string[] {
     return this._as;
-  }
-
-  set as(value: string[]) {
-    const oldValue = this._as;
-    this._as = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(VegaFoldTransformImpl.AS),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => VegaFoldTransformImpl.AS,
-        merge: () => false
-      });
-    }
   }
 
   // Reflective API
@@ -104,11 +71,13 @@ export class VegaFoldTransformImpl extends VegaTransformImpl implements VegaFold
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case VegaFoldTransformImpl.FIELDS:
-        this.fields = newValue as string[];
+        this.fields.clear();
+        this.fields.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       case VegaFoldTransformImpl.AS:
-        this.as = newValue as string[];
+        this.as.clear();
+        this.as.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       default:
@@ -123,9 +92,9 @@ export class VegaFoldTransformImpl extends VegaTransformImpl implements VegaFold
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case VegaFoldTransformImpl.FIELDS:
-        return this._fields !== undefined && this._fields.length > 0;
+        return this._fields !== undefined && !this._fields.isEmpty();
       case VegaFoldTransformImpl.AS:
-        return this._as !== undefined && this._as.length > 0;
+        return this._as !== undefined && !this._as.isEmpty();
       default:
         return super.eIsSet(feature);
     }
@@ -138,10 +107,10 @@ export class VegaFoldTransformImpl extends VegaTransformImpl implements VegaFold
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case VegaFoldTransformImpl.FIELDS:
-        this._fields = [];
+        if (this._fields) this._fields.clear();
         return;
       case VegaFoldTransformImpl.AS:
-        this._as = [];
+        if (this._as) this._as.clear();
         return;
       default:
         super.eUnset(feature);

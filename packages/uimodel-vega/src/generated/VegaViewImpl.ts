@@ -5,17 +5,18 @@
  * @generated
  */
 
-import type { EClass, EStructuralFeature } from '@emfts/core';
+import { createContainmentEList } from '@emfts/core';
+import type { EClass, EStructuralFeature, EList, EReference } from '@emfts/core';
 import type { Component } from '@emfts/uimodel-composer';
-import type { VegaSpec } from './VegaSpec';
-import type { VegaDataSource } from './VegaDataSource';
-import type { VegaParam } from './VegaParam';
-import type { VegaSignalBinding } from './VegaSignalBinding';
+import type { VegaSpec } from './VegaSpec.js';
+import type { VegaDataSource } from './VegaDataSource.js';
+import type { VegaParam } from './VegaParam.js';
+import type { VegaSignalBinding } from './VegaSignalBinding.js';
 import type { Expression } from '@emfts/uimodel-composer';
-import { VegaAutosize } from './VegaAutosize';
+import { VegaAutosize } from './VegaAutosize.js';
 import { ComponentImpl } from '@emfts/uimodel-composer';
-import type { VegaView } from './VegaView';
-import { UimodelVegaPackage } from './UimodelVegaPackage';
+import type { VegaView } from './VegaView.js';
+import { UimodelVegaPackage } from './UimodelVegaPackage.js';
 
 /**
  * Implementation of VegaView
@@ -39,13 +40,16 @@ export class VegaViewImpl extends ComponentImpl implements VegaView {
   // Private fields
   private _content?: VegaSpec;
   private _dataSource?: VegaDataSource;
-  private _params: VegaParam[] = [];
-  private _signals: VegaSignalBinding[] = [];
+  private _params!: EList<VegaParam>;
+  private _signals!: EList<VegaSignalBinding>;
   private _title?: string;
-  private _width?: number;
-  private _height?: number;
+  private _width: number = 0;
+  private _widthIsSet = false;
+  private _height: number = 0;
+  private _heightIsSet = false;
   private _autosize: VegaAutosize = VegaAutosize.PAD;
-  private _padding?: number;
+  private _padding: number = 0;
+  private _paddingIsSet = false;
   private _background?: string;
   private _spec?: string;
   private _specExpression?: Expression;
@@ -106,52 +110,18 @@ export class VegaViewImpl extends ComponentImpl implements VegaView {
     }
   }
 
-  get params(): VegaParam[] {
+  get params(): EList<VegaParam> {
+    if (!this._params) {
+      this._params = createContainmentEList<any>(this, this.eClass().getEStructuralFeature('params') as EReference);
+    }
     return this._params;
   }
 
-  set params(value: VegaParam[]) {
-    const oldValue = this._params;
-    this._params = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(VegaViewImpl.PARAMS),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => VegaViewImpl.PARAMS,
-        merge: () => false
-      });
+  get signals(): EList<VegaSignalBinding> {
+    if (!this._signals) {
+      this._signals = createContainmentEList<any>(this, this.eClass().getEStructuralFeature('signals') as EReference);
     }
-  }
-
-  get signals(): VegaSignalBinding[] {
     return this._signals;
-  }
-
-  set signals(value: VegaSignalBinding[]) {
-    const oldValue = this._signals;
-    this._signals = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(VegaViewImpl.SIGNALS),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => VegaViewImpl.SIGNALS,
-        merge: () => false
-      });
-    }
   }
 
   get title(): string {
@@ -185,6 +155,7 @@ export class VegaViewImpl extends ComponentImpl implements VegaView {
   set width(value: number) {
     const oldValue = this._width;
     this._width = value;
+    this._widthIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -209,6 +180,7 @@ export class VegaViewImpl extends ComponentImpl implements VegaView {
   set height(value: number) {
     const oldValue = this._height;
     this._height = value;
+    this._heightIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -257,6 +229,7 @@ export class VegaViewImpl extends ComponentImpl implements VegaView {
   set padding(value: number) {
     const oldValue = this._padding;
     this._padding = value;
+    this._paddingIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -398,11 +371,13 @@ export class VegaViewImpl extends ComponentImpl implements VegaView {
         super.eSet(feature, newValue);
         break;
       case VegaViewImpl.PARAMS:
-        this.params = newValue as VegaParam[];
+        this.params.clear();
+        this.params.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       case VegaViewImpl.SIGNALS:
-        this.signals = newValue as VegaSignalBinding[];
+        this.signals.clear();
+        this.signals.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       case VegaViewImpl.TITLE:
@@ -453,19 +428,19 @@ export class VegaViewImpl extends ComponentImpl implements VegaView {
       case VegaViewImpl.DATA_SOURCE:
         return this._dataSource !== undefined;
       case VegaViewImpl.PARAMS:
-        return this._params !== undefined && this._params.length > 0;
+        return this._params !== undefined && !this._params.isEmpty();
       case VegaViewImpl.SIGNALS:
-        return this._signals !== undefined && this._signals.length > 0;
+        return this._signals !== undefined && !this._signals.isEmpty();
       case VegaViewImpl.TITLE:
         return this._title !== undefined;
       case VegaViewImpl.WIDTH:
-        return this._width !== undefined;
+        return this._widthIsSet;
       case VegaViewImpl.HEIGHT:
-        return this._height !== undefined;
+        return this._heightIsSet;
       case VegaViewImpl.AUTOSIZE:
         return this._autosize !== VegaAutosize.PAD;
       case VegaViewImpl.PADDING:
-        return this._padding !== undefined;
+        return this._paddingIsSet;
       case VegaViewImpl.BACKGROUND:
         return this._background !== undefined;
       case VegaViewImpl.SPEC:
@@ -490,25 +465,28 @@ export class VegaViewImpl extends ComponentImpl implements VegaView {
         this._dataSource = undefined;
         return;
       case VegaViewImpl.PARAMS:
-        this._params = [];
+        if (this._params) this._params.clear();
         return;
       case VegaViewImpl.SIGNALS:
-        this._signals = [];
+        if (this._signals) this._signals.clear();
         return;
       case VegaViewImpl.TITLE:
         this._title = undefined;
         return;
       case VegaViewImpl.WIDTH:
-        this._width = undefined;
+        this._width = 0;
+        this._widthIsSet = false;
         return;
       case VegaViewImpl.HEIGHT:
-        this._height = undefined;
+        this._height = 0;
+        this._heightIsSet = false;
         return;
       case VegaViewImpl.AUTOSIZE:
         this._autosize = VegaAutosize.PAD;
         return;
       case VegaViewImpl.PADDING:
-        this._padding = undefined;
+        this._padding = 0;
+        this._paddingIsSet = false;
         return;
       case VegaViewImpl.BACKGROUND:
         this._background = undefined;

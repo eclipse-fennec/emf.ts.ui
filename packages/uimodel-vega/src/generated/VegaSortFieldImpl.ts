@@ -7,9 +7,9 @@
 
 import { BasicEObject } from '@emfts/core';
 import type { EClass, EStructuralFeature } from '@emfts/core';
-import { VegaSortOrder } from './VegaSortOrder';
-import type { VegaSortField } from './VegaSortField';
-import { UimodelVegaPackage } from './UimodelVegaPackage';
+import { VegaSortOrder } from './VegaSortOrder.js';
+import type { VegaSortField } from './VegaSortField.js';
+import { UimodelVegaPackage } from './UimodelVegaPackage.js';
 
 /**
  * Implementation of VegaSortField

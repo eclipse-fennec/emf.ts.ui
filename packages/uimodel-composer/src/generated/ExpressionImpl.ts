@@ -7,8 +7,8 @@
 
 import { BasicEObject } from '@emfts/core';
 import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { Expression } from './Expression';
-import { UimodelPackage } from './UimodelPackage';
+import type { Expression } from './Expression.js';
+import { UimodelPackage } from './UimodelPackage.js';
 
 /**
  * Implementation of Expression
@@ -21,7 +21,7 @@ export class ExpressionImpl extends BasicEObject implements Expression {
 
   // Private fields
   private _language: string = "OCL";
-  private _body: string = "";
+  private _body?: string;
 
   /**
    * Returns the EClass of this object
@@ -124,7 +124,7 @@ export class ExpressionImpl extends BasicEObject implements Expression {
       case ExpressionImpl.LANGUAGE:
         return this._language !== "OCL";
       case ExpressionImpl.BODY:
-        return this._body !== "";
+        return this._body !== undefined;
       default:
         return super.eIsSet(feature);
     }
@@ -140,7 +140,7 @@ export class ExpressionImpl extends BasicEObject implements Expression {
         this._language = "OCL";
         return;
       case ExpressionImpl.BODY:
-        this._body = "";
+        this._body = undefined;
         return;
       default:
         super.eUnset(feature);

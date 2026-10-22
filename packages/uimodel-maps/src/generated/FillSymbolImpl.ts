@@ -6,11 +6,11 @@
  */
 
 import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { Symbol } from './Symbol';
-import { FillStyle } from './FillStyle';
-import { SymbolImpl } from './SymbolImpl';
-import type { FillSymbol } from './FillSymbol';
-import { UimodelMapsPackage } from './UimodelMapsPackage';
+import type { Symbol } from './Symbol.js';
+import { FillStyle } from './FillStyle.js';
+import { SymbolImpl } from './SymbolImpl.js';
+import type { FillSymbol } from './FillSymbol.js';
+import { UimodelMapsPackage } from './UimodelMapsPackage.js';
 
 /**
  * Implementation of FillSymbol

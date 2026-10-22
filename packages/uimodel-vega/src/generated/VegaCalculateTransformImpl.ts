@@ -6,11 +6,11 @@
  */
 
 import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { VegaTransform } from './VegaTransform';
+import type { VegaTransform } from './VegaTransform.js';
 import type { Expression } from '@emfts/uimodel-composer';
-import { VegaTransformImpl } from './VegaTransformImpl';
-import type { VegaCalculateTransform } from './VegaCalculateTransform';
-import { UimodelVegaPackage } from './UimodelVegaPackage';
+import { VegaTransformImpl } from './VegaTransformImpl.js';
+import type { VegaCalculateTransform } from './VegaCalculateTransform.js';
+import { UimodelVegaPackage } from './UimodelVegaPackage.js';
 
 /**
  * Implementation of VegaCalculateTransform
@@ -23,7 +23,7 @@ export class VegaCalculateTransformImpl extends VegaTransformImpl implements Veg
 
   // Private fields
   private _calculate?: Expression;
-  private _as: string = "";
+  private _as?: string;
 
   /**
    * Returns the EClass of this object
@@ -126,7 +126,7 @@ export class VegaCalculateTransformImpl extends VegaTransformImpl implements Veg
       case VegaCalculateTransformImpl.CALCULATE:
         return this._calculate !== undefined;
       case VegaCalculateTransformImpl.AS:
-        return this._as !== "";
+        return this._as !== undefined;
       default:
         return super.eIsSet(feature);
     }
@@ -142,7 +142,7 @@ export class VegaCalculateTransformImpl extends VegaTransformImpl implements Veg
         this._calculate = undefined;
         return;
       case VegaCalculateTransformImpl.AS:
-        this._as = "";
+        this._as = undefined;
         return;
       default:
         super.eUnset(feature);

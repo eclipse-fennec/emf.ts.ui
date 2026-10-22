@@ -5,14 +5,14 @@
  * @generated
  */
 
-import type { EObject, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
-import type { WidgetStyle } from './WidgetStyle';
+import type { EObject, EList, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
+import type { WidgetStyle } from './WidgetStyle.js';
 
 /**
  * TableStyle
  * @generated
  */
 export interface TableStyle extends WidgetStyle {
-  columns: WidgetStyle[];
+  columns: EList<WidgetStyle>;
 
 }

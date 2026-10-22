@@ -6,11 +6,11 @@
  */
 
 import type { EObject, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
-import type { MapLayer } from './MapLayer';
-import type { VectorSource } from './VectorSource';
-import type { Renderer } from './Renderer';
-import type { Labeling } from './Labeling';
-import type { GeometryType } from './GeometryType';
+import type { MapLayer } from './MapLayer.js';
+import type { VectorSource } from './VectorSource.js';
+import type { Renderer } from './Renderer.js';
+import type { Labeling } from './Labeling.js';
+import type { GeometryType } from './GeometryType.js';
 
 /**
  * VectorLayer

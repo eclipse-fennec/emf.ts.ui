@@ -5,13 +5,14 @@
  * @generated
  */
 
-import type { EClass, EStructuralFeature, EClassifier } from '@emfts/core';
-import type { WidgetComponent } from './WidgetComponent';
-import type { Expression } from './Expression';
-import type { TemplateCase } from './TemplateCase';
-import { WidgetComponentImpl } from './WidgetComponentImpl';
-import type { AllFeatures } from './AllFeatures';
-import { UimodelPackage } from './UimodelPackage';
+import { createContainmentEList, createEObjectEList } from '@emfts/core';
+import type { EClass, EStructuralFeature, EList, EReference, EClassifier } from '@emfts/core';
+import type { WidgetComponent } from './WidgetComponent.js';
+import type { Expression } from './Expression.js';
+import type { TemplateCase } from './TemplateCase.js';
+import { WidgetComponentImpl } from './WidgetComponentImpl.js';
+import type { AllFeatures } from './AllFeatures.js';
+import { UimodelPackage } from './UimodelPackage.js';
 
 /**
  * Implementation of AllFeatures
@@ -27,11 +28,11 @@ export class AllFeaturesImpl extends WidgetComponentImpl implements AllFeatures 
   static readonly PRIORITY: number = 19;
 
   // Private fields
-  private _with: EStructuralFeature[] = [];
-  private _eType: EClassifier[] = [];
+  private _with!: EList<EStructuralFeature>;
+  private _eType!: EList<EClassifier>;
   private _filter?: Expression;
   private _template?: WidgetComponent;
-  private _cases: TemplateCase[] = [];
+  private _cases!: EList<TemplateCase>;
   private _priority: number = 0;
 
   /**
@@ -42,52 +43,18 @@ export class AllFeaturesImpl extends WidgetComponentImpl implements AllFeatures 
   }
 
   // Getters and Setters
-  get with(): EStructuralFeature[] {
+  get with(): EList<EStructuralFeature> {
+    if (!this._with) {
+      this._with = createEObjectEList(this, this.eClass().getEStructuralFeature('with') as EReference) as unknown as EList<EStructuralFeature>;
+    }
     return this._with;
   }
 
-  set with(value: EStructuralFeature[]) {
-    const oldValue = this._with;
-    this._with = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(AllFeaturesImpl.WITH),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => AllFeaturesImpl.WITH,
-        merge: () => false
-      });
+  get eType(): EList<EClassifier> {
+    if (!this._eType) {
+      this._eType = createEObjectEList(this, this.eClass().getEStructuralFeature('eType') as EReference) as unknown as EList<EClassifier>;
     }
-  }
-
-  get eType(): EClassifier[] {
     return this._eType;
-  }
-
-  set eType(value: EClassifier[]) {
-    const oldValue = this._eType;
-    this._eType = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(AllFeaturesImpl.E_TYPE),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => AllFeaturesImpl.E_TYPE,
-        merge: () => false
-      });
-    }
   }
 
   get filter(): Expression {
@@ -138,28 +105,11 @@ export class AllFeaturesImpl extends WidgetComponentImpl implements AllFeatures 
     }
   }
 
-  get cases(): TemplateCase[] {
-    return this._cases;
-  }
-
-  set cases(value: TemplateCase[]) {
-    const oldValue = this._cases;
-    this._cases = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(AllFeaturesImpl.CASES),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => AllFeaturesImpl.CASES,
-        merge: () => false
-      });
+  get cases(): EList<TemplateCase> {
+    if (!this._cases) {
+      this._cases = createContainmentEList<any>(this, this.eClass().getEStructuralFeature('cases') as EReference);
     }
+    return this._cases;
   }
 
   get priority(): number {
@@ -218,11 +168,13 @@ export class AllFeaturesImpl extends WidgetComponentImpl implements AllFeatures 
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case AllFeaturesImpl.WITH:
-        this.with = newValue as EStructuralFeature[];
+        this.with.clear();
+        this.with.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       case AllFeaturesImpl.E_TYPE:
-        this.eType = newValue as EClassifier[];
+        this.eType.clear();
+        this.eType.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       case AllFeaturesImpl.FILTER:
@@ -234,7 +186,8 @@ export class AllFeaturesImpl extends WidgetComponentImpl implements AllFeatures 
         super.eSet(feature, newValue);
         break;
       case AllFeaturesImpl.CASES:
-        this.cases = newValue as TemplateCase[];
+        this.cases.clear();
+        this.cases.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       case AllFeaturesImpl.PRIORITY:
@@ -253,15 +206,15 @@ export class AllFeaturesImpl extends WidgetComponentImpl implements AllFeatures 
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case AllFeaturesImpl.WITH:
-        return this._with !== undefined && this._with.length > 0;
+        return this._with !== undefined && !this._with.isEmpty();
       case AllFeaturesImpl.E_TYPE:
-        return this._eType !== undefined && this._eType.length > 0;
+        return this._eType !== undefined && !this._eType.isEmpty();
       case AllFeaturesImpl.FILTER:
         return this._filter !== undefined;
       case AllFeaturesImpl.TEMPLATE:
         return this._template !== undefined;
       case AllFeaturesImpl.CASES:
-        return this._cases !== undefined && this._cases.length > 0;
+        return this._cases !== undefined && !this._cases.isEmpty();
       case AllFeaturesImpl.PRIORITY:
         return this._priority !== 0;
       default:
@@ -276,10 +229,10 @@ export class AllFeaturesImpl extends WidgetComponentImpl implements AllFeatures 
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case AllFeaturesImpl.WITH:
-        this._with = [];
+        if (this._with) this._with.clear();
         return;
       case AllFeaturesImpl.E_TYPE:
-        this._eType = [];
+        if (this._eType) this._eType.clear();
         return;
       case AllFeaturesImpl.FILTER:
         this._filter = undefined;
@@ -288,7 +241,7 @@ export class AllFeaturesImpl extends WidgetComponentImpl implements AllFeatures 
         this._template = undefined;
         return;
       case AllFeaturesImpl.CASES:
-        this._cases = [];
+        if (this._cases) this._cases.clear();
         return;
       case AllFeaturesImpl.PRIORITY:
         this._priority = 0;

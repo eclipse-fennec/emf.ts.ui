@@ -5,21 +5,21 @@
  * @generated
  */
 
-import type { EObject, EStructuralFeature, EClassifier, BasicEObject, EClass } from '@emfts/core';
-import type { WidgetComponent } from './WidgetComponent';
-import type { Expression } from './Expression';
-import type { TemplateCase } from './TemplateCase';
+import type { EObject, EList, EStructuralFeature, EClassifier, BasicEObject, EClass } from '@emfts/core';
+import type { WidgetComponent } from './WidgetComponent.js';
+import type { Expression } from './Expression.js';
+import type { TemplateCase } from './TemplateCase.js';
 
 /**
  * AllFeatures
  * @generated
  */
 export interface AllFeatures extends WidgetComponent {
-  with: EStructuralFeature[];
-  eType: EClassifier[];
+  with: EList<EStructuralFeature>;
+  eType: EList<EClassifier>;
   filter?: Expression;
   template?: WidgetComponent;
-  cases: TemplateCase[];
+  cases: EList<TemplateCase>;
   priority?: number;
 
 }

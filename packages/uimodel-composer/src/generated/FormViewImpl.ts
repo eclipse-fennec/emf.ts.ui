@@ -5,15 +5,16 @@
  * @generated
  */
 
-import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { Component } from './Component';
-import type { WidgetComponent } from './WidgetComponent';
-import type { ValidationExpression } from './ValidationExpression';
-import type { ValidationMessageMapper } from './ValidationMessageMapper';
-import { MapperExecutionOrder } from './MapperExecutionOrder';
-import { ComponentImpl } from './ComponentImpl';
-import type { FormView } from './FormView';
-import { UimodelPackage } from './UimodelPackage';
+import { createContainmentEList } from '@emfts/core';
+import type { EClass, EStructuralFeature, EList, EReference } from '@emfts/core';
+import type { Component } from './Component.js';
+import type { WidgetComponent } from './WidgetComponent.js';
+import type { ValidationExpression } from './ValidationExpression.js';
+import type { ValidationMessageMapper } from './ValidationMessageMapper.js';
+import { MapperExecutionOrder } from './MapperExecutionOrder.js';
+import { ComponentImpl } from './ComponentImpl.js';
+import type { FormView } from './FormView.js';
+import { UimodelPackage } from './UimodelPackage.js';
 
 /**
  * Implementation of FormView
@@ -27,9 +28,9 @@ export class FormViewImpl extends ComponentImpl implements FormView {
   static readonly MAPPER_ORDER: number = 8;
 
   // Private fields
-  private _fields: WidgetComponent[] = [];
-  private _validations: ValidationExpression[] = [];
-  private _validationMappers: ValidationMessageMapper[] = [];
+  private _fields!: EList<WidgetComponent>;
+  private _validations!: EList<ValidationExpression>;
+  private _validationMappers!: EList<ValidationMessageMapper>;
   private _mapperOrder: MapperExecutionOrder = MapperExecutionOrder.FIELD_THEN_FORM;
 
   /**
@@ -40,76 +41,25 @@ export class FormViewImpl extends ComponentImpl implements FormView {
   }
 
   // Getters and Setters
-  get fields(): WidgetComponent[] {
+  get fields(): EList<WidgetComponent> {
+    if (!this._fields) {
+      this._fields = createContainmentEList<any>(this, this.eClass().getEStructuralFeature('fields') as EReference);
+    }
     return this._fields;
   }
 
-  set fields(value: WidgetComponent[]) {
-    const oldValue = this._fields;
-    this._fields = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(FormViewImpl.FIELDS),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => FormViewImpl.FIELDS,
-        merge: () => false
-      });
+  get validations(): EList<ValidationExpression> {
+    if (!this._validations) {
+      this._validations = createContainmentEList<any>(this, this.eClass().getEStructuralFeature('validations') as EReference);
     }
-  }
-
-  get validations(): ValidationExpression[] {
     return this._validations;
   }
 
-  set validations(value: ValidationExpression[]) {
-    const oldValue = this._validations;
-    this._validations = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(FormViewImpl.VALIDATIONS),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => FormViewImpl.VALIDATIONS,
-        merge: () => false
-      });
+  get validationMappers(): EList<ValidationMessageMapper> {
+    if (!this._validationMappers) {
+      this._validationMappers = createContainmentEList<any>(this, this.eClass().getEStructuralFeature('validationMappers') as EReference);
     }
-  }
-
-  get validationMappers(): ValidationMessageMapper[] {
     return this._validationMappers;
-  }
-
-  set validationMappers(value: ValidationMessageMapper[]) {
-    const oldValue = this._validationMappers;
-    this._validationMappers = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(FormViewImpl.VALIDATION_MAPPERS),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => FormViewImpl.VALIDATION_MAPPERS,
-        merge: () => false
-      });
-    }
   }
 
   get mapperOrder(): MapperExecutionOrder {
@@ -164,15 +114,18 @@ export class FormViewImpl extends ComponentImpl implements FormView {
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case FormViewImpl.FIELDS:
-        this.fields = newValue as WidgetComponent[];
+        this.fields.clear();
+        this.fields.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       case FormViewImpl.VALIDATIONS:
-        this.validations = newValue as ValidationExpression[];
+        this.validations.clear();
+        this.validations.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       case FormViewImpl.VALIDATION_MAPPERS:
-        this.validationMappers = newValue as ValidationMessageMapper[];
+        this.validationMappers.clear();
+        this.validationMappers.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       case FormViewImpl.MAPPER_ORDER:
@@ -191,11 +144,11 @@ export class FormViewImpl extends ComponentImpl implements FormView {
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case FormViewImpl.FIELDS:
-        return this._fields !== undefined && this._fields.length > 0;
+        return this._fields !== undefined && !this._fields.isEmpty();
       case FormViewImpl.VALIDATIONS:
-        return this._validations !== undefined && this._validations.length > 0;
+        return this._validations !== undefined && !this._validations.isEmpty();
       case FormViewImpl.VALIDATION_MAPPERS:
-        return this._validationMappers !== undefined && this._validationMappers.length > 0;
+        return this._validationMappers !== undefined && !this._validationMappers.isEmpty();
       case FormViewImpl.MAPPER_ORDER:
         return this._mapperOrder !== MapperExecutionOrder.FIELD_THEN_FORM;
       default:
@@ -210,13 +163,13 @@ export class FormViewImpl extends ComponentImpl implements FormView {
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case FormViewImpl.FIELDS:
-        this._fields = [];
+        if (this._fields) this._fields.clear();
         return;
       case FormViewImpl.VALIDATIONS:
-        this._validations = [];
+        if (this._validations) this._validations.clear();
         return;
       case FormViewImpl.VALIDATION_MAPPERS:
-        this._validationMappers = [];
+        if (this._validationMappers) this._validationMappers.clear();
         return;
       case FormViewImpl.MAPPER_ORDER:
         this._mapperOrder = MapperExecutionOrder.FIELD_THEN_FORM;

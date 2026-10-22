@@ -5,17 +5,17 @@
  * @generated
  */
 
-import type { EObject, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
-import type { VegaParam } from './VegaParam';
-import type { VegaChannel } from './VegaChannel';
-import type { VegaSelectionMark } from './VegaSelectionMark';
+import type { EObject, EList, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
+import type { VegaParam } from './VegaParam.js';
+import type { VegaChannel } from './VegaChannel.js';
+import type { VegaSelectionMark } from './VegaSelectionMark.js';
 
 /**
  * VegaIntervalParam
  * @generated
  */
 export interface VegaIntervalParam extends VegaParam {
-  encodings: VegaChannel[];
+  encodings: EList<VegaChannel>;
   mark?: VegaSelectionMark;
   on?: string;
   clear?: string;

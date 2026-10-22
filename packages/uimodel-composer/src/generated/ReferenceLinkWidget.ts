@@ -6,8 +6,8 @@
  */
 
 import type { EObject, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
-import type { WidgetComponent } from './WidgetComponent';
-import type { Expression } from './Expression';
+import type { WidgetComponent } from './WidgetComponent.js';
+import type { Expression } from './Expression.js';
 
 /**
  * ReferenceLinkWidget

@@ -5,16 +5,16 @@
  * @generated
  */
 
-import type { EObject, EStructuralFeature, BasicEObject, EClass } from '@emfts/core';
-import type { VegaTransform } from './VegaTransform';
-import type { VegaAggregate } from './VegaAggregate';
+import type { EObject, EList, EStructuralFeature, BasicEObject, EClass } from '@emfts/core';
+import type { VegaTransform } from './VegaTransform.js';
+import type { VegaAggregate } from './VegaAggregate.js';
 
 /**
  * VegaAggregateTransform
  * @generated
  */
 export interface VegaAggregateTransform extends VegaTransform {
-  groupBy: EStructuralFeature[];
+  groupBy: EList<EStructuralFeature>;
   op: VegaAggregate;
   field: EStructuralFeature;
   as?: string;

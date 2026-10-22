@@ -5,12 +5,13 @@
  * @generated
  */
 
-import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { WidgetComponent } from './WidgetComponent';
-import type { Expression } from './Expression';
-import { WidgetComponentImpl } from './WidgetComponentImpl';
-import type { ForEach } from './ForEach';
-import { UimodelPackage } from './UimodelPackage';
+import { createContainmentEList } from '@emfts/core';
+import type { EClass, EStructuralFeature, EList, EReference } from '@emfts/core';
+import type { WidgetComponent } from './WidgetComponent.js';
+import type { Expression } from './Expression.js';
+import { WidgetComponentImpl } from './WidgetComponentImpl.js';
+import type { ForEach } from './ForEach.js';
+import { UimodelPackage } from './UimodelPackage.js';
 
 /**
  * Implementation of ForEach
@@ -24,7 +25,7 @@ export class ForEachImpl extends WidgetComponentImpl implements ForEach {
 
   // Private fields
   private _items?: Expression;
-  private _body: WidgetComponent[] = [];
+  private _body!: EList<WidgetComponent>;
   private _emptyText?: string;
 
   /**
@@ -59,28 +60,11 @@ export class ForEachImpl extends WidgetComponentImpl implements ForEach {
     }
   }
 
-  get body(): WidgetComponent[] {
-    return this._body;
-  }
-
-  set body(value: WidgetComponent[]) {
-    const oldValue = this._body;
-    this._body = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(ForEachImpl.BODY),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => ForEachImpl.BODY,
-        merge: () => false
-      });
+  get body(): EList<WidgetComponent> {
+    if (!this._body) {
+      this._body = createContainmentEList<any>(this, this.eClass().getEStructuralFeature('body') as EReference);
     }
+    return this._body;
   }
 
   get emptyText(): string {
@@ -137,7 +121,8 @@ export class ForEachImpl extends WidgetComponentImpl implements ForEach {
         super.eSet(feature, newValue);
         break;
       case ForEachImpl.BODY:
-        this.body = newValue as WidgetComponent[];
+        this.body.clear();
+        this.body.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       case ForEachImpl.EMPTY_TEXT:
@@ -158,7 +143,7 @@ export class ForEachImpl extends WidgetComponentImpl implements ForEach {
       case ForEachImpl.ITEMS:
         return this._items !== undefined;
       case ForEachImpl.BODY:
-        return this._body !== undefined && this._body.length > 0;
+        return this._body !== undefined && !this._body.isEmpty();
       case ForEachImpl.EMPTY_TEXT:
         return this._emptyText !== undefined;
       default:
@@ -176,7 +161,7 @@ export class ForEachImpl extends WidgetComponentImpl implements ForEach {
         this._items = undefined;
         return;
       case ForEachImpl.BODY:
-        this._body = [];
+        if (this._body) this._body.clear();
         return;
       case ForEachImpl.EMPTY_TEXT:
         this._emptyText = undefined;

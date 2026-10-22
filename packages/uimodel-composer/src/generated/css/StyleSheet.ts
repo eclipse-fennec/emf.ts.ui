@@ -5,11 +5,11 @@
  * @generated
  */
 
-import type { EObject, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
-import type { DesignToken } from './DesignToken';
-import type { Theme } from './Theme';
-import type { CssStyle } from './CssStyle';
-import type { StyleRule } from './StyleRule';
+import type { EObject, EList, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
+import type { DesignToken } from './DesignToken.js';
+import type { Theme } from './Theme.js';
+import type { CssStyle } from './CssStyle.js';
+import type { StyleRule } from './StyleRule.js';
 
 /**
  * StyleSheet
@@ -17,9 +17,9 @@ import type { StyleRule } from './StyleRule';
  */
 export interface StyleSheet extends EObject {
   name?: string;
-  tokens: DesignToken[];
-  themes: Theme[];
-  styles: CssStyle[];
-  rules: StyleRule[];
+  tokens: EList<DesignToken>;
+  themes: EList<Theme>;
+  styles: EList<CssStyle>;
+  rules: EList<StyleRule>;
 
 }

@@ -6,11 +6,11 @@
  */
 
 import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { VegaTransform } from './VegaTransform';
-import type { VegaTimeUnit } from './VegaTimeUnit';
-import { VegaTransformImpl } from './VegaTransformImpl';
-import type { VegaTimeUnitTransform } from './VegaTimeUnitTransform';
-import { UimodelVegaPackage } from './UimodelVegaPackage';
+import type { VegaTransform } from './VegaTransform.js';
+import { VegaTimeUnit } from './VegaTimeUnit.js';
+import { VegaTransformImpl } from './VegaTransformImpl.js';
+import type { VegaTimeUnitTransform } from './VegaTimeUnitTransform.js';
+import { UimodelVegaPackage } from './UimodelVegaPackage.js';
 
 /**
  * Implementation of VegaTimeUnitTransform
@@ -24,7 +24,8 @@ export class VegaTimeUnitTransformImpl extends VegaTransformImpl implements Vega
 
   // Private fields
   private _field?: EStructuralFeature;
-  private _timeUnit?: VegaTimeUnit;
+  private _timeUnit: VegaTimeUnit = VegaTimeUnit.YEAR;
+  private _timeUnitIsSet = false;
   private _as?: string;
 
   /**
@@ -66,6 +67,7 @@ export class VegaTimeUnitTransformImpl extends VegaTransformImpl implements Vega
   set timeUnit(value: VegaTimeUnit) {
     const oldValue = this._timeUnit;
     this._timeUnit = value;
+    this._timeUnitIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -158,7 +160,7 @@ export class VegaTimeUnitTransformImpl extends VegaTransformImpl implements Vega
       case VegaTimeUnitTransformImpl.FIELD:
         return this._field !== undefined;
       case VegaTimeUnitTransformImpl.TIME_UNIT:
-        return this._timeUnit !== undefined;
+        return this._timeUnitIsSet;
       case VegaTimeUnitTransformImpl.AS:
         return this._as !== undefined;
       default:
@@ -176,7 +178,8 @@ export class VegaTimeUnitTransformImpl extends VegaTransformImpl implements Vega
         this._field = undefined;
         return;
       case VegaTimeUnitTransformImpl.TIME_UNIT:
-        this._timeUnit = undefined;
+        this._timeUnit = VegaTimeUnit.YEAR;
+        this._timeUnitIsSet = false;
         return;
       case VegaTimeUnitTransformImpl.AS:
         this._as = undefined;

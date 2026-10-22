@@ -5,8 +5,8 @@
  * @generated
  */
 
-import type { EObject, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
-import type { TokenOverride } from './TokenOverride';
+import type { EObject, EList, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
+import type { TokenOverride } from './TokenOverride.js';
 
 /**
  * Theme
@@ -15,6 +15,6 @@ import type { TokenOverride } from './TokenOverride';
 export interface Theme extends EObject {
   name: string;
   dark?: boolean;
-  overrides: TokenOverride[];
+  overrides: EList<TokenOverride>;
 
 }

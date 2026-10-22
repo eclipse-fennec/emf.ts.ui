@@ -5,8 +5,8 @@
  * @generated
  */
 
-import type { EObject, EStructuralFeature, BasicEObject, EClass } from '@emfts/core';
-import type { VegaTransform } from './VegaTransform';
+import type { EObject, EList, EStructuralFeature, BasicEObject, EClass } from '@emfts/core';
+import type { VegaTransform } from './VegaTransform.js';
 
 /**
  * VegaPivotTransform
@@ -15,6 +15,6 @@ import type { VegaTransform } from './VegaTransform';
 export interface VegaPivotTransform extends VegaTransform {
   pivot: EStructuralFeature;
   value: EStructuralFeature;
-  groupBy: EStructuralFeature[];
+  groupBy: EList<EStructuralFeature>;
 
 }

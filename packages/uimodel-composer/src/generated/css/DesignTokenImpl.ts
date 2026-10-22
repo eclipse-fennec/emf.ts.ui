@@ -7,8 +7,8 @@
 
 import { BasicEObject } from '@emfts/core';
 import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { DesignToken } from './DesignToken';
-import { UimodelCssPackage } from './UimodelCssPackage';
+import type { DesignToken } from './DesignToken.js';
+import { UimodelCssPackage } from './UimodelCssPackage.js';
 
 /**
  * Implementation of DesignToken
@@ -21,8 +21,8 @@ export class DesignTokenImpl extends BasicEObject implements DesignToken {
   static readonly DESCRIPTION: number = 2;
 
   // Private fields
-  private _name: string = "";
-  private _value: string = "";
+  private _name?: string;
+  private _value?: string;
   private _description?: string;
 
   /**
@@ -154,9 +154,9 @@ export class DesignTokenImpl extends BasicEObject implements DesignToken {
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case DesignTokenImpl.NAME:
-        return this._name !== "";
+        return this._name !== undefined;
       case DesignTokenImpl.VALUE:
-        return this._value !== "";
+        return this._value !== undefined;
       case DesignTokenImpl.DESCRIPTION:
         return this._description !== undefined;
       default:
@@ -171,10 +171,10 @@ export class DesignTokenImpl extends BasicEObject implements DesignToken {
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case DesignTokenImpl.NAME:
-        this._name = "";
+        this._name = undefined;
         return;
       case DesignTokenImpl.VALUE:
-        this._value = "";
+        this._value = undefined;
         return;
       case DesignTokenImpl.DESCRIPTION:
         this._description = undefined;

@@ -4,6 +4,7 @@ import type { WidgetComponent } from '../generated/WidgetComponent';
 import { resolveStyleList } from '../utils/resolveStyleChain';
 import { resolveBindings } from '../utils/resolveBindings';
 import { trackExpressionTick } from '../utils/reactivity';
+import { isSet } from '../utils/isSet';
 import type { ResolvedStyle } from '../types/ResolvedStyle';
 
 /** ResolvedStyle plus feature-Binding-Ergebnis (Issue #3). */
@@ -31,10 +32,10 @@ export function useWidgetConfig(
 
     // Direct widget attributes take precedence over style chain
     const statics: Partial<ResolvedStyle> = {
-      ...(w.label !== undefined ? { label: w.label } : {}),
-      ...(w.placeholder !== undefined ? { placeholder: w.placeholder } : {}),
-      ...(w.readOnly !== undefined ? { readOnly: w.readOnly } : {}),
-      ...(w.required !== undefined ? { required: w.required } : {}),
+      ...(isSet(w, 'label') ? { label: w.label } : {}),
+      ...(isSet(w, 'placeholder') ? { placeholder: w.placeholder } : {}),
+      ...(isSet(w, 'readOnly') ? { readOnly: w.readOnly } : {}),
+      ...(isSet(w, 'required') ? { required: w.required } : {}),
     };
 
     const m = model ? toValue(model) : undefined;

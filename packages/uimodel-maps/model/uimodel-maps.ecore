@@ -222,9 +222,9 @@
   </eClassifiers>
 
   <eClassifiers xsi:type="ecore:EClass" name="GraduatedClass">
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="lowerBound"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="upperBound"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute"
         eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="label"/>

@@ -6,7 +6,7 @@
  */
 
 import type { EObject, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
-import type { Symbol } from './Symbol';
+import type { Symbol } from './Symbol.js';
 
 /**
  * RendererCategory

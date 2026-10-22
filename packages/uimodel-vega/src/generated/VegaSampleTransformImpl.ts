@@ -6,10 +6,10 @@
  */
 
 import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { VegaTransform } from './VegaTransform';
-import { VegaTransformImpl } from './VegaTransformImpl';
-import type { VegaSampleTransform } from './VegaSampleTransform';
-import { UimodelVegaPackage } from './UimodelVegaPackage';
+import type { VegaTransform } from './VegaTransform.js';
+import { VegaTransformImpl } from './VegaTransformImpl.js';
+import type { VegaSampleTransform } from './VegaSampleTransform.js';
+import { UimodelVegaPackage } from './UimodelVegaPackage.js';
 
 /**
  * Implementation of VegaSampleTransform
@@ -21,6 +21,7 @@ export class VegaSampleTransformImpl extends VegaTransformImpl implements VegaSa
 
   // Private fields
   private _sample: number = 0;
+  private _sampleIsSet = false;
 
   /**
    * Returns the EClass of this object
@@ -37,6 +38,7 @@ export class VegaSampleTransformImpl extends VegaTransformImpl implements VegaSa
   set sample(value: number) {
     const oldValue = this._sample;
     this._sample = value;
+    this._sampleIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -91,7 +93,7 @@ export class VegaSampleTransformImpl extends VegaTransformImpl implements VegaSa
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case VegaSampleTransformImpl.SAMPLE:
-        return this._sample !== 0;
+        return this._sampleIsSet;
       default:
         return super.eIsSet(feature);
     }
@@ -105,6 +107,7 @@ export class VegaSampleTransformImpl extends VegaTransformImpl implements VegaSa
     switch (featureID) {
       case VegaSampleTransformImpl.SAMPLE:
         this._sample = 0;
+        this._sampleIsSet = false;
         return;
       default:
         super.eUnset(feature);

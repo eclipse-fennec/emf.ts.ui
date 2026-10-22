@@ -5,15 +5,15 @@
  * @generated
  */
 
-import type { EObject, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
-import type { VegaTransform } from './VegaTransform';
+import type { EObject, EList, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
+import type { VegaTransform } from './VegaTransform.js';
 
 /**
  * VegaFlattenTransform
  * @generated
  */
 export interface VegaFlattenTransform extends VegaTransform {
-  fields: string[];
-  as: string[];
+  fields: EList<string>;
+  as: EList<string>;
 
 }

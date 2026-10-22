@@ -6,13 +6,14 @@
  */
 
 import { BasicEObject } from '@emfts/core';
-import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { Expression } from './Expression';
-import type { BaseStyle } from './BaseStyle';
-import type { WidgetComponent } from './WidgetComponent';
-import type { Component } from './Component';
-import type { UIModel } from './UIModel';
-import { UimodelPackage } from './UimodelPackage';
+import { createContainmentEList, createEObjectEList } from '@emfts/core';
+import type { EClass, EStructuralFeature, EList, EReference } from '@emfts/core';
+import type { Expression } from './Expression.js';
+import type { BaseStyle } from './BaseStyle.js';
+import type { WidgetComponent } from './WidgetComponent.js';
+import type { Component } from './Component.js';
+import type { UIModel } from './UIModel.js';
+import { UimodelPackage } from './UimodelPackage.js';
 
 /**
  * Implementation of UIModel
@@ -30,12 +31,12 @@ export class UIModelImpl extends BasicEObject implements UIModel {
 
   // Private fields
   private _name?: string;
-  private _targetClasses: EClass[] = [];
+  private _targetClasses!: EList<EClass>;
   private _priority: number = 0;
   private _filterExpression?: Expression;
-  private _styles: BaseStyle[] = [];
-  private _templates: WidgetComponent[] = [];
-  private _components: Component[] = [];
+  private _styles!: EList<BaseStyle>;
+  private _templates!: EList<WidgetComponent>;
+  private _components!: EList<Component>;
 
   /**
    * Returns the EClass of this object
@@ -69,28 +70,11 @@ export class UIModelImpl extends BasicEObject implements UIModel {
     }
   }
 
-  get targetClasses(): EClass[] {
-    return this._targetClasses;
-  }
-
-  set targetClasses(value: EClass[]) {
-    const oldValue = this._targetClasses;
-    this._targetClasses = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(UIModelImpl.TARGET_CLASSES),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => UIModelImpl.TARGET_CLASSES,
-        merge: () => false
-      });
+  get targetClasses(): EList<EClass> {
+    if (!this._targetClasses) {
+      this._targetClasses = createEObjectEList(this, this.eClass().getEStructuralFeature('targetClasses') as EReference) as unknown as EList<EClass>;
     }
+    return this._targetClasses;
   }
 
   get priority(): number {
@@ -141,76 +125,25 @@ export class UIModelImpl extends BasicEObject implements UIModel {
     }
   }
 
-  get styles(): BaseStyle[] {
+  get styles(): EList<BaseStyle> {
+    if (!this._styles) {
+      this._styles = createContainmentEList<any>(this, this.eClass().getEStructuralFeature('styles') as EReference);
+    }
     return this._styles;
   }
 
-  set styles(value: BaseStyle[]) {
-    const oldValue = this._styles;
-    this._styles = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(UIModelImpl.STYLES),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => UIModelImpl.STYLES,
-        merge: () => false
-      });
+  get templates(): EList<WidgetComponent> {
+    if (!this._templates) {
+      this._templates = createContainmentEList<any>(this, this.eClass().getEStructuralFeature('templates') as EReference);
     }
-  }
-
-  get templates(): WidgetComponent[] {
     return this._templates;
   }
 
-  set templates(value: WidgetComponent[]) {
-    const oldValue = this._templates;
-    this._templates = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(UIModelImpl.TEMPLATES),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => UIModelImpl.TEMPLATES,
-        merge: () => false
-      });
+  get components(): EList<Component> {
+    if (!this._components) {
+      this._components = createContainmentEList<any>(this, this.eClass().getEStructuralFeature('components') as EReference);
     }
-  }
-
-  get components(): Component[] {
     return this._components;
-  }
-
-  set components(value: Component[]) {
-    const oldValue = this._components;
-    this._components = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(UIModelImpl.COMPONENTS),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => UIModelImpl.COMPONENTS,
-        merge: () => false
-      });
-    }
   }
 
   // Reflective API
@@ -251,7 +184,8 @@ export class UIModelImpl extends BasicEObject implements UIModel {
         super.eSet(feature, newValue);
         break;
       case UIModelImpl.TARGET_CLASSES:
-        this.targetClasses = newValue as EClass[];
+        this.targetClasses.clear();
+        this.targetClasses.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       case UIModelImpl.PRIORITY:
@@ -263,15 +197,18 @@ export class UIModelImpl extends BasicEObject implements UIModel {
         super.eSet(feature, newValue);
         break;
       case UIModelImpl.STYLES:
-        this.styles = newValue as BaseStyle[];
+        this.styles.clear();
+        this.styles.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       case UIModelImpl.TEMPLATES:
-        this.templates = newValue as WidgetComponent[];
+        this.templates.clear();
+        this.templates.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       case UIModelImpl.COMPONENTS:
-        this.components = newValue as Component[];
+        this.components.clear();
+        this.components.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       default:
@@ -288,17 +225,17 @@ export class UIModelImpl extends BasicEObject implements UIModel {
       case UIModelImpl.NAME:
         return this._name !== undefined;
       case UIModelImpl.TARGET_CLASSES:
-        return this._targetClasses !== undefined && this._targetClasses.length > 0;
+        return this._targetClasses !== undefined && !this._targetClasses.isEmpty();
       case UIModelImpl.PRIORITY:
         return this._priority !== 0;
       case UIModelImpl.FILTER_EXPRESSION:
         return this._filterExpression !== undefined;
       case UIModelImpl.STYLES:
-        return this._styles !== undefined && this._styles.length > 0;
+        return this._styles !== undefined && !this._styles.isEmpty();
       case UIModelImpl.TEMPLATES:
-        return this._templates !== undefined && this._templates.length > 0;
+        return this._templates !== undefined && !this._templates.isEmpty();
       case UIModelImpl.COMPONENTS:
-        return this._components !== undefined && this._components.length > 0;
+        return this._components !== undefined && !this._components.isEmpty();
       default:
         return super.eIsSet(feature);
     }
@@ -314,7 +251,7 @@ export class UIModelImpl extends BasicEObject implements UIModel {
         this._name = undefined;
         return;
       case UIModelImpl.TARGET_CLASSES:
-        this._targetClasses = [];
+        if (this._targetClasses) this._targetClasses.clear();
         return;
       case UIModelImpl.PRIORITY:
         this._priority = 0;
@@ -323,13 +260,13 @@ export class UIModelImpl extends BasicEObject implements UIModel {
         this._filterExpression = undefined;
         return;
       case UIModelImpl.STYLES:
-        this._styles = [];
+        if (this._styles) this._styles.clear();
         return;
       case UIModelImpl.TEMPLATES:
-        this._templates = [];
+        if (this._templates) this._templates.clear();
         return;
       case UIModelImpl.COMPONENTS:
-        this._components = [];
+        if (this._components) this._components.clear();
         return;
       default:
         super.eUnset(feature);

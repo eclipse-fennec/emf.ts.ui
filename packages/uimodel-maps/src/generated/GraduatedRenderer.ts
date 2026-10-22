@@ -5,10 +5,10 @@
  * @generated
  */
 
-import type { EObject, EStructuralFeature, BasicEObject, EClass } from '@emfts/core';
-import type { Renderer } from './Renderer';
-import type { ClassificationMethod } from './ClassificationMethod';
-import type { GraduatedClass } from './GraduatedClass';
+import type { EObject, EList, EStructuralFeature, BasicEObject, EClass } from '@emfts/core';
+import type { Renderer } from './Renderer.js';
+import type { ClassificationMethod } from './ClassificationMethod.js';
+import type { GraduatedClass } from './GraduatedClass.js';
 
 /**
  * GraduatedRenderer
@@ -18,6 +18,6 @@ export interface GraduatedRenderer extends Renderer {
   classificationFeature: EStructuralFeature;
   method?: ClassificationMethod;
   colorRamp?: string;
-  classes: GraduatedClass[];
+  classes: EList<GraduatedClass>;
 
 }

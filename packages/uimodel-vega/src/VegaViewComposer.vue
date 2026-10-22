@@ -13,11 +13,20 @@ let vegaViewInstance: any = null;
 
 // ── helpers ────────────────────────────────────────────────────────
 
+/**
+ * Reads a VegaView config feature. Unset features stay undefined so the
+ * builders leave them out and Vega applies its own (often context-dependent)
+ * defaults. Attributes start at their metamodel default (false, 0, first
+ * literal), so "unset" is eIsSet, not undefined — the vega attributes are
+ * unsettable, so an explicit labels=false still counts as set. A
+ * defaultValueLiteral declared in the .ecore is passed on as before.
+ */
 function eGet(obj: EObject, name: string): any {
   const eClass = obj.eClass?.();
   if (!eClass) return undefined;
   const feature = eClass.getEStructuralFeature(name);
   if (!feature) return undefined;
+  if (!obj.eIsSet(feature) && feature.getDefaultValueLiteral?.() == null) return undefined;
   return obj.eGet(feature);
 }
 

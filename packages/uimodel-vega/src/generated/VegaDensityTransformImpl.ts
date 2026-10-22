@@ -5,11 +5,12 @@
  * @generated
  */
 
-import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { VegaTransform } from './VegaTransform';
-import { VegaTransformImpl } from './VegaTransformImpl';
-import type { VegaDensityTransform } from './VegaDensityTransform';
-import { UimodelVegaPackage } from './UimodelVegaPackage';
+import { createBasicEList } from '@emfts/core';
+import type { EClass, EStructuralFeature, EList, EReference } from '@emfts/core';
+import type { VegaTransform } from './VegaTransform.js';
+import { VegaTransformImpl } from './VegaTransformImpl.js';
+import type { VegaDensityTransform } from './VegaDensityTransform.js';
+import { UimodelVegaPackage } from './UimodelVegaPackage.js';
 
 /**
  * Implementation of VegaDensityTransform
@@ -24,9 +25,11 @@ export class VegaDensityTransformImpl extends VegaTransformImpl implements VegaD
 
   // Private fields
   private _field?: EStructuralFeature;
-  private _bandwidth?: number;
-  private _steps?: number;
-  private _as: string[] = [];
+  private _bandwidth: number = 0;
+  private _bandwidthIsSet = false;
+  private _steps: number = 0;
+  private _stepsIsSet = false;
+  private _as!: EList<string>;
 
   /**
    * Returns the EClass of this object
@@ -67,6 +70,7 @@ export class VegaDensityTransformImpl extends VegaTransformImpl implements VegaD
   set bandwidth(value: number) {
     const oldValue = this._bandwidth;
     this._bandwidth = value;
+    this._bandwidthIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -91,6 +95,7 @@ export class VegaDensityTransformImpl extends VegaTransformImpl implements VegaD
   set steps(value: number) {
     const oldValue = this._steps;
     this._steps = value;
+    this._stepsIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -108,28 +113,11 @@ export class VegaDensityTransformImpl extends VegaTransformImpl implements VegaD
     }
   }
 
-  get as(): string[] {
-    return this._as;
-  }
-
-  set as(value: string[]) {
-    const oldValue = this._as;
-    this._as = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(VegaDensityTransformImpl.AS),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => VegaDensityTransformImpl.AS,
-        merge: () => false
-      });
+  get as(): EList<string> {
+    if (!this._as) {
+      this._as = createBasicEList<any>(this, this.eClass().getEStructuralFeature('as')!);
     }
+    return this._as;
   }
 
   // Reflective API
@@ -172,7 +160,8 @@ export class VegaDensityTransformImpl extends VegaTransformImpl implements VegaD
         super.eSet(feature, newValue);
         break;
       case VegaDensityTransformImpl.AS:
-        this.as = newValue as string[];
+        this.as.clear();
+        this.as.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       default:
@@ -189,11 +178,11 @@ export class VegaDensityTransformImpl extends VegaTransformImpl implements VegaD
       case VegaDensityTransformImpl.FIELD:
         return this._field !== undefined;
       case VegaDensityTransformImpl.BANDWIDTH:
-        return this._bandwidth !== undefined;
+        return this._bandwidthIsSet;
       case VegaDensityTransformImpl.STEPS:
-        return this._steps !== undefined;
+        return this._stepsIsSet;
       case VegaDensityTransformImpl.AS:
-        return this._as !== undefined && this._as.length > 0;
+        return this._as !== undefined && !this._as.isEmpty();
       default:
         return super.eIsSet(feature);
     }
@@ -209,13 +198,15 @@ export class VegaDensityTransformImpl extends VegaTransformImpl implements VegaD
         this._field = undefined;
         return;
       case VegaDensityTransformImpl.BANDWIDTH:
-        this._bandwidth = undefined;
+        this._bandwidth = 0;
+        this._bandwidthIsSet = false;
         return;
       case VegaDensityTransformImpl.STEPS:
-        this._steps = undefined;
+        this._steps = 0;
+        this._stepsIsSet = false;
         return;
       case VegaDensityTransformImpl.AS:
-        this._as = [];
+        if (this._as) this._as.clear();
         return;
       default:
         super.eUnset(feature);

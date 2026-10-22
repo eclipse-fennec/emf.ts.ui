@@ -7,10 +7,10 @@
 
 import { BasicEObject } from '@emfts/core';
 import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { Style } from './Style';
-import type { Expression } from './Expression';
-import type { BaseStyle } from './BaseStyle';
-import { UimodelPackage } from './UimodelPackage';
+import type { Style } from './Style.js';
+import type { Expression } from './Expression.js';
+import type { BaseStyle } from './BaseStyle.js';
+import { UimodelPackage } from './UimodelPackage.js';
 
 /**
  * Implementation of BaseStyle

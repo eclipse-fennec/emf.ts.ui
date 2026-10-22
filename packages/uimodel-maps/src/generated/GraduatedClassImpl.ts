@@ -7,9 +7,9 @@
 
 import { BasicEObject } from '@emfts/core';
 import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { Symbol } from './Symbol';
-import type { GraduatedClass } from './GraduatedClass';
-import { UimodelMapsPackage } from './UimodelMapsPackage';
+import type { Symbol } from './Symbol.js';
+import type { GraduatedClass } from './GraduatedClass.js';
+import { UimodelMapsPackage } from './UimodelMapsPackage.js';
 
 /**
  * Implementation of GraduatedClass
@@ -23,8 +23,10 @@ export class GraduatedClassImpl extends BasicEObject implements GraduatedClass {
   static readonly SYMBOL: number = 3;
 
   // Private fields
-  private _lowerBound?: number;
-  private _upperBound?: number;
+  private _lowerBound: number = 0;
+  private _lowerBoundIsSet = false;
+  private _upperBound: number = 0;
+  private _upperBoundIsSet = false;
   private _label?: string;
   private _symbol?: Symbol;
 
@@ -43,6 +45,7 @@ export class GraduatedClassImpl extends BasicEObject implements GraduatedClass {
   set lowerBound(value: number) {
     const oldValue = this._lowerBound;
     this._lowerBound = value;
+    this._lowerBoundIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -67,6 +70,7 @@ export class GraduatedClassImpl extends BasicEObject implements GraduatedClass {
   set upperBound(value: number) {
     const oldValue = this._upperBound;
     this._upperBound = value;
+    this._upperBoundIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -187,9 +191,9 @@ export class GraduatedClassImpl extends BasicEObject implements GraduatedClass {
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case GraduatedClassImpl.LOWER_BOUND:
-        return this._lowerBound !== undefined;
+        return this._lowerBoundIsSet;
       case GraduatedClassImpl.UPPER_BOUND:
-        return this._upperBound !== undefined;
+        return this._upperBoundIsSet;
       case GraduatedClassImpl.LABEL:
         return this._label !== undefined;
       case GraduatedClassImpl.SYMBOL:
@@ -206,10 +210,12 @@ export class GraduatedClassImpl extends BasicEObject implements GraduatedClass {
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case GraduatedClassImpl.LOWER_BOUND:
-        this._lowerBound = undefined;
+        this._lowerBound = 0;
+        this._lowerBoundIsSet = false;
         return;
       case GraduatedClassImpl.UPPER_BOUND:
-        this._upperBound = undefined;
+        this._upperBound = 0;
+        this._upperBoundIsSet = false;
         return;
       case GraduatedClassImpl.LABEL:
         this._label = undefined;

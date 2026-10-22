@@ -6,8 +6,8 @@
  */
 
 import type { EObject, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
-import type { Component } from './Component';
-import type { TableView } from './TableView';
+import type { Component } from './Component.js';
+import type { TableView } from './TableView.js';
 
 /**
  * MasterDetail

@@ -2,6 +2,7 @@ import type { BaseStyle } from '../generated/BaseStyle';
 import type { LayoutStyle } from '../generated/LayoutStyle';
 import type { WidgetStyle } from '../generated/WidgetStyle';
 import type { ResolvedStyle } from '../types/ResolvedStyle';
+import { isSet } from './isSet';
 
 /**
  * Resolves the full extends-chain of a BaseStyle into a flat ResolvedStyle.
@@ -30,8 +31,8 @@ export function resolveStyleChain(
  * Resolves multiple styles in order (like multiple CSS classes).
  * Later styles override earlier ones.
  */
-export function resolveStyleList(styles: BaseStyle[]): ResolvedStyle {
-  return styles.reduce<ResolvedStyle>(
+export function resolveStyleList(styles: Iterable<BaseStyle>): ResolvedStyle {
+  return [...styles].reduce<ResolvedStyle>(
     (acc, style) => merge(acc, resolveStyleChain(style)),
     {}
   );
@@ -40,20 +41,21 @@ export function resolveStyleList(styles: BaseStyle[]): ResolvedStyle {
 function extractStyleValues(style: BaseStyle): ResolvedStyle {
   const result: ResolvedStyle = {};
 
-  if (style.css !== undefined) result.css = style.css;
-  if (style.vueComponent !== undefined) result.vueComponent = style.vueComponent;
+  // Nur gesetzte Attribute kaskadieren — Defaults (layout=VERTICAL,
+  // readOnly=false, order=0) dürfen Eltern-Werte nicht überschreiben.
+  if (isSet(style, 'css')) result.css = style.css;
+  if (isSet(style, 'vueComponent')) result.vueComponent = style.vueComponent;
 
   const layoutStyle = style as LayoutStyle;
-  if (layoutStyle.layout !== undefined) result.layout = layoutStyle.layout;
-  if (layoutStyle.order !== undefined) result.order = layoutStyle.order;
+  if (isSet(style, 'layout')) result.layout = layoutStyle.layout;
 
   const widgetStyle = style as WidgetStyle;
-  if (widgetStyle.widgetType !== undefined) result.widgetType = widgetStyle.widgetType;
-  if (widgetStyle.label !== undefined) result.label = widgetStyle.label;
-  if (widgetStyle.readOnly !== undefined) result.readOnly = widgetStyle.readOnly;
-  if ((widgetStyle as WidgetStyle & { order?: number }).order !== undefined) {
-    result.order = (widgetStyle as WidgetStyle & { order?: number }).order;
-  }
+  if (isSet(style, 'widgetType')) result.widgetType = widgetStyle.widgetType;
+  if (isSet(style, 'label')) result.label = widgetStyle.label;
+  if (isSet(style, 'readOnly')) result.readOnly = widgetStyle.readOnly;
+
+  // order gibt es auf LayoutStyle und WidgetStyle
+  if (isSet(style, 'order')) result.order = (style as LayoutStyle | WidgetStyle).order;
 
   return result;
 }

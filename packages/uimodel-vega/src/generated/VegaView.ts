@@ -5,13 +5,13 @@
  * @generated
  */
 
-import type { EObject, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
+import type { EObject, EList, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
 import type { Component } from '@emfts/uimodel-composer';
-import type { VegaSpec } from './VegaSpec';
-import type { VegaDataSource } from './VegaDataSource';
-import type { VegaParam } from './VegaParam';
-import type { VegaSignalBinding } from './VegaSignalBinding';
-import type { VegaAutosize } from './VegaAutosize';
+import type { VegaSpec } from './VegaSpec.js';
+import type { VegaDataSource } from './VegaDataSource.js';
+import type { VegaParam } from './VegaParam.js';
+import type { VegaSignalBinding } from './VegaSignalBinding.js';
+import type { VegaAutosize } from './VegaAutosize.js';
 import type { Expression } from '@emfts/uimodel-composer';
 
 /**
@@ -21,8 +21,8 @@ import type { Expression } from '@emfts/uimodel-composer';
 export interface VegaView extends Component {
   content: VegaSpec;
   dataSource: VegaDataSource;
-  params: VegaParam[];
-  signals: VegaSignalBinding[];
+  params: EList<VegaParam>;
+  signals: EList<VegaSignalBinding>;
   title?: string;
   width?: number;
   height?: number;

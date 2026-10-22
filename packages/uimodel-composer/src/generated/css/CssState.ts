@@ -5,9 +5,9 @@
  * @generated
  */
 
-import type { EObject, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
-import type { PseudoState } from './PseudoState';
-import type { CssDeclaration } from './CssDeclaration';
+import type { EObject, EList, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
+import type { PseudoState } from './PseudoState.js';
+import type { CssDeclaration } from './CssDeclaration.js';
 
 /**
  * CssState
@@ -15,6 +15,6 @@ import type { CssDeclaration } from './CssDeclaration';
  */
 export interface CssState extends EObject {
   state: PseudoState;
-  declarations: CssDeclaration[];
+  declarations: EList<CssDeclaration>;
 
 }

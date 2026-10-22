@@ -5,9 +5,9 @@
  * @generated
  */
 
-import type { EObject, EStructuralFeature, BasicEObject, EClass } from '@emfts/core';
-import type { VegaTransform } from './VegaTransform';
-import type { VegaRegressionMethod } from './VegaRegressionMethod';
+import type { EObject, EList, EStructuralFeature, BasicEObject, EClass } from '@emfts/core';
+import type { VegaTransform } from './VegaTransform.js';
+import type { VegaRegressionMethod } from './VegaRegressionMethod.js';
 
 /**
  * VegaRegressionTransform
@@ -17,6 +17,6 @@ export interface VegaRegressionTransform extends VegaTransform {
   on: EStructuralFeature;
   regression: EStructuralFeature;
   method?: VegaRegressionMethod;
-  as: string[];
+  as: EList<string>;
 
 }

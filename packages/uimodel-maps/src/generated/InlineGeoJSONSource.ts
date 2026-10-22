@@ -6,7 +6,7 @@
  */
 
 import type { EObject, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
-import type { VectorSource } from './VectorSource';
+import type { VectorSource } from './VectorSource.js';
 
 /**
  * InlineGeoJSONSource

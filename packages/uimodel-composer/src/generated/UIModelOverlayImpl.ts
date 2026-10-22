@@ -6,11 +6,12 @@
  */
 
 import { BasicEObject } from '@emfts/core';
-import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { WidgetComponent } from './WidgetComponent';
-import type { TemplateCase } from './TemplateCase';
-import type { UIModelOverlay } from './UIModelOverlay';
-import { UimodelPackage } from './UimodelPackage';
+import { createContainmentEList } from '@emfts/core';
+import type { EClass, EStructuralFeature, EList, EReference } from '@emfts/core';
+import type { WidgetComponent } from './WidgetComponent.js';
+import type { TemplateCase } from './TemplateCase.js';
+import type { UIModelOverlay } from './UIModelOverlay.js';
+import { UimodelPackage } from './UimodelPackage.js';
 
 /**
  * Implementation of UIModelOverlay
@@ -26,8 +27,8 @@ export class UIModelOverlayImpl extends BasicEObject implements UIModelOverlay {
   // Private fields
   private _name?: string;
   private _priority: number = 0;
-  private _templates: WidgetComponent[] = [];
-  private _cases: TemplateCase[] = [];
+  private _templates!: EList<WidgetComponent>;
+  private _cases!: EList<TemplateCase>;
 
   /**
    * Returns the EClass of this object
@@ -85,52 +86,18 @@ export class UIModelOverlayImpl extends BasicEObject implements UIModelOverlay {
     }
   }
 
-  get templates(): WidgetComponent[] {
+  get templates(): EList<WidgetComponent> {
+    if (!this._templates) {
+      this._templates = createContainmentEList<any>(this, this.eClass().getEStructuralFeature('templates') as EReference);
+    }
     return this._templates;
   }
 
-  set templates(value: WidgetComponent[]) {
-    const oldValue = this._templates;
-    this._templates = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(UIModelOverlayImpl.TEMPLATES),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => UIModelOverlayImpl.TEMPLATES,
-        merge: () => false
-      });
+  get cases(): EList<TemplateCase> {
+    if (!this._cases) {
+      this._cases = createContainmentEList<any>(this, this.eClass().getEStructuralFeature('cases') as EReference);
     }
-  }
-
-  get cases(): TemplateCase[] {
     return this._cases;
-  }
-
-  set cases(value: TemplateCase[]) {
-    const oldValue = this._cases;
-    this._cases = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(UIModelOverlayImpl.CASES),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => UIModelOverlayImpl.CASES,
-        merge: () => false
-      });
-    }
   }
 
   // Reflective API
@@ -169,11 +136,13 @@ export class UIModelOverlayImpl extends BasicEObject implements UIModelOverlay {
         super.eSet(feature, newValue);
         break;
       case UIModelOverlayImpl.TEMPLATES:
-        this.templates = newValue as WidgetComponent[];
+        this.templates.clear();
+        this.templates.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       case UIModelOverlayImpl.CASES:
-        this.cases = newValue as TemplateCase[];
+        this.cases.clear();
+        this.cases.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       default:
@@ -192,9 +161,9 @@ export class UIModelOverlayImpl extends BasicEObject implements UIModelOverlay {
       case UIModelOverlayImpl.PRIORITY:
         return this._priority !== 0;
       case UIModelOverlayImpl.TEMPLATES:
-        return this._templates !== undefined && this._templates.length > 0;
+        return this._templates !== undefined && !this._templates.isEmpty();
       case UIModelOverlayImpl.CASES:
-        return this._cases !== undefined && this._cases.length > 0;
+        return this._cases !== undefined && !this._cases.isEmpty();
       default:
         return super.eIsSet(feature);
     }
@@ -213,10 +182,10 @@ export class UIModelOverlayImpl extends BasicEObject implements UIModelOverlay {
         this._priority = 0;
         return;
       case UIModelOverlayImpl.TEMPLATES:
-        this._templates = [];
+        if (this._templates) this._templates.clear();
         return;
       case UIModelOverlayImpl.CASES:
-        this._cases = [];
+        if (this._cases) this._cases.clear();
         return;
       default:
         super.eUnset(feature);

@@ -6,10 +6,10 @@
  */
 
 import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { MapLayer } from './MapLayer';
-import { MapLayerImpl } from './MapLayerImpl';
-import type { WMSLayer } from './WMSLayer';
-import { UimodelMapsPackage } from './UimodelMapsPackage';
+import type { MapLayer } from './MapLayer.js';
+import { MapLayerImpl } from './MapLayerImpl.js';
+import type { WMSLayer } from './WMSLayer.js';
+import { UimodelMapsPackage } from './UimodelMapsPackage.js';
 
 /**
  * Implementation of WMSLayer

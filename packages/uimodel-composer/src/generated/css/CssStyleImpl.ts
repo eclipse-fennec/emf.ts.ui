@@ -5,13 +5,14 @@
  * @generated
  */
 
-import type { EClass, EStructuralFeature } from '@emfts/core';
+import { createContainmentEList } from '@emfts/core';
+import type { EClass, EStructuralFeature, EList, EReference } from '@emfts/core';
 import type { BaseStyle } from '..';
-import type { CssDeclaration } from './CssDeclaration';
-import type { CssState } from './CssState';
-import { BaseStyleImpl } from '../BaseStyleImpl';
-import type { CssStyle } from './CssStyle';
-import { UimodelCssPackage } from './UimodelCssPackage';
+import type { CssDeclaration } from './CssDeclaration.js';
+import type { CssState } from './CssState.js';
+import { BaseStyleImpl } from '..';
+import type { CssStyle } from './CssStyle.js';
+import { UimodelCssPackage } from './UimodelCssPackage.js';
 
 /**
  * Implementation of CssStyle
@@ -23,8 +24,8 @@ export class CssStyleImpl extends BaseStyleImpl implements CssStyle {
   static readonly STATES: number = 7;
 
   // Private fields
-  private _declarations: CssDeclaration[] = [];
-  private _states: CssState[] = [];
+  private _declarations!: EList<CssDeclaration>;
+  private _states!: EList<CssState>;
 
   /**
    * Returns the EClass of this object
@@ -34,52 +35,18 @@ export class CssStyleImpl extends BaseStyleImpl implements CssStyle {
   }
 
   // Getters and Setters
-  get declarations(): CssDeclaration[] {
+  get declarations(): EList<CssDeclaration> {
+    if (!this._declarations) {
+      this._declarations = createContainmentEList<any>(this, this.eClass().getEStructuralFeature('declarations') as EReference);
+    }
     return this._declarations;
   }
 
-  set declarations(value: CssDeclaration[]) {
-    const oldValue = this._declarations;
-    this._declarations = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(CssStyleImpl.DECLARATIONS),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => CssStyleImpl.DECLARATIONS,
-        merge: () => false
-      });
+  get states(): EList<CssState> {
+    if (!this._states) {
+      this._states = createContainmentEList<any>(this, this.eClass().getEStructuralFeature('states') as EReference);
     }
-  }
-
-  get states(): CssState[] {
     return this._states;
-  }
-
-  set states(value: CssState[]) {
-    const oldValue = this._states;
-    this._states = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(CssStyleImpl.STATES),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => CssStyleImpl.STATES,
-        merge: () => false
-      });
-    }
   }
 
   // Reflective API
@@ -106,11 +73,13 @@ export class CssStyleImpl extends BaseStyleImpl implements CssStyle {
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case CssStyleImpl.DECLARATIONS:
-        this.declarations = newValue as CssDeclaration[];
+        this.declarations.clear();
+        this.declarations.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       case CssStyleImpl.STATES:
-        this.states = newValue as CssState[];
+        this.states.clear();
+        this.states.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       default:
@@ -125,9 +94,9 @@ export class CssStyleImpl extends BaseStyleImpl implements CssStyle {
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case CssStyleImpl.DECLARATIONS:
-        return this._declarations !== undefined && this._declarations.length > 0;
+        return this._declarations !== undefined && !this._declarations.isEmpty();
       case CssStyleImpl.STATES:
-        return this._states !== undefined && this._states.length > 0;
+        return this._states !== undefined && !this._states.isEmpty();
       default:
         return super.eIsSet(feature);
     }
@@ -140,10 +109,10 @@ export class CssStyleImpl extends BaseStyleImpl implements CssStyle {
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case CssStyleImpl.DECLARATIONS:
-        this._declarations = [];
+        if (this._declarations) this._declarations.clear();
         return;
       case CssStyleImpl.STATES:
-        this._states = [];
+        if (this._states) this._states.clear();
         return;
       default:
         super.eUnset(feature);

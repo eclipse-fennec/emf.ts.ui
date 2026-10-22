@@ -5,8 +5,28 @@
  * @generated
  */
 
-import { BasicEPackage, BasicEClass, BasicEAttribute, BasicEReference, getEcorePackage, EPackageRegistry } from '@emfts/core';
-import type { EClass, EAttribute, EReference, EEnum } from '@emfts/core';
+import { BasicEPackage, BasicEClass, BasicEAttribute, BasicEReference, EPackageRegistry, getEcorePackage, BasicEEnum, BasicEEnumLiteral } from '@emfts/core';
+import type { EClass, EAttribute, EReference, EEnum, EDataType } from '@emfts/core';
+import { UimodelMapsFactory } from './UimodelMapsFactory.js';
+import { GeometryType } from './GeometryType.js';
+import { GeometryFormat } from './GeometryFormat.js';
+import { MarkerShape } from './MarkerShape.js';
+import { LineStyle } from './LineStyle.js';
+import { FillStyle } from './FillStyle.js';
+import { ClassificationMethod } from './ClassificationMethod.js';
+import { LabelPlacement } from './LabelPlacement.js';
+
+/**
+ * Resolve a dependency package from the registry, failing with an actionable
+ * message instead of a null dereference when it is not registered yet
+ */
+function requireEPackage(nsURI: string) {
+  const pkg = EPackageRegistry.INSTANCE.getEPackage(nsURI);
+  if (!pkg) {
+    throw new Error(`EPackage '${nsURI}' is not registered. Access the eINSTANCE of that model's generated package (or register it via EPackageRegistry.INSTANCE.registerPackage) before initializing UimodelMapsPackage.`);
+  }
+  return pkg;
+}
 
 /**
  * UimodelMaps Package
@@ -150,6 +170,13 @@ export class UimodelMapsPackage extends BasicEPackage {
     MAP_SELECTION_BINDING: null as unknown as EClass,
     MAP_SELECTION_BINDING__TARGET_FEATURE: null as unknown as EAttribute | EReference,
     MAP_SELECTION_BINDING__SOURCE_FEATURE: null as unknown as EAttribute | EReference,
+    GEOMETRY_TYPE: null as unknown as EEnum,
+    GEOMETRY_FORMAT: null as unknown as EEnum,
+    MARKER_SHAPE: null as unknown as EEnum,
+    LINE_STYLE: null as unknown as EEnum,
+    FILL_STYLE: null as unknown as EEnum,
+    CLASSIFICATION_METHOD: null as unknown as EEnum,
+    LABEL_PLACEMENT: null as unknown as EEnum,
   };
 
   private constructor() {
@@ -163,6 +190,13 @@ export class UimodelMapsPackage extends BasicEPackage {
    * Initialize package contents
    */
   private init(): void {
+    // Register this package under its nsURI so other generated packages can
+    // resolve their cross-package references from the registry (#36).
+    // eINSTANCE is already assigned at this point
+    EPackageRegistry.INSTANCE.set(UimodelMapsPackage.eNS_URI, this);
+    // Wire the generated factory so loaded/created instances are typed Impls.
+    this.setEFactoryInstance(UimodelMapsFactory.eINSTANCE);
+
     // Create MapView class
     const mapViewClass = new BasicEClass();
     mapViewClass.setName('MapView');
@@ -203,6 +237,7 @@ export class UimodelMapsPackage extends BasicEPackage {
     mapView_crs.setName('crs');
     mapView_crs.setLowerBound(0);
     mapView_crs.setUpperBound(1);
+    mapView_crs.setDefaultValueLiteral("EPSG:3857");
     mapViewClass.getEStructuralFeatures().push(mapView_crs);
     UimodelMapsPackage.Literals.MAP_VIEW__CRS = mapView_crs;
 
@@ -227,6 +262,7 @@ export class UimodelMapsPackage extends BasicEPackage {
     mapView_zoom.setName('zoom');
     mapView_zoom.setLowerBound(0);
     mapView_zoom.setUpperBound(1);
+    mapView_zoom.setDefaultValueLiteral("2");
     mapViewClass.getEStructuralFeatures().push(mapView_zoom);
     UimodelMapsPackage.Literals.MAP_VIEW__ZOOM = mapView_zoom;
 
@@ -268,6 +304,7 @@ export class UimodelMapsPackage extends BasicEPackage {
     mapView_height.setName('height');
     mapView_height.setLowerBound(0);
     mapView_height.setUpperBound(1);
+    mapView_height.setDefaultValueLiteral("400");
     mapViewClass.getEStructuralFeatures().push(mapView_height);
     UimodelMapsPackage.Literals.MAP_VIEW__HEIGHT = mapView_height;
 
@@ -284,6 +321,7 @@ export class UimodelMapsPackage extends BasicEPackage {
     mapView_showZoomControl.setName('showZoomControl');
     mapView_showZoomControl.setLowerBound(0);
     mapView_showZoomControl.setUpperBound(1);
+    mapView_showZoomControl.setDefaultValueLiteral("true");
     mapViewClass.getEStructuralFeatures().push(mapView_showZoomControl);
     UimodelMapsPackage.Literals.MAP_VIEW__SHOW_ZOOM_CONTROL = mapView_showZoomControl;
 
@@ -300,6 +338,7 @@ export class UimodelMapsPackage extends BasicEPackage {
     mapView_showAttribution.setName('showAttribution');
     mapView_showAttribution.setLowerBound(0);
     mapView_showAttribution.setUpperBound(1);
+    mapView_showAttribution.setDefaultValueLiteral("true");
     mapViewClass.getEStructuralFeatures().push(mapView_showAttribution);
     UimodelMapsPackage.Literals.MAP_VIEW__SHOW_ATTRIBUTION = mapView_showAttribution;
 
@@ -366,6 +405,7 @@ export class UimodelMapsPackage extends BasicEPackage {
     mapLayer_visible.setName('visible');
     mapLayer_visible.setLowerBound(0);
     mapLayer_visible.setUpperBound(1);
+    mapLayer_visible.setDefaultValueLiteral("true");
     mapLayerClass.getEStructuralFeatures().push(mapLayer_visible);
     UimodelMapsPackage.Literals.MAP_LAYER__VISIBLE = mapLayer_visible;
 
@@ -374,6 +414,7 @@ export class UimodelMapsPackage extends BasicEPackage {
     mapLayer_opacity.setName('opacity');
     mapLayer_opacity.setLowerBound(0);
     mapLayer_opacity.setUpperBound(1);
+    mapLayer_opacity.setDefaultValueLiteral("1.0");
     mapLayerClass.getEStructuralFeatures().push(mapLayer_opacity);
     UimodelMapsPackage.Literals.MAP_LAYER__OPACITY = mapLayer_opacity;
 
@@ -456,6 +497,7 @@ export class UimodelMapsPackage extends BasicEPackage {
     wMSLayer_format.setName('format');
     wMSLayer_format.setLowerBound(0);
     wMSLayer_format.setUpperBound(1);
+    wMSLayer_format.setDefaultValueLiteral("image/png");
     wMSLayerClass.getEStructuralFeatures().push(wMSLayer_format);
     UimodelMapsPackage.Literals.W_M_S_LAYER__FORMAT = wMSLayer_format;
 
@@ -464,6 +506,7 @@ export class UimodelMapsPackage extends BasicEPackage {
     wMSLayer_version.setName('version');
     wMSLayer_version.setLowerBound(0);
     wMSLayer_version.setUpperBound(1);
+    wMSLayer_version.setDefaultValueLiteral("1.3.0");
     wMSLayerClass.getEStructuralFeatures().push(wMSLayer_version);
     UimodelMapsPackage.Literals.W_M_S_LAYER__VERSION = wMSLayer_version;
 
@@ -472,6 +515,7 @@ export class UimodelMapsPackage extends BasicEPackage {
     wMSLayer_transparent.setName('transparent');
     wMSLayer_transparent.setLowerBound(0);
     wMSLayer_transparent.setUpperBound(1);
+    wMSLayer_transparent.setDefaultValueLiteral("true");
     wMSLayerClass.getEStructuralFeatures().push(wMSLayer_transparent);
     UimodelMapsPackage.Literals.W_M_S_LAYER__TRANSPARENT = wMSLayer_transparent;
 
@@ -516,6 +560,7 @@ export class UimodelMapsPackage extends BasicEPackage {
     vectorLayer_geometryType.setName('geometryType');
     vectorLayer_geometryType.setLowerBound(0);
     vectorLayer_geometryType.setUpperBound(1);
+    vectorLayer_geometryType.setDefaultValueLiteral("AUTO");
     vectorLayerClass.getEStructuralFeatures().push(vectorLayer_geometryType);
     UimodelMapsPackage.Literals.VECTOR_LAYER__GEOMETRY_TYPE = vectorLayer_geometryType;
 
@@ -541,6 +586,7 @@ export class UimodelMapsPackage extends BasicEPackage {
     vectorSource_sourceCrs.setName('sourceCrs');
     vectorSource_sourceCrs.setLowerBound(0);
     vectorSource_sourceCrs.setUpperBound(1);
+    vectorSource_sourceCrs.setDefaultValueLiteral("EPSG:4326");
     vectorSourceClass.getEStructuralFeatures().push(vectorSource_sourceCrs);
     UimodelMapsPackage.Literals.VECTOR_SOURCE__SOURCE_CRS = vectorSource_sourceCrs;
 
@@ -603,6 +649,7 @@ export class UimodelMapsPackage extends BasicEPackage {
     emfFeatureSource_geometryFormat.setName('geometryFormat');
     emfFeatureSource_geometryFormat.setLowerBound(0);
     emfFeatureSource_geometryFormat.setUpperBound(1);
+    emfFeatureSource_geometryFormat.setDefaultValueLiteral("WKT");
     emfFeatureSourceClass.getEStructuralFeatures().push(emfFeatureSource_geometryFormat);
     UimodelMapsPackage.Literals.EMF_FEATURE_SOURCE__GEOMETRY_FORMAT = emfFeatureSource_geometryFormat;
 
@@ -760,6 +807,7 @@ export class UimodelMapsPackage extends BasicEPackage {
     graduatedRenderer_method.setName('method');
     graduatedRenderer_method.setLowerBound(0);
     graduatedRenderer_method.setUpperBound(1);
+    graduatedRenderer_method.setDefaultValueLiteral("MANUAL");
     graduatedRendererClass.getEStructuralFeatures().push(graduatedRenderer_method);
     UimodelMapsPackage.Literals.GRADUATED_RENDERER__METHOD = graduatedRenderer_method;
 
@@ -913,6 +961,7 @@ export class UimodelMapsPackage extends BasicEPackage {
     symbol_opacity.setName('opacity');
     symbol_opacity.setLowerBound(0);
     symbol_opacity.setUpperBound(1);
+    symbol_opacity.setDefaultValueLiteral("1.0");
     symbolClass.getEStructuralFeatures().push(symbol_opacity);
     UimodelMapsPackage.Literals.SYMBOL__OPACITY = symbol_opacity;
 
@@ -930,6 +979,7 @@ export class UimodelMapsPackage extends BasicEPackage {
     markerSymbol_shape.setName('shape');
     markerSymbol_shape.setLowerBound(0);
     markerSymbol_shape.setUpperBound(1);
+    markerSymbol_shape.setDefaultValueLiteral("CIRCLE");
     markerSymbolClass.getEStructuralFeatures().push(markerSymbol_shape);
     UimodelMapsPackage.Literals.MARKER_SYMBOL__SHAPE = markerSymbol_shape;
 
@@ -938,6 +988,7 @@ export class UimodelMapsPackage extends BasicEPackage {
     markerSymbol_size.setName('size');
     markerSymbol_size.setLowerBound(0);
     markerSymbol_size.setUpperBound(1);
+    markerSymbol_size.setDefaultValueLiteral("6.0");
     markerSymbolClass.getEStructuralFeatures().push(markerSymbol_size);
     UimodelMapsPackage.Literals.MARKER_SYMBOL__SIZE = markerSymbol_size;
 
@@ -946,6 +997,7 @@ export class UimodelMapsPackage extends BasicEPackage {
     markerSymbol_color.setName('color');
     markerSymbol_color.setLowerBound(0);
     markerSymbol_color.setUpperBound(1);
+    markerSymbol_color.setDefaultValueLiteral("#3399CC");
     markerSymbolClass.getEStructuralFeatures().push(markerSymbol_color);
     UimodelMapsPackage.Literals.MARKER_SYMBOL__COLOR = markerSymbol_color;
 
@@ -954,6 +1006,7 @@ export class UimodelMapsPackage extends BasicEPackage {
     markerSymbol_strokeColor.setName('strokeColor');
     markerSymbol_strokeColor.setLowerBound(0);
     markerSymbol_strokeColor.setUpperBound(1);
+    markerSymbol_strokeColor.setDefaultValueLiteral("#ffffff");
     markerSymbolClass.getEStructuralFeatures().push(markerSymbol_strokeColor);
     UimodelMapsPackage.Literals.MARKER_SYMBOL__STROKE_COLOR = markerSymbol_strokeColor;
 
@@ -962,6 +1015,7 @@ export class UimodelMapsPackage extends BasicEPackage {
     markerSymbol_strokeWidth.setName('strokeWidth');
     markerSymbol_strokeWidth.setLowerBound(0);
     markerSymbol_strokeWidth.setUpperBound(1);
+    markerSymbol_strokeWidth.setDefaultValueLiteral("1.0");
     markerSymbolClass.getEStructuralFeatures().push(markerSymbol_strokeWidth);
     UimodelMapsPackage.Literals.MARKER_SYMBOL__STROKE_WIDTH = markerSymbol_strokeWidth;
 
@@ -987,6 +1041,7 @@ export class UimodelMapsPackage extends BasicEPackage {
     lineSymbol_color.setName('color');
     lineSymbol_color.setLowerBound(0);
     lineSymbol_color.setUpperBound(1);
+    lineSymbol_color.setDefaultValueLiteral("#3399CC");
     lineSymbolClass.getEStructuralFeatures().push(lineSymbol_color);
     UimodelMapsPackage.Literals.LINE_SYMBOL__COLOR = lineSymbol_color;
 
@@ -995,6 +1050,7 @@ export class UimodelMapsPackage extends BasicEPackage {
     lineSymbol_width.setName('width');
     lineSymbol_width.setLowerBound(0);
     lineSymbol_width.setUpperBound(1);
+    lineSymbol_width.setDefaultValueLiteral("1.5");
     lineSymbolClass.getEStructuralFeatures().push(lineSymbol_width);
     UimodelMapsPackage.Literals.LINE_SYMBOL__WIDTH = lineSymbol_width;
 
@@ -1003,6 +1059,7 @@ export class UimodelMapsPackage extends BasicEPackage {
     lineSymbol_style.setName('style');
     lineSymbol_style.setLowerBound(0);
     lineSymbol_style.setUpperBound(1);
+    lineSymbol_style.setDefaultValueLiteral("SOLID");
     lineSymbolClass.getEStructuralFeatures().push(lineSymbol_style);
     UimodelMapsPackage.Literals.LINE_SYMBOL__STYLE = lineSymbol_style;
 
@@ -1020,6 +1077,7 @@ export class UimodelMapsPackage extends BasicEPackage {
     fillSymbol_fillColor.setName('fillColor');
     fillSymbol_fillColor.setLowerBound(0);
     fillSymbol_fillColor.setUpperBound(1);
+    fillSymbol_fillColor.setDefaultValueLiteral("#3399CC");
     fillSymbolClass.getEStructuralFeatures().push(fillSymbol_fillColor);
     UimodelMapsPackage.Literals.FILL_SYMBOL__FILL_COLOR = fillSymbol_fillColor;
 
@@ -1028,6 +1086,7 @@ export class UimodelMapsPackage extends BasicEPackage {
     fillSymbol_strokeColor.setName('strokeColor');
     fillSymbol_strokeColor.setLowerBound(0);
     fillSymbol_strokeColor.setUpperBound(1);
+    fillSymbol_strokeColor.setDefaultValueLiteral("#ffffff");
     fillSymbolClass.getEStructuralFeatures().push(fillSymbol_strokeColor);
     UimodelMapsPackage.Literals.FILL_SYMBOL__STROKE_COLOR = fillSymbol_strokeColor;
 
@@ -1036,6 +1095,7 @@ export class UimodelMapsPackage extends BasicEPackage {
     fillSymbol_strokeWidth.setName('strokeWidth');
     fillSymbol_strokeWidth.setLowerBound(0);
     fillSymbol_strokeWidth.setUpperBound(1);
+    fillSymbol_strokeWidth.setDefaultValueLiteral("1.0");
     fillSymbolClass.getEStructuralFeatures().push(fillSymbol_strokeWidth);
     UimodelMapsPackage.Literals.FILL_SYMBOL__STROKE_WIDTH = fillSymbol_strokeWidth;
 
@@ -1044,6 +1104,7 @@ export class UimodelMapsPackage extends BasicEPackage {
     fillSymbol_style.setName('style');
     fillSymbol_style.setLowerBound(0);
     fillSymbol_style.setUpperBound(1);
+    fillSymbol_style.setDefaultValueLiteral("SOLID");
     fillSymbolClass.getEStructuralFeatures().push(fillSymbol_style);
     UimodelMapsPackage.Literals.FILL_SYMBOL__STYLE = fillSymbol_style;
 
@@ -1079,6 +1140,7 @@ export class UimodelMapsPackage extends BasicEPackage {
     labeling_font.setName('font');
     labeling_font.setLowerBound(0);
     labeling_font.setUpperBound(1);
+    labeling_font.setDefaultValueLiteral("12px sans-serif");
     labelingClass.getEStructuralFeatures().push(labeling_font);
     UimodelMapsPackage.Literals.LABELING__FONT = labeling_font;
 
@@ -1087,6 +1149,7 @@ export class UimodelMapsPackage extends BasicEPackage {
     labeling_color.setName('color');
     labeling_color.setLowerBound(0);
     labeling_color.setUpperBound(1);
+    labeling_color.setDefaultValueLiteral("#333333");
     labelingClass.getEStructuralFeatures().push(labeling_color);
     UimodelMapsPackage.Literals.LABELING__COLOR = labeling_color;
 
@@ -1095,6 +1158,7 @@ export class UimodelMapsPackage extends BasicEPackage {
     labeling_placement.setName('placement');
     labeling_placement.setLowerBound(0);
     labeling_placement.setUpperBound(1);
+    labeling_placement.setDefaultValueLiteral("OVER_POINT");
     labelingClass.getEStructuralFeatures().push(labeling_placement);
     UimodelMapsPackage.Literals.LABELING__PLACEMENT = labeling_placement;
 
@@ -1157,11 +1221,343 @@ export class UimodelMapsPackage extends BasicEPackage {
     mapSelectionBindingClass.getEStructuralFeatures().push(mapSelectionBinding_sourceFeature);
     UimodelMapsPackage.Literals.MAP_SELECTION_BINDING__SOURCE_FEATURE = mapSelectionBinding_sourceFeature;
 
+    // Create GeometryType enum
+    const geometryTypeEnumType = new BasicEEnum();
+    geometryTypeEnumType.setName('GeometryType');
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("AUTO");
+      literal.setValue(0);
+      literal.setLiteral("AUTO");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(GeometryType.AUTO);
+      geometryTypeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("POINT");
+      literal.setValue(1);
+      literal.setLiteral("POINT");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(GeometryType.POINT);
+      geometryTypeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("LINE_STRING");
+      literal.setValue(2);
+      literal.setLiteral("LINE_STRING");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(GeometryType.LINE_STRING);
+      geometryTypeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("POLYGON");
+      literal.setValue(3);
+      literal.setLiteral("POLYGON");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(GeometryType.POLYGON);
+      geometryTypeEnumType.addLiteral(literal);
+    }
+    UimodelMapsPackage.Literals.GEOMETRY_TYPE = geometryTypeEnumType;
+    this.getEClassifiers().push(geometryTypeEnumType);
+
+    // Create GeometryFormat enum
+    const geometryFormatEnumType = new BasicEEnum();
+    geometryFormatEnumType.setName('GeometryFormat');
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("WKT");
+      literal.setValue(0);
+      literal.setLiteral("WKT");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(GeometryFormat.WKT);
+      geometryFormatEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("GEOJSON");
+      literal.setValue(1);
+      literal.setLiteral("GEOJSON");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(GeometryFormat.GEOJSON);
+      geometryFormatEnumType.addLiteral(literal);
+    }
+    UimodelMapsPackage.Literals.GEOMETRY_FORMAT = geometryFormatEnumType;
+    this.getEClassifiers().push(geometryFormatEnumType);
+
+    // Create MarkerShape enum
+    const markerShapeEnumType = new BasicEEnum();
+    markerShapeEnumType.setName('MarkerShape');
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("CIRCLE");
+      literal.setValue(0);
+      literal.setLiteral("CIRCLE");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(MarkerShape.CIRCLE);
+      markerShapeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("SQUARE");
+      literal.setValue(1);
+      literal.setLiteral("SQUARE");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(MarkerShape.SQUARE);
+      markerShapeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("TRIANGLE");
+      literal.setValue(2);
+      literal.setLiteral("TRIANGLE");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(MarkerShape.TRIANGLE);
+      markerShapeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("DIAMOND");
+      literal.setValue(3);
+      literal.setLiteral("DIAMOND");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(MarkerShape.DIAMOND);
+      markerShapeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("STAR");
+      literal.setValue(4);
+      literal.setLiteral("STAR");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(MarkerShape.STAR);
+      markerShapeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("CROSS");
+      literal.setValue(5);
+      literal.setLiteral("CROSS");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(MarkerShape.CROSS);
+      markerShapeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("X");
+      literal.setValue(6);
+      literal.setLiteral("X");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(MarkerShape.X);
+      markerShapeEnumType.addLiteral(literal);
+    }
+    UimodelMapsPackage.Literals.MARKER_SHAPE = markerShapeEnumType;
+    this.getEClassifiers().push(markerShapeEnumType);
+
+    // Create LineStyle enum
+    const lineStyleEnumType = new BasicEEnum();
+    lineStyleEnumType.setName('LineStyle');
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("SOLID");
+      literal.setValue(0);
+      literal.setLiteral("SOLID");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(LineStyle.SOLID);
+      lineStyleEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("DASH");
+      literal.setValue(1);
+      literal.setLiteral("DASH");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(LineStyle.DASH);
+      lineStyleEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("DOT");
+      literal.setValue(2);
+      literal.setLiteral("DOT");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(LineStyle.DOT);
+      lineStyleEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("DASH_DOT");
+      literal.setValue(3);
+      literal.setLiteral("DASH_DOT");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(LineStyle.DASH_DOT);
+      lineStyleEnumType.addLiteral(literal);
+    }
+    UimodelMapsPackage.Literals.LINE_STYLE = lineStyleEnumType;
+    this.getEClassifiers().push(lineStyleEnumType);
+
+    // Create FillStyle enum
+    const fillStyleEnumType = new BasicEEnum();
+    fillStyleEnumType.setName('FillStyle');
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("SOLID");
+      literal.setValue(0);
+      literal.setLiteral("SOLID");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(FillStyle.SOLID);
+      fillStyleEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("NONE");
+      literal.setValue(1);
+      literal.setLiteral("NONE");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(FillStyle.NONE);
+      fillStyleEnumType.addLiteral(literal);
+    }
+    UimodelMapsPackage.Literals.FILL_STYLE = fillStyleEnumType;
+    this.getEClassifiers().push(fillStyleEnumType);
+
+    // Create ClassificationMethod enum
+    const classificationMethodEnumType = new BasicEEnum();
+    classificationMethodEnumType.setName('ClassificationMethod');
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("MANUAL");
+      literal.setValue(0);
+      literal.setLiteral("MANUAL");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(ClassificationMethod.MANUAL);
+      classificationMethodEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("EQUAL_INTERVAL");
+      literal.setValue(1);
+      literal.setLiteral("EQUAL_INTERVAL");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(ClassificationMethod.EQUAL_INTERVAL);
+      classificationMethodEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("QUANTILE");
+      literal.setValue(2);
+      literal.setLiteral("QUANTILE");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(ClassificationMethod.QUANTILE);
+      classificationMethodEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("NATURAL_BREAKS");
+      literal.setValue(3);
+      literal.setLiteral("NATURAL_BREAKS");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(ClassificationMethod.NATURAL_BREAKS);
+      classificationMethodEnumType.addLiteral(literal);
+    }
+    UimodelMapsPackage.Literals.CLASSIFICATION_METHOD = classificationMethodEnumType;
+    this.getEClassifiers().push(classificationMethodEnumType);
+
+    // Create LabelPlacement enum
+    const labelPlacementEnumType = new BasicEEnum();
+    labelPlacementEnumType.setName('LabelPlacement');
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("OVER_POINT");
+      literal.setValue(0);
+      literal.setLiteral("OVER_POINT");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(LabelPlacement.OVER_POINT);
+      labelPlacementEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("ABOVE");
+      literal.setValue(1);
+      literal.setLiteral("ABOVE");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(LabelPlacement.ABOVE);
+      labelPlacementEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("BELOW");
+      literal.setValue(2);
+      literal.setLiteral("BELOW");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(LabelPlacement.BELOW);
+      labelPlacementEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("LEFT");
+      literal.setValue(3);
+      literal.setLiteral("LEFT");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(LabelPlacement.LEFT);
+      labelPlacementEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("RIGHT");
+      literal.setValue(4);
+      literal.setLiteral("RIGHT");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(LabelPlacement.RIGHT);
+      labelPlacementEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("CENTER");
+      literal.setValue(5);
+      literal.setLiteral("CENTER");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(LabelPlacement.CENTER);
+      labelPlacementEnumType.addLiteral(literal);
+    }
+    UimodelMapsPackage.Literals.LABEL_PLACEMENT = labelPlacementEnumType;
+    this.getEClassifiers().push(labelPlacementEnumType);
+
 
     // ============================================
     // Set ESuperTypes (must be done after all classes are created)
     // ============================================
-    (UimodelMapsPackage.Literals.MAP_VIEW as BasicEClass).getESuperTypes().push(EPackageRegistry.INSTANCE.getEPackage('http://uimodel/1.0')!.getEClassifier('Component')! as EClass);
+    (UimodelMapsPackage.Literals.MAP_VIEW as BasicEClass).getESuperTypes().push(requireEPackage('http://uimodel/1.0').getEClassifier('Component')! as EClass);
     (UimodelMapsPackage.Literals.X_Y_Z_TILE_LAYER as BasicEClass).getESuperTypes().push(UimodelMapsPackage.Literals.MAP_LAYER);
     (UimodelMapsPackage.Literals.W_M_S_LAYER as BasicEClass).getESuperTypes().push(UimodelMapsPackage.Literals.MAP_LAYER);
     (UimodelMapsPackage.Literals.VECTOR_LAYER as BasicEClass).getESuperTypes().push(UimodelMapsPackage.Literals.MAP_LAYER);
@@ -1177,32 +1573,102 @@ export class UimodelMapsPackage extends BasicEPackage {
     (UimodelMapsPackage.Literals.FILL_SYMBOL as BasicEClass).getESuperTypes().push(UimodelMapsPackage.Literals.SYMBOL);
 
     // ============================================
-    // Set ETypes for EReferences (must be done after all classes are created)
+    // Set ETypes for all features (must be done after all classes are created).
+    // An EAttribute without eType leaves the XMI reader no EDataType to
+    // convert against - every value would arrive as a raw string (#37)
     // ============================================
     (UimodelMapsPackage.Literals.MAP_VIEW__LAYERS as BasicEReference).setEType(UimodelMapsPackage.Literals.MAP_LAYER);
     (UimodelMapsPackage.Literals.MAP_VIEW__BINDINGS as BasicEReference).setEType(UimodelMapsPackage.Literals.MAP_SELECTION_BINDING);
+    (UimodelMapsPackage.Literals.MAP_VIEW__TITLE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelMapsPackage.Literals.MAP_VIEW__CRS as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelMapsPackage.Literals.MAP_VIEW__CENTER_LON as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelMapsPackage.Literals.MAP_VIEW__CENTER_LAT as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelMapsPackage.Literals.MAP_VIEW__ZOOM as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelMapsPackage.Literals.MAP_VIEW__MIN_ZOOM as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelMapsPackage.Literals.MAP_VIEW__MAX_ZOOM as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
     (UimodelMapsPackage.Literals.MAP_VIEW__EXTENT as BasicEReference).setEType(UimodelMapsPackage.Literals.MAP_EXTENT);
+    (UimodelMapsPackage.Literals.MAP_VIEW__WIDTH as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EInt')!);
+    (UimodelMapsPackage.Literals.MAP_VIEW__HEIGHT as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EInt')!);
+    (UimodelMapsPackage.Literals.MAP_VIEW__BACKGROUND as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelMapsPackage.Literals.MAP_VIEW__SHOW_ZOOM_CONTROL as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EBoolean')!);
+    (UimodelMapsPackage.Literals.MAP_VIEW__SHOW_SCALE_LINE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EBoolean')!);
+    (UimodelMapsPackage.Literals.MAP_VIEW__SHOW_ATTRIBUTION as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EBoolean')!);
+    (UimodelMapsPackage.Literals.MAP_EXTENT__MIN_LON as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelMapsPackage.Literals.MAP_EXTENT__MIN_LAT as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelMapsPackage.Literals.MAP_EXTENT__MAX_LON as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelMapsPackage.Literals.MAP_EXTENT__MAX_LAT as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelMapsPackage.Literals.MAP_LAYER__NAME as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelMapsPackage.Literals.MAP_LAYER__VISIBLE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EBoolean')!);
+    (UimodelMapsPackage.Literals.MAP_LAYER__OPACITY as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelMapsPackage.Literals.MAP_LAYER__MIN_ZOOM as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelMapsPackage.Literals.MAP_LAYER__MAX_ZOOM as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelMapsPackage.Literals.MAP_LAYER__ATTRIBUTION as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelMapsPackage.Literals.X_Y_Z_TILE_LAYER__URL_TEMPLATE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelMapsPackage.Literals.X_Y_Z_TILE_LAYER__MAX_ZOOM_LEVEL as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EInt')!);
+    (UimodelMapsPackage.Literals.W_M_S_LAYER__URL as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelMapsPackage.Literals.W_M_S_LAYER__LAYERS as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelMapsPackage.Literals.W_M_S_LAYER__FORMAT as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelMapsPackage.Literals.W_M_S_LAYER__VERSION as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelMapsPackage.Literals.W_M_S_LAYER__TRANSPARENT as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EBoolean')!);
     (UimodelMapsPackage.Literals.VECTOR_LAYER__SOURCE as BasicEReference).setEType(UimodelMapsPackage.Literals.VECTOR_SOURCE);
     (UimodelMapsPackage.Literals.VECTOR_LAYER__RENDERER as BasicEReference).setEType(UimodelMapsPackage.Literals.RENDERER);
     (UimodelMapsPackage.Literals.VECTOR_LAYER__LABELING as BasicEReference).setEType(UimodelMapsPackage.Literals.LABELING);
+    (UimodelMapsPackage.Literals.VECTOR_LAYER__GEOMETRY_TYPE as BasicEAttribute).setEType(UimodelMapsPackage.Literals.GEOMETRY_TYPE);
+    (UimodelMapsPackage.Literals.VECTOR_LAYER__POPUP_TEMPLATE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelMapsPackage.Literals.VECTOR_SOURCE__SOURCE_CRS as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
     (UimodelMapsPackage.Literals.EMF_FEATURE_SOURCE__FEATURE as BasicEReference).setEType(getEcorePackage().getEClassifier('EStructuralFeature')!);
-    (UimodelMapsPackage.Literals.EMF_FEATURE_SOURCE__FILTER_EXPRESSION as BasicEReference).setEType(EPackageRegistry.INSTANCE.getEPackage('http://uimodel/1.0')!.getEClassifier('Expression')!);
+    (UimodelMapsPackage.Literals.EMF_FEATURE_SOURCE__FILTER_EXPRESSION as BasicEReference).setEType(requireEPackage('http://uimodel/1.0').getEClassifier('Expression')!);
     (UimodelMapsPackage.Literals.EMF_FEATURE_SOURCE__LONGITUDE_FEATURE as BasicEReference).setEType(getEcorePackage().getEClassifier('EStructuralFeature')!);
     (UimodelMapsPackage.Literals.EMF_FEATURE_SOURCE__LATITUDE_FEATURE as BasicEReference).setEType(getEcorePackage().getEClassifier('EStructuralFeature')!);
     (UimodelMapsPackage.Literals.EMF_FEATURE_SOURCE__GEOMETRY_FEATURE as BasicEReference).setEType(getEcorePackage().getEClassifier('EStructuralFeature')!);
+    (UimodelMapsPackage.Literals.EMF_FEATURE_SOURCE__GEOMETRY_FORMAT as BasicEAttribute).setEType(UimodelMapsPackage.Literals.GEOMETRY_FORMAT);
+    (UimodelMapsPackage.Literals.GEO_J_S_O_N_URL_SOURCE__URL as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelMapsPackage.Literals.INLINE_GEO_J_S_O_N_SOURCE__GEOJSON as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
     (UimodelMapsPackage.Literals.SINGLE_SYMBOL_RENDERER__SYMBOL as BasicEReference).setEType(UimodelMapsPackage.Literals.SYMBOL);
     (UimodelMapsPackage.Literals.CATEGORIZED_RENDERER__CLASSIFICATION_FEATURE as BasicEReference).setEType(getEcorePackage().getEClassifier('EStructuralFeature')!);
     (UimodelMapsPackage.Literals.CATEGORIZED_RENDERER__CATEGORIES as BasicEReference).setEType(UimodelMapsPackage.Literals.RENDERER_CATEGORY);
     (UimodelMapsPackage.Literals.CATEGORIZED_RENDERER__DEFAULT_SYMBOL as BasicEReference).setEType(UimodelMapsPackage.Literals.SYMBOL);
+    (UimodelMapsPackage.Literals.RENDERER_CATEGORY__VALUE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelMapsPackage.Literals.RENDERER_CATEGORY__LABEL as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
     (UimodelMapsPackage.Literals.RENDERER_CATEGORY__SYMBOL as BasicEReference).setEType(UimodelMapsPackage.Literals.SYMBOL);
     (UimodelMapsPackage.Literals.GRADUATED_RENDERER__CLASSIFICATION_FEATURE as BasicEReference).setEType(getEcorePackage().getEClassifier('EStructuralFeature')!);
+    (UimodelMapsPackage.Literals.GRADUATED_RENDERER__METHOD as BasicEAttribute).setEType(UimodelMapsPackage.Literals.CLASSIFICATION_METHOD);
+    (UimodelMapsPackage.Literals.GRADUATED_RENDERER__COLOR_RAMP as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
     (UimodelMapsPackage.Literals.GRADUATED_RENDERER__CLASSES as BasicEReference).setEType(UimodelMapsPackage.Literals.GRADUATED_CLASS);
+    (UimodelMapsPackage.Literals.GRADUATED_CLASS__LOWER_BOUND as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelMapsPackage.Literals.GRADUATED_CLASS__UPPER_BOUND as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelMapsPackage.Literals.GRADUATED_CLASS__LABEL as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
     (UimodelMapsPackage.Literals.GRADUATED_CLASS__SYMBOL as BasicEReference).setEType(UimodelMapsPackage.Literals.SYMBOL);
     (UimodelMapsPackage.Literals.RULE_BASED_RENDERER__RULES as BasicEReference).setEType(UimodelMapsPackage.Literals.RENDERER_RULE);
-    (UimodelMapsPackage.Literals.RENDERER_RULE__FILTER_EXPRESSION as BasicEReference).setEType(EPackageRegistry.INSTANCE.getEPackage('http://uimodel/1.0')!.getEClassifier('Expression')!);
+    (UimodelMapsPackage.Literals.RENDERER_RULE__FILTER_EXPRESSION as BasicEReference).setEType(requireEPackage('http://uimodel/1.0').getEClassifier('Expression')!);
+    (UimodelMapsPackage.Literals.RENDERER_RULE__LABEL as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelMapsPackage.Literals.RENDERER_RULE__ELSE_RULE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EBoolean')!);
+    (UimodelMapsPackage.Literals.RENDERER_RULE__MIN_ZOOM as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelMapsPackage.Literals.RENDERER_RULE__MAX_ZOOM as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
     (UimodelMapsPackage.Literals.RENDERER_RULE__SYMBOL as BasicEReference).setEType(UimodelMapsPackage.Literals.SYMBOL);
+    (UimodelMapsPackage.Literals.SYMBOL__OPACITY as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelMapsPackage.Literals.MARKER_SYMBOL__SHAPE as BasicEAttribute).setEType(UimodelMapsPackage.Literals.MARKER_SHAPE);
+    (UimodelMapsPackage.Literals.MARKER_SYMBOL__SIZE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelMapsPackage.Literals.MARKER_SYMBOL__COLOR as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelMapsPackage.Literals.MARKER_SYMBOL__STROKE_COLOR as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelMapsPackage.Literals.MARKER_SYMBOL__STROKE_WIDTH as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelMapsPackage.Literals.MARKER_SYMBOL__ROTATION as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelMapsPackage.Literals.LINE_SYMBOL__COLOR as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelMapsPackage.Literals.LINE_SYMBOL__WIDTH as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelMapsPackage.Literals.LINE_SYMBOL__STYLE as BasicEAttribute).setEType(UimodelMapsPackage.Literals.LINE_STYLE);
+    (UimodelMapsPackage.Literals.FILL_SYMBOL__FILL_COLOR as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelMapsPackage.Literals.FILL_SYMBOL__STROKE_COLOR as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelMapsPackage.Literals.FILL_SYMBOL__STROKE_WIDTH as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelMapsPackage.Literals.FILL_SYMBOL__STYLE as BasicEAttribute).setEType(UimodelMapsPackage.Literals.FILL_STYLE);
     (UimodelMapsPackage.Literals.LABELING__FEATURE as BasicEReference).setEType(getEcorePackage().getEClassifier('EStructuralFeature')!);
-    (UimodelMapsPackage.Literals.LABELING__EXPRESSION as BasicEReference).setEType(EPackageRegistry.INSTANCE.getEPackage('http://uimodel/1.0')!.getEClassifier('Expression')!);
+    (UimodelMapsPackage.Literals.LABELING__EXPRESSION as BasicEReference).setEType(requireEPackage('http://uimodel/1.0').getEClassifier('Expression')!);
+    (UimodelMapsPackage.Literals.LABELING__FONT as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelMapsPackage.Literals.LABELING__COLOR as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelMapsPackage.Literals.LABELING__PLACEMENT as BasicEAttribute).setEType(UimodelMapsPackage.Literals.LABEL_PLACEMENT);
+    (UimodelMapsPackage.Literals.LABELING__OFFSET_X as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelMapsPackage.Literals.LABELING__OFFSET_Y as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelMapsPackage.Literals.LABELING__HALO_COLOR as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelMapsPackage.Literals.LABELING__HALO_WIDTH as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
     (UimodelMapsPackage.Literals.MAP_SELECTION_BINDING__TARGET_FEATURE as BasicEReference).setEType(getEcorePackage().getEClassifier('EStructuralFeature')!);
     (UimodelMapsPackage.Literals.MAP_SELECTION_BINDING__SOURCE_FEATURE as BasicEReference).setEType(getEcorePackage().getEClassifier('EStructuralFeature')!);
 

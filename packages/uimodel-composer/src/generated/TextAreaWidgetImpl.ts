@@ -6,10 +6,10 @@
  */
 
 import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { WidgetComponent } from './WidgetComponent';
-import { WidgetComponentImpl } from './WidgetComponentImpl';
-import type { TextAreaWidget } from './TextAreaWidget';
-import { UimodelPackage } from './UimodelPackage';
+import type { WidgetComponent } from './WidgetComponent.js';
+import { WidgetComponentImpl } from './WidgetComponentImpl.js';
+import type { TextAreaWidget } from './TextAreaWidget.js';
+import { UimodelPackage } from './UimodelPackage.js';
 
 /**
  * Implementation of TextAreaWidget
@@ -23,7 +23,7 @@ export class TextAreaWidgetImpl extends WidgetComponentImpl implements TextAreaW
 
   // Private fields
   private _rows: number = 4;
-  private _maxLength?: number;
+  private _maxLength: number = 0;
   private _value?: string;
 
   /**
@@ -157,7 +157,7 @@ export class TextAreaWidgetImpl extends WidgetComponentImpl implements TextAreaW
       case TextAreaWidgetImpl.ROWS:
         return this._rows !== 4;
       case TextAreaWidgetImpl.MAX_LENGTH:
-        return this._maxLength !== undefined;
+        return this._maxLength !== 0;
       case TextAreaWidgetImpl.VALUE:
         return this._value !== undefined;
       default:
@@ -175,7 +175,7 @@ export class TextAreaWidgetImpl extends WidgetComponentImpl implements TextAreaW
         this._rows = 4;
         return;
       case TextAreaWidgetImpl.MAX_LENGTH:
-        this._maxLength = undefined;
+        this._maxLength = 0;
         return;
       case TextAreaWidgetImpl.VALUE:
         this._value = undefined;

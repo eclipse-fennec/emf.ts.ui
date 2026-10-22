@@ -5,12 +5,13 @@
  * @generated
  */
 
-import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { VegaParam } from './VegaParam';
-import type { VegaChannel } from './VegaChannel';
-import { VegaParamImpl } from './VegaParamImpl';
-import type { VegaPointParam } from './VegaPointParam';
-import { UimodelVegaPackage } from './UimodelVegaPackage';
+import { createBasicEList } from '@emfts/core';
+import type { EClass, EStructuralFeature, EList, EReference } from '@emfts/core';
+import type { VegaParam } from './VegaParam.js';
+import type { VegaChannel } from './VegaChannel.js';
+import { VegaParamImpl } from './VegaParamImpl.js';
+import type { VegaPointParam } from './VegaPointParam.js';
+import { UimodelVegaPackage } from './UimodelVegaPackage.js';
 
 /**
  * Implementation of VegaPointParam
@@ -26,12 +27,14 @@ export class VegaPointParamImpl extends VegaParamImpl implements VegaPointParam 
   static readonly ENCODINGS: number = 6;
 
   // Private fields
-  private _fields: string[] = [];
-  private _toggle?: boolean;
-  private _nearest?: boolean;
+  private _fields!: EList<string>;
+  private _toggle: boolean = false;
+  private _toggleIsSet = false;
+  private _nearest: boolean = false;
+  private _nearestIsSet = false;
   private _on?: string;
   private _clear?: string;
-  private _encodings: VegaChannel[] = [];
+  private _encodings!: EList<VegaChannel>;
 
   /**
    * Returns the EClass of this object
@@ -41,28 +44,11 @@ export class VegaPointParamImpl extends VegaParamImpl implements VegaPointParam 
   }
 
   // Getters and Setters
-  get fields(): string[] {
-    return this._fields;
-  }
-
-  set fields(value: string[]) {
-    const oldValue = this._fields;
-    this._fields = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(VegaPointParamImpl.FIELDS),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => VegaPointParamImpl.FIELDS,
-        merge: () => false
-      });
+  get fields(): EList<string> {
+    if (!this._fields) {
+      this._fields = createBasicEList<any>(this, this.eClass().getEStructuralFeature('fields')!);
     }
+    return this._fields;
   }
 
   get toggle(): boolean {
@@ -72,6 +58,7 @@ export class VegaPointParamImpl extends VegaParamImpl implements VegaPointParam 
   set toggle(value: boolean) {
     const oldValue = this._toggle;
     this._toggle = value;
+    this._toggleIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -96,6 +83,7 @@ export class VegaPointParamImpl extends VegaParamImpl implements VegaPointParam 
   set nearest(value: boolean) {
     const oldValue = this._nearest;
     this._nearest = value;
+    this._nearestIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -161,28 +149,11 @@ export class VegaPointParamImpl extends VegaParamImpl implements VegaPointParam 
     }
   }
 
-  get encodings(): VegaChannel[] {
-    return this._encodings;
-  }
-
-  set encodings(value: VegaChannel[]) {
-    const oldValue = this._encodings;
-    this._encodings = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(VegaPointParamImpl.ENCODINGS),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => VegaPointParamImpl.ENCODINGS,
-        merge: () => false
-      });
+  get encodings(): EList<VegaChannel> {
+    if (!this._encodings) {
+      this._encodings = createBasicEList<any>(this, this.eClass().getEStructuralFeature('encodings')!);
     }
+    return this._encodings;
   }
 
   // Reflective API
@@ -217,7 +188,8 @@ export class VegaPointParamImpl extends VegaParamImpl implements VegaPointParam 
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case VegaPointParamImpl.FIELDS:
-        this.fields = newValue as string[];
+        this.fields.clear();
+        this.fields.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       case VegaPointParamImpl.TOGGLE:
@@ -237,7 +209,8 @@ export class VegaPointParamImpl extends VegaParamImpl implements VegaPointParam 
         super.eSet(feature, newValue);
         break;
       case VegaPointParamImpl.ENCODINGS:
-        this.encodings = newValue as VegaChannel[];
+        this.encodings.clear();
+        this.encodings.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       default:
@@ -252,17 +225,17 @@ export class VegaPointParamImpl extends VegaParamImpl implements VegaPointParam 
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case VegaPointParamImpl.FIELDS:
-        return this._fields !== undefined && this._fields.length > 0;
+        return this._fields !== undefined && !this._fields.isEmpty();
       case VegaPointParamImpl.TOGGLE:
-        return this._toggle !== undefined;
+        return this._toggleIsSet;
       case VegaPointParamImpl.NEAREST:
-        return this._nearest !== undefined;
+        return this._nearestIsSet;
       case VegaPointParamImpl.ON:
         return this._on !== undefined;
       case VegaPointParamImpl.CLEAR:
         return this._clear !== undefined;
       case VegaPointParamImpl.ENCODINGS:
-        return this._encodings !== undefined && this._encodings.length > 0;
+        return this._encodings !== undefined && !this._encodings.isEmpty();
       default:
         return super.eIsSet(feature);
     }
@@ -275,13 +248,15 @@ export class VegaPointParamImpl extends VegaParamImpl implements VegaPointParam 
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case VegaPointParamImpl.FIELDS:
-        this._fields = [];
+        if (this._fields) this._fields.clear();
         return;
       case VegaPointParamImpl.TOGGLE:
-        this._toggle = undefined;
+        this._toggle = false;
+        this._toggleIsSet = false;
         return;
       case VegaPointParamImpl.NEAREST:
-        this._nearest = undefined;
+        this._nearest = false;
+        this._nearestIsSet = false;
         return;
       case VegaPointParamImpl.ON:
         this._on = undefined;
@@ -290,7 +265,7 @@ export class VegaPointParamImpl extends VegaParamImpl implements VegaPointParam 
         this._clear = undefined;
         return;
       case VegaPointParamImpl.ENCODINGS:
-        this._encodings = [];
+        if (this._encodings) this._encodings.clear();
         return;
       default:
         super.eUnset(feature);

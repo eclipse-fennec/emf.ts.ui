@@ -5,9 +5,9 @@
  * @generated
  */
 
-import type { EObject, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
-import type { VegaAxisOrient } from './VegaAxisOrient';
-import type { VegaLabelOverlap } from './VegaLabelOverlap';
+import type { EObject, EList, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
+import type { VegaAxisOrient } from './VegaAxisOrient.js';
+import type { VegaLabelOverlap } from './VegaLabelOverlap.js';
 
 /**
  * VegaAxis
@@ -37,7 +37,7 @@ export interface VegaAxis extends EObject {
   tickSize?: number;
   tickColor?: string;
   tickWidth?: number;
-  values: string[];
+  values: EList<string>;
   domainLine?: boolean;
   domainColor?: string;
   domainWidth?: number;

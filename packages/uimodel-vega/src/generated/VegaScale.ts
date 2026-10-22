@@ -5,8 +5,8 @@
  * @generated
  */
 
-import type { EObject, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
-import type { VegaScaleType } from './VegaScaleType';
+import type { EObject, EList, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
+import type { VegaScaleType } from './VegaScaleType.js';
 import type { Expression } from '@emfts/uimodel-composer';
 
 /**
@@ -15,9 +15,9 @@ import type { Expression } from '@emfts/uimodel-composer';
  */
 export interface VegaScale extends EObject {
   type?: VegaScaleType;
-  domain: string[];
+  domain: EList<string>;
   domainExpression?: Expression;
-  range: string[];
+  range: EList<string>;
   scheme?: string;
   zero?: boolean;
   nice?: boolean;

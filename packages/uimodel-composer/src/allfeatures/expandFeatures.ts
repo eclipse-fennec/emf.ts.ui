@@ -23,6 +23,7 @@ import type { UIModelOverlay } from '../generated/UIModelOverlay';
 import { UimodelFactory } from '../generated/UimodelFactory';
 import { evaluateBoolean, evaluateValue } from '../utils/evaluateExpression';
 import { eNum } from '../css/cssEngine';
+import { isSet } from '../utils/isSet';
 
 /** Dedup-Scope: alle Blöcke + explizit gebundene Features eines UIModels. */
 export interface ExpansionContext {
@@ -102,7 +103,7 @@ function isExplicit(block: AllFeatures): boolean {
 
 /** Kandidaten eines Blocks für eine EClass (ohne Konfliktauflösung). */
 export function candidateFeatures(eClass: EClass, block: AllFeatures): EStructuralFeature[] {
-  const all = eClass.getEAllStructuralFeatures();
+  const all = [...eClass.getEAllStructuralFeatures()];
   if (isExplicit(block)) {
     // O4: stilles Leer-Matchen — nur Features, die die Klasse wirklich hat
     const allSet = new Set(all);
@@ -177,7 +178,7 @@ export function assignFeatures(
 }
 
 function matchCase(
-  cases: readonly TemplateCase[] | undefined,
+  cases: Iterable<TemplateCase> | undefined,
   feature: EStructuralFeature
 ): WidgetComponent | undefined {
   for (const templateCase of cases ?? []) {
@@ -225,6 +226,9 @@ export function cloneComponent<T extends EObject>(source: T): T {
   const copy = factory.create(eClass) as T;
   for (const feature of eClass.getEAllStructuralFeatures()) {
     if (feature.isDerived?.() || feature.isChangeable?.() === false) continue;
+    // Nur gesetzte Features kopieren: so bleibt der Set-Zustand
+    // (unsettable-Attribute) am Klon erhalten
+    if (!source.eIsSet(feature)) continue;
     const value = source.eGet(feature);
     if (value === undefined || value === null) continue;
     const containment = isReference(feature) && feature.isContainment();
@@ -324,12 +328,12 @@ export function expandFeatures(
     // Geerbte Widget-Eigenschaften des Blocks (AllFeatures extends
     // WidgetComponent, Issue #4) sind die Default-Konfiguration jedes
     // Treffers; template-/widget-eigene Werte gewinnen.
-    if (widget.label === undefined && block.label !== undefined) widget.label = block.label;
-    if (widget.placeholder === undefined && block.placeholder !== undefined) widget.placeholder = block.placeholder;
-    if (widget.readOnly === undefined && block.readOnly !== undefined) widget.readOnly = block.readOnly;
-    if (widget.required === undefined && block.required !== undefined) widget.required = block.required;
-    if ((widget.styles?.length ?? 0) === 0 && (block.styles?.length ?? 0) > 0) {
-      widget.styles = [...block.styles];
+    if (!isSet(widget, 'label') && isSet(block, 'label')) widget.label = block.label;
+    if (!isSet(widget, 'placeholder') && isSet(block, 'placeholder')) widget.placeholder = block.placeholder;
+    if (!isSet(widget, 'readOnly') && isSet(block, 'readOnly')) widget.readOnly = block.readOnly;
+    if (!isSet(widget, 'required') && isSet(block, 'required')) widget.required = block.required;
+    if (widget.styles.length === 0 && block.styles.length > 0) {
+      widget.styles.addAll([...block.styles]);
     }
     if (!widget.label) widget.label = deriveLabel(featureName);
     if (!widget.group && block.group) widget.group = block.group;
@@ -338,23 +342,22 @@ export function expandFeatures(
     // Konvention: dabei wird eine Required-ValidationExpression
     // generiert, wenn der Prototyp keine eigenen Validations mitbringt —
     // Konsumenten müssen die Pflichtfeld-Prüfung nicht synthetisieren.
-    if (widget.required === undefined && eNum(feature.getLowerBound?.()) >= 1) {
+    if (!isSet(widget, 'required') && eNum(feature.getLowerBound?.()) >= 1) {
       widget.required = true;
-      if ((widget.validations?.length ?? 0) === 0) {
-        widget.validations = [requiredValidationFor(featureName, widget.label)];
+      if (widget.validations.length === 0) {
+        widget.validations.push(requiredValidationFor(featureName, widget.label));
       }
     }
     // Block-Level-Bindings auf jedes erzeugte Widget kopieren —
     // unabhängig vom Erzeugungspfad (Template-Klon oder Typ-Mapping);
     // widget-/template-eigene Bindings gewinnen bei gleichem property.
-    const blockBindings = block.bindings ?? [];
-    if (blockBindings.length > 0) {
-      const own = new Set((widget.bindings ?? []).map((b) => b.property));
-      const inherited = blockBindings
+    if (block.bindings.length > 0) {
+      const own = new Set(widget.bindings.map((b) => b.property));
+      const inherited = block.bindings
         .filter((b) => b.property && !own.has(b.property))
         .map((b) => cloneComponent(b));
       if (inherited.length > 0) {
-        widget.bindings = [...(widget.bindings ?? []), ...inherited];
+        widget.bindings.addAll(inherited);
       }
     }
     widgets.push(widget);

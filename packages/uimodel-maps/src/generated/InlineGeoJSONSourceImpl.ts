@@ -6,10 +6,10 @@
  */
 
 import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { VectorSource } from './VectorSource';
-import { VectorSourceImpl } from './VectorSourceImpl';
-import type { InlineGeoJSONSource } from './InlineGeoJSONSource';
-import { UimodelMapsPackage } from './UimodelMapsPackage';
+import type { VectorSource } from './VectorSource.js';
+import { VectorSourceImpl } from './VectorSourceImpl.js';
+import type { InlineGeoJSONSource } from './InlineGeoJSONSource.js';
+import { UimodelMapsPackage } from './UimodelMapsPackage.js';
 
 /**
  * Implementation of InlineGeoJSONSource

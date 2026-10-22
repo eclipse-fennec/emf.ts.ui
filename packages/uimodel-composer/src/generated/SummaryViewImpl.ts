@@ -5,12 +5,13 @@
  * @generated
  */
 
-import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { Component } from './Component';
-import type { WidgetComponent } from './WidgetComponent';
-import { ComponentImpl } from './ComponentImpl';
-import type { SummaryView } from './SummaryView';
-import { UimodelPackage } from './UimodelPackage';
+import { createContainmentEList } from '@emfts/core';
+import type { EClass, EStructuralFeature, EList, EReference } from '@emfts/core';
+import type { Component } from './Component.js';
+import type { WidgetComponent } from './WidgetComponent.js';
+import { ComponentImpl } from './ComponentImpl.js';
+import type { SummaryView } from './SummaryView.js';
+import { UimodelPackage } from './UimodelPackage.js';
 
 /**
  * Implementation of SummaryView
@@ -21,7 +22,7 @@ export class SummaryViewImpl extends ComponentImpl implements SummaryView {
   static readonly SUMMARY_FIELDS: number = 5;
 
   // Private fields
-  private _summaryFields: WidgetComponent[] = [];
+  private _summaryFields!: EList<WidgetComponent>;
 
   /**
    * Returns the EClass of this object
@@ -31,28 +32,11 @@ export class SummaryViewImpl extends ComponentImpl implements SummaryView {
   }
 
   // Getters and Setters
-  get summaryFields(): WidgetComponent[] {
-    return this._summaryFields;
-  }
-
-  set summaryFields(value: WidgetComponent[]) {
-    const oldValue = this._summaryFields;
-    this._summaryFields = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(SummaryViewImpl.SUMMARY_FIELDS),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => SummaryViewImpl.SUMMARY_FIELDS,
-        merge: () => false
-      });
+  get summaryFields(): EList<WidgetComponent> {
+    if (!this._summaryFields) {
+      this._summaryFields = createContainmentEList<any>(this, this.eClass().getEStructuralFeature('summaryFields') as EReference);
     }
+    return this._summaryFields;
   }
 
   // Reflective API
@@ -77,7 +61,8 @@ export class SummaryViewImpl extends ComponentImpl implements SummaryView {
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case SummaryViewImpl.SUMMARY_FIELDS:
-        this.summaryFields = newValue as WidgetComponent[];
+        this.summaryFields.clear();
+        this.summaryFields.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       default:
@@ -92,7 +77,7 @@ export class SummaryViewImpl extends ComponentImpl implements SummaryView {
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case SummaryViewImpl.SUMMARY_FIELDS:
-        return this._summaryFields !== undefined && this._summaryFields.length > 0;
+        return this._summaryFields !== undefined && !this._summaryFields.isEmpty();
       default:
         return super.eIsSet(feature);
     }
@@ -105,7 +90,7 @@ export class SummaryViewImpl extends ComponentImpl implements SummaryView {
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case SummaryViewImpl.SUMMARY_FIELDS:
-        this._summaryFields = [];
+        if (this._summaryFields) this._summaryFields.clear();
         return;
       default:
         super.eUnset(feature);

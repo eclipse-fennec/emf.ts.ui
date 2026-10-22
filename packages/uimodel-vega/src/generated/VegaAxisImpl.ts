@@ -6,11 +6,12 @@
  */
 
 import { BasicEObject } from '@emfts/core';
-import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { VegaAxisOrient } from './VegaAxisOrient';
-import type { VegaLabelOverlap } from './VegaLabelOverlap';
-import type { VegaAxis } from './VegaAxis';
-import { UimodelVegaPackage } from './UimodelVegaPackage';
+import { createBasicEList } from '@emfts/core';
+import type { EClass, EStructuralFeature, EList, EReference } from '@emfts/core';
+import { VegaAxisOrient } from './VegaAxisOrient.js';
+import { VegaLabelOverlap } from './VegaLabelOverlap.js';
+import type { VegaAxis } from './VegaAxis.js';
+import { UimodelVegaPackage } from './UimodelVegaPackage.js';
 
 /**
  * Implementation of VegaAxis
@@ -51,37 +52,57 @@ export class VegaAxisImpl extends BasicEObject implements VegaAxis {
   static readonly ZINDEX: number = 30;
 
   // Private fields
-  private _orient?: VegaAxisOrient;
+  private _orient: VegaAxisOrient = VegaAxisOrient.TOP;
+  private _orientIsSet = false;
   private _title?: string;
-  private _titleAngle?: number;
+  private _titleAngle: number = 0;
+  private _titleAngleIsSet = false;
   private _titleColor?: string;
-  private _titleFontSize?: number;
+  private _titleFontSize: number = 0;
+  private _titleFontSizeIsSet = false;
   private _titleFont?: string;
-  private _labels?: boolean;
-  private _labelAngle?: number;
+  private _labels: boolean = false;
+  private _labelsIsSet = false;
+  private _labelAngle: number = 0;
+  private _labelAngleIsSet = false;
   private _labelColor?: string;
-  private _labelFontSize?: number;
+  private _labelFontSize: number = 0;
+  private _labelFontSizeIsSet = false;
   private _labelFont?: string;
-  private _labelOverlap?: VegaLabelOverlap;
+  private _labelOverlap: VegaLabelOverlap = VegaLabelOverlap.TRUE;
+  private _labelOverlapIsSet = false;
   private _format?: string;
   private _formatType?: string;
-  private _grid?: boolean;
+  private _grid: boolean = false;
+  private _gridIsSet = false;
   private _gridColor?: string;
-  private _gridOpacity?: number;
-  private _gridWidth?: number;
-  private _ticks?: boolean;
-  private _tickCount?: number;
-  private _tickSize?: number;
+  private _gridOpacity: number = 0;
+  private _gridOpacityIsSet = false;
+  private _gridWidth: number = 0;
+  private _gridWidthIsSet = false;
+  private _ticks: boolean = false;
+  private _ticksIsSet = false;
+  private _tickCount: number = 0;
+  private _tickCountIsSet = false;
+  private _tickSize: number = 0;
+  private _tickSizeIsSet = false;
   private _tickColor?: string;
-  private _tickWidth?: number;
-  private _values: string[] = [];
-  private _domainLine?: boolean;
+  private _tickWidth: number = 0;
+  private _tickWidthIsSet = false;
+  private _values!: EList<string>;
+  private _domainLine: boolean = false;
+  private _domainLineIsSet = false;
   private _domainColor?: string;
-  private _domainWidth?: number;
-  private _offset?: number;
-  private _minExtent?: number;
-  private _maxExtent?: number;
-  private _zindex?: number;
+  private _domainWidth: number = 0;
+  private _domainWidthIsSet = false;
+  private _offset: number = 0;
+  private _offsetIsSet = false;
+  private _minExtent: number = 0;
+  private _minExtentIsSet = false;
+  private _maxExtent: number = 0;
+  private _maxExtentIsSet = false;
+  private _zindex: number = 0;
+  private _zindexIsSet = false;
 
   /**
    * Returns the EClass of this object
@@ -98,6 +119,7 @@ export class VegaAxisImpl extends BasicEObject implements VegaAxis {
   set orient(value: VegaAxisOrient) {
     const oldValue = this._orient;
     this._orient = value;
+    this._orientIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -146,6 +168,7 @@ export class VegaAxisImpl extends BasicEObject implements VegaAxis {
   set titleAngle(value: number) {
     const oldValue = this._titleAngle;
     this._titleAngle = value;
+    this._titleAngleIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -194,6 +217,7 @@ export class VegaAxisImpl extends BasicEObject implements VegaAxis {
   set titleFontSize(value: number) {
     const oldValue = this._titleFontSize;
     this._titleFontSize = value;
+    this._titleFontSizeIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -242,6 +266,7 @@ export class VegaAxisImpl extends BasicEObject implements VegaAxis {
   set labels(value: boolean) {
     const oldValue = this._labels;
     this._labels = value;
+    this._labelsIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -266,6 +291,7 @@ export class VegaAxisImpl extends BasicEObject implements VegaAxis {
   set labelAngle(value: number) {
     const oldValue = this._labelAngle;
     this._labelAngle = value;
+    this._labelAngleIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -314,6 +340,7 @@ export class VegaAxisImpl extends BasicEObject implements VegaAxis {
   set labelFontSize(value: number) {
     const oldValue = this._labelFontSize;
     this._labelFontSize = value;
+    this._labelFontSizeIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -362,6 +389,7 @@ export class VegaAxisImpl extends BasicEObject implements VegaAxis {
   set labelOverlap(value: VegaLabelOverlap) {
     const oldValue = this._labelOverlap;
     this._labelOverlap = value;
+    this._labelOverlapIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -434,6 +462,7 @@ export class VegaAxisImpl extends BasicEObject implements VegaAxis {
   set grid(value: boolean) {
     const oldValue = this._grid;
     this._grid = value;
+    this._gridIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -482,6 +511,7 @@ export class VegaAxisImpl extends BasicEObject implements VegaAxis {
   set gridOpacity(value: number) {
     const oldValue = this._gridOpacity;
     this._gridOpacity = value;
+    this._gridOpacityIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -506,6 +536,7 @@ export class VegaAxisImpl extends BasicEObject implements VegaAxis {
   set gridWidth(value: number) {
     const oldValue = this._gridWidth;
     this._gridWidth = value;
+    this._gridWidthIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -530,6 +561,7 @@ export class VegaAxisImpl extends BasicEObject implements VegaAxis {
   set ticks(value: boolean) {
     const oldValue = this._ticks;
     this._ticks = value;
+    this._ticksIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -554,6 +586,7 @@ export class VegaAxisImpl extends BasicEObject implements VegaAxis {
   set tickCount(value: number) {
     const oldValue = this._tickCount;
     this._tickCount = value;
+    this._tickCountIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -578,6 +611,7 @@ export class VegaAxisImpl extends BasicEObject implements VegaAxis {
   set tickSize(value: number) {
     const oldValue = this._tickSize;
     this._tickSize = value;
+    this._tickSizeIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -626,6 +660,7 @@ export class VegaAxisImpl extends BasicEObject implements VegaAxis {
   set tickWidth(value: number) {
     const oldValue = this._tickWidth;
     this._tickWidth = value;
+    this._tickWidthIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -643,28 +678,11 @@ export class VegaAxisImpl extends BasicEObject implements VegaAxis {
     }
   }
 
-  get values(): string[] {
-    return this._values;
-  }
-
-  set values(value: string[]) {
-    const oldValue = this._values;
-    this._values = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(VegaAxisImpl.VALUES),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => VegaAxisImpl.VALUES,
-        merge: () => false
-      });
+  get values(): EList<string> {
+    if (!this._values) {
+      this._values = createBasicEList<any>(this, this.eClass().getEStructuralFeature('values')!);
     }
+    return this._values;
   }
 
   get domainLine(): boolean {
@@ -674,6 +692,7 @@ export class VegaAxisImpl extends BasicEObject implements VegaAxis {
   set domainLine(value: boolean) {
     const oldValue = this._domainLine;
     this._domainLine = value;
+    this._domainLineIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -722,6 +741,7 @@ export class VegaAxisImpl extends BasicEObject implements VegaAxis {
   set domainWidth(value: number) {
     const oldValue = this._domainWidth;
     this._domainWidth = value;
+    this._domainWidthIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -746,6 +766,7 @@ export class VegaAxisImpl extends BasicEObject implements VegaAxis {
   set offset(value: number) {
     const oldValue = this._offset;
     this._offset = value;
+    this._offsetIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -770,6 +791,7 @@ export class VegaAxisImpl extends BasicEObject implements VegaAxis {
   set minExtent(value: number) {
     const oldValue = this._minExtent;
     this._minExtent = value;
+    this._minExtentIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -794,6 +816,7 @@ export class VegaAxisImpl extends BasicEObject implements VegaAxis {
   set maxExtent(value: number) {
     const oldValue = this._maxExtent;
     this._maxExtent = value;
+    this._maxExtentIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -818,6 +841,7 @@ export class VegaAxisImpl extends BasicEObject implements VegaAxis {
   set zindex(value: number) {
     const oldValue = this._zindex;
     this._zindex = value;
+    this._zindexIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -1009,7 +1033,8 @@ export class VegaAxisImpl extends BasicEObject implements VegaAxis {
         super.eSet(feature, newValue);
         break;
       case VegaAxisImpl.VALUES:
-        this.values = newValue as string[];
+        this.values.clear();
+        this.values.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       case VegaAxisImpl.DOMAIN_LINE:
@@ -1052,67 +1077,67 @@ export class VegaAxisImpl extends BasicEObject implements VegaAxis {
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case VegaAxisImpl.ORIENT:
-        return this._orient !== undefined;
+        return this._orientIsSet;
       case VegaAxisImpl.TITLE:
         return this._title !== undefined;
       case VegaAxisImpl.TITLE_ANGLE:
-        return this._titleAngle !== undefined;
+        return this._titleAngleIsSet;
       case VegaAxisImpl.TITLE_COLOR:
         return this._titleColor !== undefined;
       case VegaAxisImpl.TITLE_FONT_SIZE:
-        return this._titleFontSize !== undefined;
+        return this._titleFontSizeIsSet;
       case VegaAxisImpl.TITLE_FONT:
         return this._titleFont !== undefined;
       case VegaAxisImpl.LABELS:
-        return this._labels !== undefined;
+        return this._labelsIsSet;
       case VegaAxisImpl.LABEL_ANGLE:
-        return this._labelAngle !== undefined;
+        return this._labelAngleIsSet;
       case VegaAxisImpl.LABEL_COLOR:
         return this._labelColor !== undefined;
       case VegaAxisImpl.LABEL_FONT_SIZE:
-        return this._labelFontSize !== undefined;
+        return this._labelFontSizeIsSet;
       case VegaAxisImpl.LABEL_FONT:
         return this._labelFont !== undefined;
       case VegaAxisImpl.LABEL_OVERLAP:
-        return this._labelOverlap !== undefined;
+        return this._labelOverlapIsSet;
       case VegaAxisImpl.FORMAT:
         return this._format !== undefined;
       case VegaAxisImpl.FORMAT_TYPE:
         return this._formatType !== undefined;
       case VegaAxisImpl.GRID:
-        return this._grid !== undefined;
+        return this._gridIsSet;
       case VegaAxisImpl.GRID_COLOR:
         return this._gridColor !== undefined;
       case VegaAxisImpl.GRID_OPACITY:
-        return this._gridOpacity !== undefined;
+        return this._gridOpacityIsSet;
       case VegaAxisImpl.GRID_WIDTH:
-        return this._gridWidth !== undefined;
+        return this._gridWidthIsSet;
       case VegaAxisImpl.TICKS:
-        return this._ticks !== undefined;
+        return this._ticksIsSet;
       case VegaAxisImpl.TICK_COUNT:
-        return this._tickCount !== undefined;
+        return this._tickCountIsSet;
       case VegaAxisImpl.TICK_SIZE:
-        return this._tickSize !== undefined;
+        return this._tickSizeIsSet;
       case VegaAxisImpl.TICK_COLOR:
         return this._tickColor !== undefined;
       case VegaAxisImpl.TICK_WIDTH:
-        return this._tickWidth !== undefined;
+        return this._tickWidthIsSet;
       case VegaAxisImpl.VALUES:
-        return this._values !== undefined && this._values.length > 0;
+        return this._values !== undefined && !this._values.isEmpty();
       case VegaAxisImpl.DOMAIN_LINE:
-        return this._domainLine !== undefined;
+        return this._domainLineIsSet;
       case VegaAxisImpl.DOMAIN_COLOR:
         return this._domainColor !== undefined;
       case VegaAxisImpl.DOMAIN_WIDTH:
-        return this._domainWidth !== undefined;
+        return this._domainWidthIsSet;
       case VegaAxisImpl.OFFSET:
-        return this._offset !== undefined;
+        return this._offsetIsSet;
       case VegaAxisImpl.MIN_EXTENT:
-        return this._minExtent !== undefined;
+        return this._minExtentIsSet;
       case VegaAxisImpl.MAX_EXTENT:
-        return this._maxExtent !== undefined;
+        return this._maxExtentIsSet;
       case VegaAxisImpl.ZINDEX:
-        return this._zindex !== undefined;
+        return this._zindexIsSet;
       default:
         return super.eIsSet(feature);
     }
@@ -1125,40 +1150,47 @@ export class VegaAxisImpl extends BasicEObject implements VegaAxis {
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case VegaAxisImpl.ORIENT:
-        this._orient = undefined;
+        this._orient = VegaAxisOrient.TOP;
+        this._orientIsSet = false;
         return;
       case VegaAxisImpl.TITLE:
         this._title = undefined;
         return;
       case VegaAxisImpl.TITLE_ANGLE:
-        this._titleAngle = undefined;
+        this._titleAngle = 0;
+        this._titleAngleIsSet = false;
         return;
       case VegaAxisImpl.TITLE_COLOR:
         this._titleColor = undefined;
         return;
       case VegaAxisImpl.TITLE_FONT_SIZE:
-        this._titleFontSize = undefined;
+        this._titleFontSize = 0;
+        this._titleFontSizeIsSet = false;
         return;
       case VegaAxisImpl.TITLE_FONT:
         this._titleFont = undefined;
         return;
       case VegaAxisImpl.LABELS:
-        this._labels = undefined;
+        this._labels = false;
+        this._labelsIsSet = false;
         return;
       case VegaAxisImpl.LABEL_ANGLE:
-        this._labelAngle = undefined;
+        this._labelAngle = 0;
+        this._labelAngleIsSet = false;
         return;
       case VegaAxisImpl.LABEL_COLOR:
         this._labelColor = undefined;
         return;
       case VegaAxisImpl.LABEL_FONT_SIZE:
-        this._labelFontSize = undefined;
+        this._labelFontSize = 0;
+        this._labelFontSizeIsSet = false;
         return;
       case VegaAxisImpl.LABEL_FONT:
         this._labelFont = undefined;
         return;
       case VegaAxisImpl.LABEL_OVERLAP:
-        this._labelOverlap = undefined;
+        this._labelOverlap = VegaLabelOverlap.TRUE;
+        this._labelOverlapIsSet = false;
         return;
       case VegaAxisImpl.FORMAT:
         this._format = undefined;
@@ -1167,55 +1199,68 @@ export class VegaAxisImpl extends BasicEObject implements VegaAxis {
         this._formatType = undefined;
         return;
       case VegaAxisImpl.GRID:
-        this._grid = undefined;
+        this._grid = false;
+        this._gridIsSet = false;
         return;
       case VegaAxisImpl.GRID_COLOR:
         this._gridColor = undefined;
         return;
       case VegaAxisImpl.GRID_OPACITY:
-        this._gridOpacity = undefined;
+        this._gridOpacity = 0;
+        this._gridOpacityIsSet = false;
         return;
       case VegaAxisImpl.GRID_WIDTH:
-        this._gridWidth = undefined;
+        this._gridWidth = 0;
+        this._gridWidthIsSet = false;
         return;
       case VegaAxisImpl.TICKS:
-        this._ticks = undefined;
+        this._ticks = false;
+        this._ticksIsSet = false;
         return;
       case VegaAxisImpl.TICK_COUNT:
-        this._tickCount = undefined;
+        this._tickCount = 0;
+        this._tickCountIsSet = false;
         return;
       case VegaAxisImpl.TICK_SIZE:
-        this._tickSize = undefined;
+        this._tickSize = 0;
+        this._tickSizeIsSet = false;
         return;
       case VegaAxisImpl.TICK_COLOR:
         this._tickColor = undefined;
         return;
       case VegaAxisImpl.TICK_WIDTH:
-        this._tickWidth = undefined;
+        this._tickWidth = 0;
+        this._tickWidthIsSet = false;
         return;
       case VegaAxisImpl.VALUES:
-        this._values = [];
+        if (this._values) this._values.clear();
         return;
       case VegaAxisImpl.DOMAIN_LINE:
-        this._domainLine = undefined;
+        this._domainLine = false;
+        this._domainLineIsSet = false;
         return;
       case VegaAxisImpl.DOMAIN_COLOR:
         this._domainColor = undefined;
         return;
       case VegaAxisImpl.DOMAIN_WIDTH:
-        this._domainWidth = undefined;
+        this._domainWidth = 0;
+        this._domainWidthIsSet = false;
         return;
       case VegaAxisImpl.OFFSET:
-        this._offset = undefined;
+        this._offset = 0;
+        this._offsetIsSet = false;
         return;
       case VegaAxisImpl.MIN_EXTENT:
-        this._minExtent = undefined;
+        this._minExtent = 0;
+        this._minExtentIsSet = false;
         return;
       case VegaAxisImpl.MAX_EXTENT:
-        this._maxExtent = undefined;
+        this._maxExtent = 0;
+        this._maxExtentIsSet = false;
         return;
       case VegaAxisImpl.ZINDEX:
-        this._zindex = undefined;
+        this._zindex = 0;
+        this._zindexIsSet = false;
         return;
       default:
         super.eUnset(feature);

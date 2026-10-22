@@ -6,12 +6,12 @@
  */
 
 import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { VegaSpec } from './VegaSpec';
-import type { VegaFieldType } from './VegaFieldType';
-import { VegaSortOrder } from './VegaSortOrder';
-import { VegaSpecImpl } from './VegaSpecImpl';
-import type { VegaFacetSpec } from './VegaFacetSpec';
-import { UimodelVegaPackage } from './UimodelVegaPackage';
+import type { VegaSpec } from './VegaSpec.js';
+import { VegaFieldType } from './VegaFieldType.js';
+import { VegaSortOrder } from './VegaSortOrder.js';
+import { VegaSpecImpl } from './VegaSpecImpl.js';
+import type { VegaFacetSpec } from './VegaFacetSpec.js';
+import { UimodelVegaPackage } from './UimodelVegaPackage.js';
 
 /**
  * Implementation of VegaFacetSpec
@@ -27,8 +27,10 @@ export class VegaFacetSpecImpl extends VegaSpecImpl implements VegaFacetSpec {
 
   // Private fields
   private _facetField?: EStructuralFeature;
-  private _facetFieldType?: VegaFieldType;
-  private _columns?: number;
+  private _facetFieldType: VegaFieldType = VegaFieldType.QUANTITATIVE;
+  private _facetFieldTypeIsSet = false;
+  private _columns: number = 0;
+  private _columnsIsSet = false;
   private _facetSort: VegaSortOrder = VegaSortOrder.ASCENDING;
   private _spec?: VegaSpec;
 
@@ -71,6 +73,7 @@ export class VegaFacetSpecImpl extends VegaSpecImpl implements VegaFacetSpec {
   set facetFieldType(value: VegaFieldType) {
     const oldValue = this._facetFieldType;
     this._facetFieldType = value;
+    this._facetFieldTypeIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -95,6 +98,7 @@ export class VegaFacetSpecImpl extends VegaSpecImpl implements VegaFacetSpec {
   set columns(value: number) {
     const oldValue = this._columns;
     this._columns = value;
+    this._columnsIsSet = true;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -223,9 +227,9 @@ export class VegaFacetSpecImpl extends VegaSpecImpl implements VegaFacetSpec {
       case VegaFacetSpecImpl.FACET_FIELD:
         return this._facetField !== undefined;
       case VegaFacetSpecImpl.FACET_FIELD_TYPE:
-        return this._facetFieldType !== undefined;
+        return this._facetFieldTypeIsSet;
       case VegaFacetSpecImpl.COLUMNS:
-        return this._columns !== undefined;
+        return this._columnsIsSet;
       case VegaFacetSpecImpl.FACET_SORT:
         return this._facetSort !== VegaSortOrder.ASCENDING;
       case VegaFacetSpecImpl.SPEC:
@@ -245,10 +249,12 @@ export class VegaFacetSpecImpl extends VegaSpecImpl implements VegaFacetSpec {
         this._facetField = undefined;
         return;
       case VegaFacetSpecImpl.FACET_FIELD_TYPE:
-        this._facetFieldType = undefined;
+        this._facetFieldType = VegaFieldType.QUANTITATIVE;
+        this._facetFieldTypeIsSet = false;
         return;
       case VegaFacetSpecImpl.COLUMNS:
-        this._columns = undefined;
+        this._columns = 0;
+        this._columnsIsSet = false;
         return;
       case VegaFacetSpecImpl.FACET_SORT:
         this._facetSort = VegaSortOrder.ASCENDING;

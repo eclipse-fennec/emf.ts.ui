@@ -6,11 +6,11 @@
  */
 
 import type { EObject, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
-import type { VegaMarkType } from './VegaMarkType';
-import type { VegaInterpolate } from './VegaInterpolate';
-import type { VegaOrientation } from './VegaOrientation';
-import type { VegaAlign } from './VegaAlign';
-import type { VegaBaseline } from './VegaBaseline';
+import type { VegaMarkType } from './VegaMarkType.js';
+import type { VegaInterpolate } from './VegaInterpolate.js';
+import type { VegaOrientation } from './VegaOrientation.js';
+import type { VegaAlign } from './VegaAlign.js';
+import type { VegaBaseline } from './VegaBaseline.js';
 
 /**
  * VegaMarkDef

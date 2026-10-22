@@ -5,12 +5,13 @@
  * @generated
  */
 
-import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { VegaSpec } from './VegaSpec';
-import type { VegaEncoding } from './VegaEncoding';
-import { VegaSpecImpl } from './VegaSpecImpl';
-import type { VegaLayerSpec } from './VegaLayerSpec';
-import { UimodelVegaPackage } from './UimodelVegaPackage';
+import { createContainmentEList } from '@emfts/core';
+import type { EClass, EStructuralFeature, EList, EReference } from '@emfts/core';
+import type { VegaSpec } from './VegaSpec.js';
+import type { VegaEncoding } from './VegaEncoding.js';
+import { VegaSpecImpl } from './VegaSpecImpl.js';
+import type { VegaLayerSpec } from './VegaLayerSpec.js';
+import { UimodelVegaPackage } from './UimodelVegaPackage.js';
 
 /**
  * Implementation of VegaLayerSpec
@@ -22,8 +23,8 @@ export class VegaLayerSpecImpl extends VegaSpecImpl implements VegaLayerSpec {
   static readonly ENCODINGS: number = 2;
 
   // Private fields
-  private _layers: VegaSpec[] = [];
-  private _encodings: VegaEncoding[] = [];
+  private _layers!: EList<VegaSpec>;
+  private _encodings!: EList<VegaEncoding>;
 
   /**
    * Returns the EClass of this object
@@ -33,52 +34,18 @@ export class VegaLayerSpecImpl extends VegaSpecImpl implements VegaLayerSpec {
   }
 
   // Getters and Setters
-  get layers(): VegaSpec[] {
+  get layers(): EList<VegaSpec> {
+    if (!this._layers) {
+      this._layers = createContainmentEList<any>(this, this.eClass().getEStructuralFeature('layers') as EReference);
+    }
     return this._layers;
   }
 
-  set layers(value: VegaSpec[]) {
-    const oldValue = this._layers;
-    this._layers = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(VegaLayerSpecImpl.LAYERS),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => VegaLayerSpecImpl.LAYERS,
-        merge: () => false
-      });
+  get encodings(): EList<VegaEncoding> {
+    if (!this._encodings) {
+      this._encodings = createContainmentEList<any>(this, this.eClass().getEStructuralFeature('encodings') as EReference);
     }
-  }
-
-  get encodings(): VegaEncoding[] {
     return this._encodings;
-  }
-
-  set encodings(value: VegaEncoding[]) {
-    const oldValue = this._encodings;
-    this._encodings = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(VegaLayerSpecImpl.ENCODINGS),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => VegaLayerSpecImpl.ENCODINGS,
-        merge: () => false
-      });
-    }
   }
 
   // Reflective API
@@ -105,11 +72,13 @@ export class VegaLayerSpecImpl extends VegaSpecImpl implements VegaLayerSpec {
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case VegaLayerSpecImpl.LAYERS:
-        this.layers = newValue as VegaSpec[];
+        this.layers.clear();
+        this.layers.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       case VegaLayerSpecImpl.ENCODINGS:
-        this.encodings = newValue as VegaEncoding[];
+        this.encodings.clear();
+        this.encodings.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       default:
@@ -124,9 +93,9 @@ export class VegaLayerSpecImpl extends VegaSpecImpl implements VegaLayerSpec {
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case VegaLayerSpecImpl.LAYERS:
-        return this._layers !== undefined && this._layers.length > 0;
+        return this._layers !== undefined && !this._layers.isEmpty();
       case VegaLayerSpecImpl.ENCODINGS:
-        return this._encodings !== undefined && this._encodings.length > 0;
+        return this._encodings !== undefined && !this._encodings.isEmpty();
       default:
         return super.eIsSet(feature);
     }
@@ -139,10 +108,10 @@ export class VegaLayerSpecImpl extends VegaSpecImpl implements VegaLayerSpec {
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case VegaLayerSpecImpl.LAYERS:
-        this._layers = [];
+        if (this._layers) this._layers.clear();
         return;
       case VegaLayerSpecImpl.ENCODINGS:
-        this._encodings = [];
+        if (this._encodings) this._encodings.clear();
         return;
       default:
         super.eUnset(feature);

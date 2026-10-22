@@ -6,10 +6,11 @@
  */
 
 import { BasicEObject } from '@emfts/core';
-import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { BaseStyle } from './BaseStyle';
-import type { Component } from './Component';
-import { UimodelPackage } from './UimodelPackage';
+import { createEObjectEList } from '@emfts/core';
+import type { EClass, EStructuralFeature, EList, EReference } from '@emfts/core';
+import type { BaseStyle } from './BaseStyle.js';
+import type { Component } from './Component.js';
+import { UimodelPackage } from './UimodelPackage.js';
 
 /**
  * Implementation of Component
@@ -24,11 +25,11 @@ export abstract class ComponentImpl extends BasicEObject implements Component {
   static readonly CHILDREN: number = 4;
 
   // Private fields
-  private _name: string = "";
+  private _name?: string;
   private _group?: string;
-  private _targetClasses: EClass[] = [];
-  private _styles: BaseStyle[] = [];
-  private _children: Component[] = [];
+  private _targetClasses!: EList<EClass>;
+  private _styles!: EList<BaseStyle>;
+  private _children!: EList<Component>;
 
   /**
    * Returns the EClass of this object
@@ -86,76 +87,25 @@ export abstract class ComponentImpl extends BasicEObject implements Component {
     }
   }
 
-  get targetClasses(): EClass[] {
+  get targetClasses(): EList<EClass> {
+    if (!this._targetClasses) {
+      this._targetClasses = createEObjectEList(this, this.eClass().getEStructuralFeature('targetClasses') as EReference) as unknown as EList<EClass>;
+    }
     return this._targetClasses;
   }
 
-  set targetClasses(value: EClass[]) {
-    const oldValue = this._targetClasses;
-    this._targetClasses = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(ComponentImpl.TARGET_CLASSES),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => ComponentImpl.TARGET_CLASSES,
-        merge: () => false
-      });
+  get styles(): EList<BaseStyle> {
+    if (!this._styles) {
+      this._styles = createEObjectEList(this, this.eClass().getEStructuralFeature('styles') as EReference) as unknown as EList<BaseStyle>;
     }
-  }
-
-  get styles(): BaseStyle[] {
     return this._styles;
   }
 
-  set styles(value: BaseStyle[]) {
-    const oldValue = this._styles;
-    this._styles = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(ComponentImpl.STYLES),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => ComponentImpl.STYLES,
-        merge: () => false
-      });
+  get children(): EList<Component> {
+    if (!this._children) {
+      this._children = createEObjectEList(this, this.eClass().getEStructuralFeature('children') as EReference) as unknown as EList<Component>;
     }
-  }
-
-  get children(): Component[] {
     return this._children;
-  }
-
-  set children(value: Component[]) {
-    const oldValue = this._children;
-    this._children = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(ComponentImpl.CHILDREN),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => ComponentImpl.CHILDREN,
-        merge: () => false
-      });
-    }
   }
 
   // Reflective API
@@ -196,15 +146,18 @@ export abstract class ComponentImpl extends BasicEObject implements Component {
         super.eSet(feature, newValue);
         break;
       case ComponentImpl.TARGET_CLASSES:
-        this.targetClasses = newValue as EClass[];
+        this.targetClasses.clear();
+        this.targetClasses.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       case ComponentImpl.STYLES:
-        this.styles = newValue as BaseStyle[];
+        this.styles.clear();
+        this.styles.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       case ComponentImpl.CHILDREN:
-        this.children = newValue as Component[];
+        this.children.clear();
+        this.children.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       default:
@@ -219,15 +172,15 @@ export abstract class ComponentImpl extends BasicEObject implements Component {
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case ComponentImpl.NAME:
-        return this._name !== "";
+        return this._name !== undefined;
       case ComponentImpl.GROUP:
         return this._group !== undefined;
       case ComponentImpl.TARGET_CLASSES:
-        return this._targetClasses !== undefined && this._targetClasses.length > 0;
+        return this._targetClasses !== undefined && !this._targetClasses.isEmpty();
       case ComponentImpl.STYLES:
-        return this._styles !== undefined && this._styles.length > 0;
+        return this._styles !== undefined && !this._styles.isEmpty();
       case ComponentImpl.CHILDREN:
-        return this._children !== undefined && this._children.length > 0;
+        return this._children !== undefined && !this._children.isEmpty();
       default:
         return super.eIsSet(feature);
     }
@@ -240,19 +193,19 @@ export abstract class ComponentImpl extends BasicEObject implements Component {
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case ComponentImpl.NAME:
-        this._name = "";
+        this._name = undefined;
         return;
       case ComponentImpl.GROUP:
         this._group = undefined;
         return;
       case ComponentImpl.TARGET_CLASSES:
-        this._targetClasses = [];
+        if (this._targetClasses) this._targetClasses.clear();
         return;
       case ComponentImpl.STYLES:
-        this._styles = [];
+        if (this._styles) this._styles.clear();
         return;
       case ComponentImpl.CHILDREN:
-        this._children = [];
+        if (this._children) this._children.clear();
         return;
       default:
         super.eUnset(feature);

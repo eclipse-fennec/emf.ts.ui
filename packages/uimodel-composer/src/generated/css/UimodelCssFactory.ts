@@ -7,23 +7,23 @@
 
 import { BasicEFactory } from '@emfts/core';
 import type { EClass, EObject } from '@emfts/core';
-import { UimodelCssPackage } from './UimodelCssPackage';
-import type { StyleSheet } from './StyleSheet';
-import { StyleSheetImpl } from './StyleSheetImpl';
-import type { DesignToken } from './DesignToken';
-import { DesignTokenImpl } from './DesignTokenImpl';
-import type { Theme } from './Theme';
-import { ThemeImpl } from './ThemeImpl';
-import type { TokenOverride } from './TokenOverride';
-import { TokenOverrideImpl } from './TokenOverrideImpl';
-import type { CssDeclaration } from './CssDeclaration';
-import { CssDeclarationImpl } from './CssDeclarationImpl';
-import type { CssState } from './CssState';
-import { CssStateImpl } from './CssStateImpl';
-import type { CssStyle } from './CssStyle';
-import { CssStyleImpl } from './CssStyleImpl';
-import type { StyleRule } from './StyleRule';
-import { StyleRuleImpl } from './StyleRuleImpl';
+import { UimodelCssPackage } from './UimodelCssPackage.js';
+import type { StyleSheet } from './StyleSheet.js';
+import { StyleSheetImpl } from './StyleSheetImpl.js';
+import type { DesignToken } from './DesignToken.js';
+import { DesignTokenImpl } from './DesignTokenImpl.js';
+import type { Theme } from './Theme.js';
+import { ThemeImpl } from './ThemeImpl.js';
+import type { TokenOverride } from './TokenOverride.js';
+import { TokenOverrideImpl } from './TokenOverrideImpl.js';
+import type { CssDeclaration } from './CssDeclaration.js';
+import { CssDeclarationImpl } from './CssDeclarationImpl.js';
+import type { CssState } from './CssState.js';
+import { CssStateImpl } from './CssStateImpl.js';
+import type { CssStyle } from './CssStyle.js';
+import { CssStyleImpl } from './CssStyleImpl.js';
+import type { StyleRule } from './StyleRule.js';
+import { StyleRuleImpl } from './StyleRuleImpl.js';
 
 /**
  * Factory for creating UimodelCss model objects

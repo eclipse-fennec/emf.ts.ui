@@ -5,10 +5,10 @@
  * @generated
  */
 
-import type { EObject, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
-import type { VegaSpec } from './VegaSpec';
-import type { VegaMarkDef } from './VegaMarkDef';
-import type { VegaEncoding } from './VegaEncoding';
+import type { EObject, EList, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
+import type { VegaSpec } from './VegaSpec.js';
+import type { VegaMarkDef } from './VegaMarkDef.js';
+import type { VegaEncoding } from './VegaEncoding.js';
 
 /**
  * VegaUnitSpec
@@ -16,6 +16,6 @@ import type { VegaEncoding } from './VegaEncoding';
  */
 export interface VegaUnitSpec extends VegaSpec {
   mark: VegaMarkDef;
-  encodings: VegaEncoding[];
+  encodings: EList<VegaEncoding>;
 
 }

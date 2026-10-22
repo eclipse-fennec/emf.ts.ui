@@ -7,8 +7,8 @@
 
 import { BasicEObject } from '@emfts/core';
 import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { VectorSource } from './VectorSource';
-import { UimodelMapsPackage } from './UimodelMapsPackage';
+import type { VectorSource } from './VectorSource.js';
+import { UimodelMapsPackage } from './UimodelMapsPackage.js';
 
 /**
  * Implementation of VectorSource

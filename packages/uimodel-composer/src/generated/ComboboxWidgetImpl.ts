@@ -6,11 +6,11 @@
  */
 
 import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { WidgetComponent } from './WidgetComponent';
-import type { Expression } from './Expression';
-import { WidgetComponentImpl } from './WidgetComponentImpl';
-import type { ComboboxWidget } from './ComboboxWidget';
-import { UimodelPackage } from './UimodelPackage';
+import type { WidgetComponent } from './WidgetComponent.js';
+import type { Expression } from './Expression.js';
+import { WidgetComponentImpl } from './WidgetComponentImpl.js';
+import type { ComboboxWidget } from './ComboboxWidget.js';
+import { UimodelPackage } from './UimodelPackage.js';
 
 /**
  * Implementation of ComboboxWidget
@@ -25,7 +25,7 @@ export class ComboboxWidgetImpl extends WidgetComponentImpl implements ComboboxW
   // Private fields
   private _optionLabel?: Expression;
   private _minSearchLength: number = 2;
-  private _multiSelect?: boolean;
+  private _multiSelect: boolean = false;
 
   /**
    * Returns the EClass of this object
@@ -160,7 +160,7 @@ export class ComboboxWidgetImpl extends WidgetComponentImpl implements ComboboxW
       case ComboboxWidgetImpl.MIN_SEARCH_LENGTH:
         return this._minSearchLength !== 2;
       case ComboboxWidgetImpl.MULTI_SELECT:
-        return this._multiSelect !== undefined;
+        return this._multiSelect !== false;
       default:
         return super.eIsSet(feature);
     }
@@ -179,7 +179,7 @@ export class ComboboxWidgetImpl extends WidgetComponentImpl implements ComboboxW
         this._minSearchLength = 2;
         return;
       case ComboboxWidgetImpl.MULTI_SELECT:
-        this._multiSelect = undefined;
+        this._multiSelect = false;
         return;
       default:
         super.eUnset(feature);

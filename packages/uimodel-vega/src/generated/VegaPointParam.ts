@@ -5,20 +5,20 @@
  * @generated
  */
 
-import type { EObject, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
-import type { VegaParam } from './VegaParam';
-import type { VegaChannel } from './VegaChannel';
+import type { EObject, EList, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
+import type { VegaParam } from './VegaParam.js';
+import type { VegaChannel } from './VegaChannel.js';
 
 /**
  * VegaPointParam
  * @generated
  */
 export interface VegaPointParam extends VegaParam {
-  fields: string[];
+  fields: EList<string>;
   toggle?: boolean;
   nearest?: boolean;
   on?: string;
   clear?: string;
-  encodings: VegaChannel[];
+  encodings: EList<VegaChannel>;
 
 }

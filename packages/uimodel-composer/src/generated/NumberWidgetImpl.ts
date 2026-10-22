@@ -6,10 +6,10 @@
  */
 
 import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { WidgetComponent } from './WidgetComponent';
-import { WidgetComponentImpl } from './WidgetComponentImpl';
-import type { NumberWidget } from './NumberWidget';
-import { UimodelPackage } from './UimodelPackage';
+import type { WidgetComponent } from './WidgetComponent.js';
+import { WidgetComponentImpl } from './WidgetComponentImpl.js';
+import type { NumberWidget } from './NumberWidget.js';
+import { UimodelPackage } from './UimodelPackage.js';
 
 /**
  * Implementation of NumberWidget
@@ -23,10 +23,10 @@ export class NumberWidgetImpl extends WidgetComponentImpl implements NumberWidge
   static readonly VALUE: number = 17;
 
   // Private fields
-  private _min?: number;
-  private _max?: number;
+  private _min: number = 0;
+  private _max: number = 0;
   private _step: number = 1;
-  private _value?: number;
+  private _value: number = 0;
 
   /**
    * Returns the EClass of this object
@@ -187,13 +187,13 @@ export class NumberWidgetImpl extends WidgetComponentImpl implements NumberWidge
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case NumberWidgetImpl.MIN:
-        return this._min !== undefined;
+        return this._min !== 0;
       case NumberWidgetImpl.MAX:
-        return this._max !== undefined;
+        return this._max !== 0;
       case NumberWidgetImpl.STEP:
         return this._step !== 1;
       case NumberWidgetImpl.VALUE:
-        return this._value !== undefined;
+        return this._value !== 0;
       default:
         return super.eIsSet(feature);
     }
@@ -206,16 +206,16 @@ export class NumberWidgetImpl extends WidgetComponentImpl implements NumberWidge
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case NumberWidgetImpl.MIN:
-        this._min = undefined;
+        this._min = 0;
         return;
       case NumberWidgetImpl.MAX:
-        this._max = undefined;
+        this._max = 0;
         return;
       case NumberWidgetImpl.STEP:
         this._step = 1;
         return;
       case NumberWidgetImpl.VALUE:
-        this._value = undefined;
+        this._value = 0;
         return;
       default:
         super.eUnset(feature);

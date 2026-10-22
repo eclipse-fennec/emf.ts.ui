@@ -6,8 +6,8 @@
  */
 
 import type { EObject, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
-import type { Renderer } from './Renderer';
-import type { Symbol } from './Symbol';
+import type { Renderer } from './Renderer.js';
+import type { Symbol } from './Symbol.js';
 
 /**
  * SingleSymbolRenderer

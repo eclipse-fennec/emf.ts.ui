@@ -5,7 +5,7 @@
  * @generated
  */
 
-import type { EObject, EStructuralFeature, BasicEObject, EClass } from '@emfts/core';
+import type { EObject, EList, EStructuralFeature, BasicEObject, EClass } from '@emfts/core';
 
 /**
  * VegaLookupData
@@ -14,6 +14,6 @@ import type { EObject, EStructuralFeature, BasicEObject, EClass } from '@emfts/c
 export interface VegaLookupData extends EObject {
   feature: EStructuralFeature;
   key: EStructuralFeature;
-  fields: string[];
+  fields: EList<string>;
 
 }

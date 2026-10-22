@@ -6,8 +6,8 @@
  */
 
 import type { EObject, EStructuralFeature, BasicEObject, EClass } from '@emfts/core';
-import type { BaseStyle } from './BaseStyle';
-import type { WidgetType } from './WidgetType';
+import type { BaseStyle } from './BaseStyle.js';
+import type { WidgetType } from './WidgetType.js';
 
 /**
  * WidgetStyle

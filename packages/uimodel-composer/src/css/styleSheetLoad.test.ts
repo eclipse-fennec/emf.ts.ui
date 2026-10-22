@@ -112,7 +112,9 @@ describe('XMI-Roundtrip', () => {
     expect(xml).toContain('uicss:StyleSheet');
     expect(xml).toContain('name="color-primary"');
     expect(xml).toContain('property="border-left"');
-    expect(xml).toContain('state="HOVER"');
+    // state="HOVER" ist das erste Literal (= Default) und wird wie in
+    // Java-EMF nicht geschrieben (emf.ts#95) — der Reload liefert es zurück,
+    // siehe ':hover' unten.
     // erneut laden → gleiche Struktur
     const rs2 = sheet.eResource()!.getResourceSet()!;
     const reload = rs2.createResource(URI.createURI('/styles-roundtrip.xmi')) as XMIResource;
@@ -121,6 +123,7 @@ describe('XMI-Roundtrip', () => {
     expect(sheet2.styles.length).toBe(sheet.styles.length);
     expect(sheet2.rules.length).toBe(sheet.rules.length);
     expect(generateCss(sheet2)).toContain('.uic-accent {');
+    expect(generateCss(sheet2)).toContain('.uic-accent:hover {');
   });
 });
 

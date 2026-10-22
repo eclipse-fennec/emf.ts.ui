@@ -5,16 +5,16 @@
  * @generated
  */
 
-import type { EObject, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
-import type { WidgetComponent } from './WidgetComponent';
-import type { LayoutType } from './LayoutType';
+import type { EObject, EList, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
+import type { WidgetComponent } from './WidgetComponent.js';
+import type { LayoutType } from './LayoutType.js';
 
 /**
  * GroupWidget
  * @generated
  */
 export interface GroupWidget extends WidgetComponent {
-  fields: WidgetComponent[];
+  fields: EList<WidgetComponent>;
   layout?: LayoutType;
 
 }

@@ -5,15 +5,15 @@
  * @generated
  */
 
-import type { EObject, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
-import type { Component } from './Component';
-import type { WidgetComponent } from './WidgetComponent';
+import type { EObject, EList, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
+import type { Component } from './Component.js';
+import type { WidgetComponent } from './WidgetComponent.js';
 
 /**
  * SummaryView
  * @generated
  */
 export interface SummaryView extends Component {
-  summaryFields: WidgetComponent[];
+  summaryFields: EList<WidgetComponent>;
 
 }

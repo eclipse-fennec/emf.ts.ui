@@ -79,7 +79,7 @@ describe('resolveStructure', () => {
     const factory = UimodelFactory.eINSTANCE;
     const group = factory.createGroupWidget();
     group.name = 'g';
-    group.fields = [input('inner')];
+    group.fields.push(input('inner'));
     const entries = resolveStructure([input('a'), group], company);
     expect(entries.map((e) => e.kind)).toEqual(['widget', 'group']);
   });
@@ -89,8 +89,8 @@ describe('resolveStructure', () => {
     const cond = factory.createConditional();
     cond.name = 'c';
     cond.condition = jsExpr('self.locked === true');
-    cond.then = [input('locked-note')];
-    cond.else = [input('editable')];
+    cond.then.push(input('locked-note'));
+    cond.else.push(input('editable'));
 
     expect(resolveStructure([cond], company).map((e) => (e as { widget: WidgetComponent }).widget.name))
       .toEqual(['editable']);
@@ -105,7 +105,7 @@ describe('resolveStructure', () => {
     const each = factory.createForEach();
     each.name = 'employees';
     each.items = jsExpr('self.employees');
-    each.body = [input('row')];
+    each.body.push(input('row'));
 
     const entries = resolveStructure([each], company);
     expect(entries).toHaveLength(2);
@@ -117,7 +117,7 @@ describe('resolveStructure', () => {
     const each = factory.createForEach();
     each.name = 'none';
     each.items = jsExpr('[]');
-    each.body = [input('row')];
+    each.body.push(input('row'));
     each.emptyText = 'Keine Einträge';
     expect(resolveStructure([each], company)).toEqual([{ kind: 'note', text: 'Keine Einträge' }]);
   });
@@ -129,17 +129,17 @@ describe('resolveStructure', () => {
     all.filter = jsExpr('true');
     const tc = factory.createTemplateCase();
     tc.widget = input('proto');
-    all.cases = [tc];
+    all.cases.push(tc);
 
     const cond = factory.createConditional();
     cond.name = 'if';
     cond.condition = jsExpr("self.name === 'Lena'");
-    cond.then = [all];
+    cond.then.push(all);
 
     const each = factory.createForEach();
     each.name = 'each';
     each.items = jsExpr('self.employees');
-    each.body = [cond];
+    each.body.push(cond);
 
     const entries = resolveStructure([each], company);
     // nur Lena erfüllt die Bedingung; ihr einziges Feature (name) expandiert
@@ -159,14 +159,14 @@ describe('komplexe Templates (GroupWidget als Prototyp)', () => {
     const inner = input('value');
     const staticNote = input('hint');
     staticNote.feature = personClass.getEStructuralFeature('name')!; // eigenes feature bleibt
-    proto.fields = [inner, staticNote];
+    proto.fields.push(inner, staticNote);
 
     const all = factory.createAllFeatures();
     all.name = 'grouped';
     all.filter = jsExpr("self.name === 'locked'");
     const tc = factory.createTemplateCase();
     tc.widget = proto;
-    all.cases = [tc];
+    all.cases.push(tc);
 
     const [widget] = expandFeatures(company.eClass(), all);
     expect(widget.eClass().getName()).toBe('GroupWidget');

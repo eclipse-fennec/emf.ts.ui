@@ -6,7 +6,7 @@
  */
 
 import type { EObject, EStructuralFeature, BasicEObject, EClass } from '@emfts/core';
-import type { VegaTransform } from './VegaTransform';
+import type { VegaTransform } from './VegaTransform.js';
 
 /**
  * VegaBinTransform

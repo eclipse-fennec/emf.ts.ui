@@ -8,9 +8,9 @@
 import { BasicEObject } from '@emfts/core';
 import type { EClass, EStructuralFeature } from '@emfts/core';
 import type { Expression } from '@emfts/uimodel-composer';
-import { LabelPlacement } from './LabelPlacement';
-import type { Labeling } from './Labeling';
-import { UimodelMapsPackage } from './UimodelMapsPackage';
+import { LabelPlacement } from './LabelPlacement.js';
+import type { Labeling } from './Labeling.js';
+import { UimodelMapsPackage } from './UimodelMapsPackage.js';
 
 /**
  * Implementation of Labeling
@@ -34,10 +34,10 @@ export class LabelingImpl extends BasicEObject implements Labeling {
   private _font: string = "12px sans-serif";
   private _color: string = "#333333";
   private _placement: LabelPlacement = LabelPlacement.OVER_POINT;
-  private _offsetX?: number;
-  private _offsetY?: number;
+  private _offsetX: number = 0;
+  private _offsetY: number = 0;
   private _haloColor?: string;
-  private _haloWidth?: number;
+  private _haloWidth: number = 0;
 
   /**
    * Returns the EClass of this object
@@ -358,13 +358,13 @@ export class LabelingImpl extends BasicEObject implements Labeling {
       case LabelingImpl.PLACEMENT:
         return this._placement !== LabelPlacement.OVER_POINT;
       case LabelingImpl.OFFSET_X:
-        return this._offsetX !== undefined;
+        return this._offsetX !== 0;
       case LabelingImpl.OFFSET_Y:
-        return this._offsetY !== undefined;
+        return this._offsetY !== 0;
       case LabelingImpl.HALO_COLOR:
         return this._haloColor !== undefined;
       case LabelingImpl.HALO_WIDTH:
-        return this._haloWidth !== undefined;
+        return this._haloWidth !== 0;
       default:
         return super.eIsSet(feature);
     }
@@ -392,16 +392,16 @@ export class LabelingImpl extends BasicEObject implements Labeling {
         this._placement = LabelPlacement.OVER_POINT;
         return;
       case LabelingImpl.OFFSET_X:
-        this._offsetX = undefined;
+        this._offsetX = 0;
         return;
       case LabelingImpl.OFFSET_Y:
-        this._offsetY = undefined;
+        this._offsetY = 0;
         return;
       case LabelingImpl.HALO_COLOR:
         this._haloColor = undefined;
         return;
       case LabelingImpl.HALO_WIDTH:
-        this._haloWidth = undefined;
+        this._haloWidth = 0;
         return;
       default:
         super.eUnset(feature);

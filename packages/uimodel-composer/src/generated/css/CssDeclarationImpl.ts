@@ -7,8 +7,8 @@
 
 import { BasicEObject } from '@emfts/core';
 import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { CssDeclaration } from './CssDeclaration';
-import { UimodelCssPackage } from './UimodelCssPackage';
+import type { CssDeclaration } from './CssDeclaration.js';
+import { UimodelCssPackage } from './UimodelCssPackage.js';
 
 /**
  * Implementation of CssDeclaration
@@ -21,9 +21,9 @@ export class CssDeclarationImpl extends BasicEObject implements CssDeclaration {
   static readonly IMPORTANT: number = 2;
 
   // Private fields
-  private _property: string = "";
-  private _value: string = "";
-  private _important?: boolean;
+  private _property?: string;
+  private _value?: string;
+  private _important: boolean = false;
 
   /**
    * Returns the EClass of this object
@@ -154,11 +154,11 @@ export class CssDeclarationImpl extends BasicEObject implements CssDeclaration {
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case CssDeclarationImpl.PROPERTY:
-        return this._property !== "";
+        return this._property !== undefined;
       case CssDeclarationImpl.VALUE:
-        return this._value !== "";
+        return this._value !== undefined;
       case CssDeclarationImpl.IMPORTANT:
-        return this._important !== undefined;
+        return this._important !== false;
       default:
         return super.eIsSet(feature);
     }
@@ -171,13 +171,13 @@ export class CssDeclarationImpl extends BasicEObject implements CssDeclaration {
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case CssDeclarationImpl.PROPERTY:
-        this._property = "";
+        this._property = undefined;
         return;
       case CssDeclarationImpl.VALUE:
-        this._value = "";
+        this._value = undefined;
         return;
       case CssDeclarationImpl.IMPORTANT:
-        this._important = undefined;
+        this._important = false;
         return;
       default:
         super.eUnset(feature);

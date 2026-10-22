@@ -6,11 +6,11 @@
  */
 
 import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { Renderer } from './Renderer';
-import type { Symbol } from './Symbol';
-import { RendererImpl } from './RendererImpl';
-import type { SingleSymbolRenderer } from './SingleSymbolRenderer';
-import { UimodelMapsPackage } from './UimodelMapsPackage';
+import type { Renderer } from './Renderer.js';
+import type { Symbol } from './Symbol.js';
+import { RendererImpl } from './RendererImpl.js';
+import type { SingleSymbolRenderer } from './SingleSymbolRenderer.js';
+import { UimodelMapsPackage } from './UimodelMapsPackage.js';
 
 /**
  * Implementation of SingleSymbolRenderer

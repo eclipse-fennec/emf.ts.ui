@@ -5,12 +5,13 @@
  * @generated
  */
 
-import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { WidgetComponent } from './WidgetComponent';
-import type { Expression } from './Expression';
-import { WidgetComponentImpl } from './WidgetComponentImpl';
-import type { SelectWidget } from './SelectWidget';
-import { UimodelPackage } from './UimodelPackage';
+import { createBasicEList } from '@emfts/core';
+import type { EClass, EStructuralFeature, EList, EReference } from '@emfts/core';
+import type { WidgetComponent } from './WidgetComponent.js';
+import type { Expression } from './Expression.js';
+import { WidgetComponentImpl } from './WidgetComponentImpl.js';
+import type { SelectWidget } from './SelectWidget.js';
+import { UimodelPackage } from './UimodelPackage.js';
 
 /**
  * Implementation of SelectWidget
@@ -25,9 +26,9 @@ export class SelectWidgetImpl extends WidgetComponentImpl implements SelectWidge
 
   // Private fields
   private _optionLabel?: Expression;
-  private _multiSelect?: boolean;
-  private _asButtonGroup?: boolean;
-  private _values: string[] = [];
+  private _multiSelect: boolean = false;
+  private _asButtonGroup: boolean = false;
+  private _values!: EList<string>;
 
   /**
    * Returns the EClass of this object
@@ -109,28 +110,11 @@ export class SelectWidgetImpl extends WidgetComponentImpl implements SelectWidge
     }
   }
 
-  get values(): string[] {
-    return this._values;
-  }
-
-  set values(value: string[]) {
-    const oldValue = this._values;
-    this._values = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(SelectWidgetImpl.VALUES),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => SelectWidgetImpl.VALUES,
-        merge: () => false
-      });
+  get values(): EList<string> {
+    if (!this._values) {
+      this._values = createBasicEList<any>(this, this.eClass().getEStructuralFeature('values')!);
     }
+    return this._values;
   }
 
   // Reflective API
@@ -173,7 +157,8 @@ export class SelectWidgetImpl extends WidgetComponentImpl implements SelectWidge
         super.eSet(feature, newValue);
         break;
       case SelectWidgetImpl.VALUES:
-        this.values = newValue as string[];
+        this.values.clear();
+        this.values.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       default:
@@ -190,11 +175,11 @@ export class SelectWidgetImpl extends WidgetComponentImpl implements SelectWidge
       case SelectWidgetImpl.OPTION_LABEL:
         return this._optionLabel !== undefined;
       case SelectWidgetImpl.MULTI_SELECT:
-        return this._multiSelect !== undefined;
+        return this._multiSelect !== false;
       case SelectWidgetImpl.AS_BUTTON_GROUP:
-        return this._asButtonGroup !== undefined;
+        return this._asButtonGroup !== false;
       case SelectWidgetImpl.VALUES:
-        return this._values !== undefined && this._values.length > 0;
+        return this._values !== undefined && !this._values.isEmpty();
       default:
         return super.eIsSet(feature);
     }
@@ -210,13 +195,13 @@ export class SelectWidgetImpl extends WidgetComponentImpl implements SelectWidge
         this._optionLabel = undefined;
         return;
       case SelectWidgetImpl.MULTI_SELECT:
-        this._multiSelect = undefined;
+        this._multiSelect = false;
         return;
       case SelectWidgetImpl.AS_BUTTON_GROUP:
-        this._asButtonGroup = undefined;
+        this._asButtonGroup = false;
         return;
       case SelectWidgetImpl.VALUES:
-        this._values = [];
+        if (this._values) this._values.clear();
         return;
       default:
         super.eUnset(feature);

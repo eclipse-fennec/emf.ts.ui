@@ -5,9 +5,9 @@
  * @generated
  */
 
-import type { EObject, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
-import type { WidgetComponent } from './WidgetComponent';
-import type { Expression } from './Expression';
+import type { EObject, EList, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
+import type { WidgetComponent } from './WidgetComponent.js';
+import type { Expression } from './Expression.js';
 
 /**
  * SelectWidget
@@ -17,6 +17,6 @@ export interface SelectWidget extends WidgetComponent {
   optionLabel?: Expression;
   multiSelect?: boolean;
   asButtonGroup?: boolean;
-  values: string[];
+  values: EList<string>;
 
 }

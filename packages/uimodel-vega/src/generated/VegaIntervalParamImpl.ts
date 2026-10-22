@@ -5,13 +5,14 @@
  * @generated
  */
 
-import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { VegaParam } from './VegaParam';
-import type { VegaChannel } from './VegaChannel';
-import type { VegaSelectionMark } from './VegaSelectionMark';
-import { VegaParamImpl } from './VegaParamImpl';
-import type { VegaIntervalParam } from './VegaIntervalParam';
-import { UimodelVegaPackage } from './UimodelVegaPackage';
+import { createBasicEList } from '@emfts/core';
+import type { EClass, EStructuralFeature, EList, EReference } from '@emfts/core';
+import type { VegaParam } from './VegaParam.js';
+import type { VegaChannel } from './VegaChannel.js';
+import type { VegaSelectionMark } from './VegaSelectionMark.js';
+import { VegaParamImpl } from './VegaParamImpl.js';
+import type { VegaIntervalParam } from './VegaIntervalParam.js';
+import { UimodelVegaPackage } from './UimodelVegaPackage.js';
 
 /**
  * Implementation of VegaIntervalParam
@@ -27,7 +28,7 @@ export class VegaIntervalParamImpl extends VegaParamImpl implements VegaInterval
   static readonly ZOOM: number = 6;
 
   // Private fields
-  private _encodings: VegaChannel[] = [];
+  private _encodings!: EList<VegaChannel>;
   private _mark?: VegaSelectionMark;
   private _on?: string;
   private _clear?: string;
@@ -42,28 +43,11 @@ export class VegaIntervalParamImpl extends VegaParamImpl implements VegaInterval
   }
 
   // Getters and Setters
-  get encodings(): VegaChannel[] {
-    return this._encodings;
-  }
-
-  set encodings(value: VegaChannel[]) {
-    const oldValue = this._encodings;
-    this._encodings = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(VegaIntervalParamImpl.ENCODINGS),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => VegaIntervalParamImpl.ENCODINGS,
-        merge: () => false
-      });
+  get encodings(): EList<VegaChannel> {
+    if (!this._encodings) {
+      this._encodings = createBasicEList<any>(this, this.eClass().getEStructuralFeature('encodings')!);
     }
+    return this._encodings;
   }
 
   get mark(): VegaSelectionMark {
@@ -218,7 +202,8 @@ export class VegaIntervalParamImpl extends VegaParamImpl implements VegaInterval
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case VegaIntervalParamImpl.ENCODINGS:
-        this.encodings = newValue as VegaChannel[];
+        this.encodings.clear();
+        this.encodings.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       case VegaIntervalParamImpl.MARK:
@@ -253,7 +238,7 @@ export class VegaIntervalParamImpl extends VegaParamImpl implements VegaInterval
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case VegaIntervalParamImpl.ENCODINGS:
-        return this._encodings !== undefined && this._encodings.length > 0;
+        return this._encodings !== undefined && !this._encodings.isEmpty();
       case VegaIntervalParamImpl.MARK:
         return this._mark !== undefined;
       case VegaIntervalParamImpl.ON:
@@ -276,7 +261,7 @@ export class VegaIntervalParamImpl extends VegaParamImpl implements VegaInterval
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case VegaIntervalParamImpl.ENCODINGS:
-        this._encodings = [];
+        if (this._encodings) this._encodings.clear();
         return;
       case VegaIntervalParamImpl.MARK:
         this._mark = undefined;

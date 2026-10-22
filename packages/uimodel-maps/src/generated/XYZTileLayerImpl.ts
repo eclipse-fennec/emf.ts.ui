@@ -6,10 +6,10 @@
  */
 
 import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { MapLayer } from './MapLayer';
-import { MapLayerImpl } from './MapLayerImpl';
-import type { XYZTileLayer } from './XYZTileLayer';
-import { UimodelMapsPackage } from './UimodelMapsPackage';
+import type { MapLayer } from './MapLayer.js';
+import { MapLayerImpl } from './MapLayerImpl.js';
+import type { XYZTileLayer } from './XYZTileLayer.js';
+import { UimodelMapsPackage } from './UimodelMapsPackage.js';
 
 /**
  * Implementation of XYZTileLayer
@@ -22,7 +22,7 @@ export class XYZTileLayerImpl extends MapLayerImpl implements XYZTileLayer {
 
   // Private fields
   private _urlTemplate?: string;
-  private _maxZoomLevel?: number;
+  private _maxZoomLevel: number = 0;
 
   /**
    * Returns the EClass of this object
@@ -125,7 +125,7 @@ export class XYZTileLayerImpl extends MapLayerImpl implements XYZTileLayer {
       case XYZTileLayerImpl.URL_TEMPLATE:
         return this._urlTemplate !== undefined;
       case XYZTileLayerImpl.MAX_ZOOM_LEVEL:
-        return this._maxZoomLevel !== undefined;
+        return this._maxZoomLevel !== 0;
       default:
         return super.eIsSet(feature);
     }
@@ -141,7 +141,7 @@ export class XYZTileLayerImpl extends MapLayerImpl implements XYZTileLayer {
         this._urlTemplate = undefined;
         return;
       case XYZTileLayerImpl.MAX_ZOOM_LEVEL:
-        this._maxZoomLevel = undefined;
+        this._maxZoomLevel = 0;
         return;
       default:
         super.eUnset(feature);

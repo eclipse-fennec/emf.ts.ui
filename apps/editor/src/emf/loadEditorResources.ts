@@ -22,9 +22,6 @@ import {
 } from '@emfts/uimodel-composer';
 import type { StyleSheet } from '@emfts/uimodel-composer/css';
 import { DgePackage } from './DgePackage';
-import { applyEcoreAttributeTypes } from './applyEcoreAttributeTypes';
-import uimodelEcoreXml from '../../../../packages/uimodel-composer/model/uimodel.ecore?raw';
-import uimodelCssEcoreXml from '../../../../packages/uimodel-composer/model/uimodel-css.ecore?raw';
 import genericDefaultXml from '../../../../packages/uimodel-composer/model/templates/generic-default.uimodel.xmi?raw';
 import stylesXmlRaw from '../../../../packages/uimodel-composer/model/examples/styles.xmi?raw';
 
@@ -69,11 +66,6 @@ export async function loadEditorResources(): Promise<LoadedEditorData> {
   const cssPkg = UimodelCssPackage.eINSTANCE;
   cssPkg.setEFactoryInstance(UimodelCssFactory.eINSTANCE);
   EPackageRegistry.INSTANCE.set(cssPkg.getNsURI()!, cssPkg);
-
-  // emfts-codegen setzt keine Attribut-eTypes/EEnums — für das reflektive
-  // Property-Panel aus den .ecore-Quellen nachtragen
-  applyEcoreAttributeTypes(uimodel, uimodelEcoreXml);
-  applyEcoreAttributeTypes(cssPkg, uimodelCssEcoreXml);
 
   // 2. ResourceSet + XMI-Factory
   const rs = new BasicResourceSet();

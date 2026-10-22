@@ -68,7 +68,7 @@ function toEObjects(value: unknown): EObject[] {
 
 /** Löst eine fields-Liste rekursiv zu einer flachen Render-Liste auf. */
 export function resolveStructure(
-  fields: readonly WidgetComponent[] | undefined,
+  fields: Iterable<WidgetComponent> | undefined,
   model: EObject,
   context?: ExpansionContext
 ): ResolvedEntry[] {

@@ -5,11 +5,12 @@
  * @generated
  */
 
-import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { WidgetStyle } from './WidgetStyle';
-import { WidgetStyleImpl } from './WidgetStyleImpl';
-import type { TableStyle } from './TableStyle';
-import { UimodelPackage } from './UimodelPackage';
+import { createContainmentEList } from '@emfts/core';
+import type { EClass, EStructuralFeature, EList, EReference } from '@emfts/core';
+import type { WidgetStyle } from './WidgetStyle.js';
+import { WidgetStyleImpl } from './WidgetStyleImpl.js';
+import type { TableStyle } from './TableStyle.js';
+import { UimodelPackage } from './UimodelPackage.js';
 
 /**
  * Implementation of TableStyle
@@ -20,7 +21,7 @@ export class TableStyleImpl extends WidgetStyleImpl implements TableStyle {
   static readonly COLUMNS: number = 11;
 
   // Private fields
-  private _columns: WidgetStyle[] = [];
+  private _columns!: EList<WidgetStyle>;
 
   /**
    * Returns the EClass of this object
@@ -30,28 +31,11 @@ export class TableStyleImpl extends WidgetStyleImpl implements TableStyle {
   }
 
   // Getters and Setters
-  get columns(): WidgetStyle[] {
-    return this._columns;
-  }
-
-  set columns(value: WidgetStyle[]) {
-    const oldValue = this._columns;
-    this._columns = value;
-    if (this.eDeliver()) {
-      this.eNotify({
-        getNotifier: () => this,
-        getEventType: () => 1, // SET
-        getFeature: () => this.eClass().getEStructuralFeature(TableStyleImpl.COLUMNS),
-        getOldValue: () => oldValue,
-        getNewValue: () => value,
-        getPosition: () => -1,
-        wasSet: () => true,
-        isTouch: () => false,
-        isReset: () => false,
-        getFeatureID: () => TableStyleImpl.COLUMNS,
-        merge: () => false
-      });
+  get columns(): EList<WidgetStyle> {
+    if (!this._columns) {
+      this._columns = createContainmentEList<any>(this, this.eClass().getEStructuralFeature('columns') as EReference);
     }
+    return this._columns;
   }
 
   // Reflective API
@@ -76,7 +60,8 @@ export class TableStyleImpl extends WidgetStyleImpl implements TableStyle {
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case TableStyleImpl.COLUMNS:
-        this.columns = newValue as WidgetStyle[];
+        this.columns.clear();
+        this.columns.addAll(newValue as any[]);
         super.eSet(feature, newValue);
         break;
       default:
@@ -91,7 +76,7 @@ export class TableStyleImpl extends WidgetStyleImpl implements TableStyle {
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case TableStyleImpl.COLUMNS:
-        return this._columns !== undefined && this._columns.length > 0;
+        return this._columns !== undefined && !this._columns.isEmpty();
       default:
         return super.eIsSet(feature);
     }
@@ -104,7 +89,7 @@ export class TableStyleImpl extends WidgetStyleImpl implements TableStyle {
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case TableStyleImpl.COLUMNS:
-        this._columns = [];
+        if (this._columns) this._columns.clear();
         return;
       default:
         super.eUnset(feature);

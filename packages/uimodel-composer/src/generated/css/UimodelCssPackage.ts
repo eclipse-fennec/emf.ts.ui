@@ -5,8 +5,22 @@
  * @generated
  */
 
-import { BasicEPackage, BasicEClass, BasicEAttribute, BasicEReference, getEcorePackage, EPackageRegistry } from '@emfts/core';
-import type { EClass, EAttribute, EReference, EEnum } from '@emfts/core';
+import { BasicEPackage, BasicEClass, BasicEAttribute, BasicEReference, EPackageRegistry, getEcorePackage, BasicEEnum, BasicEEnumLiteral } from '@emfts/core';
+import type { EClass, EAttribute, EReference, EEnum, EDataType } from '@emfts/core';
+import { UimodelCssFactory } from './UimodelCssFactory.js';
+import { PseudoState } from './PseudoState.js';
+
+/**
+ * Resolve a dependency package from the registry, failing with an actionable
+ * message instead of a null dereference when it is not registered yet
+ */
+function requireEPackage(nsURI: string) {
+  const pkg = EPackageRegistry.INSTANCE.getEPackage(nsURI);
+  if (!pkg) {
+    throw new Error(`EPackage '${nsURI}' is not registered. Access the eINSTANCE of that model's generated package (or register it via EPackageRegistry.INSTANCE.registerPackage) before initializing UimodelCssPackage.`);
+  }
+  return pkg;
+}
 
 /**
  * UimodelCss Package
@@ -70,6 +84,7 @@ export class UimodelCssPackage extends BasicEPackage {
     STYLE_RULE__CONDITION: null as unknown as EAttribute | EReference,
     STYLE_RULE__DECLARATIONS: null as unknown as EAttribute | EReference,
     STYLE_RULE__STATES: null as unknown as EAttribute | EReference,
+    PSEUDO_STATE: null as unknown as EEnum,
   };
 
   private constructor() {
@@ -83,6 +98,13 @@ export class UimodelCssPackage extends BasicEPackage {
    * Initialize package contents
    */
   private init(): void {
+    // Register this package under its nsURI so other generated packages can
+    // resolve their cross-package references from the registry (#36).
+    // eINSTANCE is already assigned at this point
+    EPackageRegistry.INSTANCE.set(UimodelCssPackage.eNS_URI, this);
+    // Wire the generated factory so loaded/created instances are typed Impls.
+    this.setEFactoryInstance(UimodelCssFactory.eINSTANCE);
+
     // Create StyleSheet class
     const styleSheetClass = new BasicEClass();
     styleSheetClass.setName('StyleSheet');
@@ -346,6 +368,7 @@ export class UimodelCssPackage extends BasicEPackage {
     styleRule_includeSubtypes.setName('includeSubtypes');
     styleRule_includeSubtypes.setLowerBound(0);
     styleRule_includeSubtypes.setUpperBound(1);
+    styleRule_includeSubtypes.setDefaultValueLiteral("true");
     styleRuleClass.getEStructuralFeatures().push(styleRule_includeSubtypes);
     UimodelCssPackage.Literals.STYLE_RULE__INCLUDE_SUBTYPES = styleRule_includeSubtypes;
 
@@ -370,6 +393,7 @@ export class UimodelCssPackage extends BasicEPackage {
     styleRule_priority.setName('priority');
     styleRule_priority.setLowerBound(0);
     styleRule_priority.setUpperBound(1);
+    styleRule_priority.setDefaultValueLiteral("0");
     styleRuleClass.getEStructuralFeatures().push(styleRule_priority);
     UimodelCssPackage.Literals.STYLE_RULE__PRIORITY = styleRule_priority;
 
@@ -408,26 +432,131 @@ export class UimodelCssPackage extends BasicEPackage {
     styleRuleClass.getEStructuralFeatures().push(styleRule_states);
     UimodelCssPackage.Literals.STYLE_RULE__STATES = styleRule_states;
 
+    // Create PseudoState enum
+    const pseudoStateEnumType = new BasicEEnum();
+    pseudoStateEnumType.setName('PseudoState');
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("HOVER");
+      literal.setValue(0);
+      literal.setLiteral("HOVER");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(PseudoState.HOVER);
+      pseudoStateEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("FOCUS");
+      literal.setValue(1);
+      literal.setLiteral("FOCUS");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(PseudoState.FOCUS);
+      pseudoStateEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("FOCUS_WITHIN");
+      literal.setValue(2);
+      literal.setLiteral("FOCUS_WITHIN");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(PseudoState.FOCUS_WITHIN);
+      pseudoStateEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("ACTIVE");
+      literal.setValue(3);
+      literal.setLiteral("ACTIVE");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(PseudoState.ACTIVE);
+      pseudoStateEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("DISABLED");
+      literal.setValue(4);
+      literal.setLiteral("DISABLED");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(PseudoState.DISABLED);
+      pseudoStateEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("READONLY");
+      literal.setValue(5);
+      literal.setLiteral("READONLY");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(PseudoState.READONLY);
+      pseudoStateEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("INVALID");
+      literal.setValue(6);
+      literal.setLiteral("INVALID");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(PseudoState.INVALID);
+      pseudoStateEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("REQUIRED");
+      literal.setValue(7);
+      literal.setLiteral("REQUIRED");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(PseudoState.REQUIRED);
+      pseudoStateEnumType.addLiteral(literal);
+    }
+    UimodelCssPackage.Literals.PSEUDO_STATE = pseudoStateEnumType;
+    this.getEClassifiers().push(pseudoStateEnumType);
+
 
     // ============================================
     // Set ESuperTypes (must be done after all classes are created)
     // ============================================
-    (UimodelCssPackage.Literals.CSS_STYLE as BasicEClass).getESuperTypes().push(EPackageRegistry.INSTANCE.getEPackage('http://uimodel/1.0')!.getEClassifier('BaseStyle')! as EClass);
+    (UimodelCssPackage.Literals.CSS_STYLE as BasicEClass).getESuperTypes().push(requireEPackage('http://uimodel/1.0').getEClassifier('BaseStyle')! as EClass);
 
     // ============================================
-    // Set ETypes for EReferences (must be done after all classes are created)
+    // Set ETypes for all features (must be done after all classes are created).
+    // An EAttribute without eType leaves the XMI reader no EDataType to
+    // convert against - every value would arrive as a raw string (#37)
     // ============================================
+    (UimodelCssPackage.Literals.STYLE_SHEET__NAME as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
     (UimodelCssPackage.Literals.STYLE_SHEET__TOKENS as BasicEReference).setEType(UimodelCssPackage.Literals.DESIGN_TOKEN);
     (UimodelCssPackage.Literals.STYLE_SHEET__THEMES as BasicEReference).setEType(UimodelCssPackage.Literals.THEME);
     (UimodelCssPackage.Literals.STYLE_SHEET__STYLES as BasicEReference).setEType(UimodelCssPackage.Literals.CSS_STYLE);
     (UimodelCssPackage.Literals.STYLE_SHEET__RULES as BasicEReference).setEType(UimodelCssPackage.Literals.STYLE_RULE);
+    (UimodelCssPackage.Literals.DESIGN_TOKEN__NAME as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelCssPackage.Literals.DESIGN_TOKEN__VALUE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelCssPackage.Literals.DESIGN_TOKEN__DESCRIPTION as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelCssPackage.Literals.THEME__NAME as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelCssPackage.Literals.THEME__DARK as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EBoolean')!);
     (UimodelCssPackage.Literals.THEME__OVERRIDES as BasicEReference).setEType(UimodelCssPackage.Literals.TOKEN_OVERRIDE);
     (UimodelCssPackage.Literals.TOKEN_OVERRIDE__TOKEN as BasicEReference).setEType(UimodelCssPackage.Literals.DESIGN_TOKEN);
+    (UimodelCssPackage.Literals.TOKEN_OVERRIDE__VALUE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelCssPackage.Literals.CSS_DECLARATION__PROPERTY as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelCssPackage.Literals.CSS_DECLARATION__VALUE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelCssPackage.Literals.CSS_DECLARATION__IMPORTANT as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EBoolean')!);
+    (UimodelCssPackage.Literals.CSS_STATE__STATE as BasicEAttribute).setEType(UimodelCssPackage.Literals.PSEUDO_STATE);
     (UimodelCssPackage.Literals.CSS_STATE__DECLARATIONS as BasicEReference).setEType(UimodelCssPackage.Literals.CSS_DECLARATION);
     (UimodelCssPackage.Literals.CSS_STYLE__DECLARATIONS as BasicEReference).setEType(UimodelCssPackage.Literals.CSS_DECLARATION);
     (UimodelCssPackage.Literals.CSS_STYLE__STATES as BasicEReference).setEType(UimodelCssPackage.Literals.CSS_STATE);
+    (UimodelCssPackage.Literals.STYLE_RULE__NAME as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
     (UimodelCssPackage.Literals.STYLE_RULE__TARGET_CLASS as BasicEReference).setEType(getEcorePackage().getEClassifier('EClass')!);
-    (UimodelCssPackage.Literals.STYLE_RULE__CONDITION as BasicEReference).setEType(EPackageRegistry.INSTANCE.getEPackage('http://uimodel/1.0')!.getEClassifier('Expression')!);
+    (UimodelCssPackage.Literals.STYLE_RULE__INCLUDE_SUBTYPES as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EBoolean')!);
+    (UimodelCssPackage.Literals.STYLE_RULE__COMPONENT_NAME as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelCssPackage.Literals.STYLE_RULE__GROUP as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelCssPackage.Literals.STYLE_RULE__PRIORITY as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EInt')!);
+    (UimodelCssPackage.Literals.STYLE_RULE__MEDIA as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelCssPackage.Literals.STYLE_RULE__CONDITION as BasicEReference).setEType(requireEPackage('http://uimodel/1.0').getEClassifier('Expression')!);
     (UimodelCssPackage.Literals.STYLE_RULE__DECLARATIONS as BasicEReference).setEType(UimodelCssPackage.Literals.CSS_DECLARATION);
     (UimodelCssPackage.Literals.STYLE_RULE__STATES as BasicEReference).setEType(UimodelCssPackage.Literals.CSS_STATE);
 

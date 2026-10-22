@@ -5,8 +5,42 @@
  * @generated
  */
 
-import { BasicEPackage, BasicEClass, BasicEAttribute, BasicEReference, getEcorePackage, EPackageRegistry } from '@emfts/core';
-import type { EClass, EAttribute, EReference, EEnum } from '@emfts/core';
+import { BasicEPackage, BasicEClass, BasicEAttribute, BasicEReference, EPackageRegistry, getEcorePackage, BasicEEnum, BasicEEnumLiteral } from '@emfts/core';
+import type { EClass, EAttribute, EReference, EEnum, EDataType } from '@emfts/core';
+import { UimodelVegaFactory } from './UimodelVegaFactory.js';
+import { VegaMarkType } from './VegaMarkType.js';
+import { VegaChannel } from './VegaChannel.js';
+import { VegaFieldType } from './VegaFieldType.js';
+import { VegaAggregate } from './VegaAggregate.js';
+import { VegaScaleType } from './VegaScaleType.js';
+import { VegaInterpolate } from './VegaInterpolate.js';
+import { VegaTimeUnit } from './VegaTimeUnit.js';
+import { VegaOrientation } from './VegaOrientation.js';
+import { VegaAxisOrient } from './VegaAxisOrient.js';
+import { VegaLegendOrient } from './VegaLegendOrient.js';
+import { VegaLegendType } from './VegaLegendType.js';
+import { VegaDirection } from './VegaDirection.js';
+import { VegaSortOrder } from './VegaSortOrder.js';
+import { VegaStack } from './VegaStack.js';
+import { VegaAutosize } from './VegaAutosize.js';
+import { VegaAlign } from './VegaAlign.js';
+import { VegaBaseline } from './VegaBaseline.js';
+import { VegaLabelOverlap } from './VegaLabelOverlap.js';
+import { VegaWindowOp } from './VegaWindowOp.js';
+import { VegaRegressionMethod } from './VegaRegressionMethod.js';
+import { VegaImputeMethod } from './VegaImputeMethod.js';
+
+/**
+ * Resolve a dependency package from the registry, failing with an actionable
+ * message instead of a null dereference when it is not registered yet
+ */
+function requireEPackage(nsURI: string) {
+  const pkg = EPackageRegistry.INSTANCE.getEPackage(nsURI);
+  if (!pkg) {
+    throw new Error(`EPackage '${nsURI}' is not registered. Access the eINSTANCE of that model's generated package (or register it via EPackageRegistry.INSTANCE.registerPackage) before initializing UimodelVegaPackage.`);
+  }
+  return pkg;
+}
 
 /**
  * UimodelVega Package
@@ -290,6 +324,27 @@ export class UimodelVegaPackage extends BasicEPackage {
     VEGA_SORT_FIELD: null as unknown as EClass,
     VEGA_SORT_FIELD__FIELD: null as unknown as EAttribute | EReference,
     VEGA_SORT_FIELD__ORDER: null as unknown as EAttribute | EReference,
+    VEGA_MARK_TYPE: null as unknown as EEnum,
+    VEGA_CHANNEL: null as unknown as EEnum,
+    VEGA_FIELD_TYPE: null as unknown as EEnum,
+    VEGA_AGGREGATE: null as unknown as EEnum,
+    VEGA_SCALE_TYPE: null as unknown as EEnum,
+    VEGA_INTERPOLATE: null as unknown as EEnum,
+    VEGA_TIME_UNIT: null as unknown as EEnum,
+    VEGA_ORIENTATION: null as unknown as EEnum,
+    VEGA_AXIS_ORIENT: null as unknown as EEnum,
+    VEGA_LEGEND_ORIENT: null as unknown as EEnum,
+    VEGA_LEGEND_TYPE: null as unknown as EEnum,
+    VEGA_DIRECTION: null as unknown as EEnum,
+    VEGA_SORT_ORDER: null as unknown as EEnum,
+    VEGA_STACK: null as unknown as EEnum,
+    VEGA_AUTOSIZE: null as unknown as EEnum,
+    VEGA_ALIGN: null as unknown as EEnum,
+    VEGA_BASELINE: null as unknown as EEnum,
+    VEGA_LABEL_OVERLAP: null as unknown as EEnum,
+    VEGA_WINDOW_OP: null as unknown as EEnum,
+    VEGA_REGRESSION_METHOD: null as unknown as EEnum,
+    VEGA_IMPUTE_METHOD: null as unknown as EEnum,
   };
 
   private constructor() {
@@ -303,6 +358,13 @@ export class UimodelVegaPackage extends BasicEPackage {
    * Initialize package contents
    */
   private init(): void {
+    // Register this package under its nsURI so other generated packages can
+    // resolve their cross-package references from the registry (#36).
+    // eINSTANCE is already assigned at this point
+    EPackageRegistry.INSTANCE.set(UimodelVegaPackage.eNS_URI, this);
+    // Wire the generated factory so loaded/created instances are typed Impls.
+    this.setEFactoryInstance(UimodelVegaFactory.eINSTANCE);
+
     // Create VegaView class
     const vegaViewClass = new BasicEClass();
     vegaViewClass.setName('VegaView');
@@ -377,6 +439,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaView_autosize.setName('autosize');
     vegaView_autosize.setLowerBound(0);
     vegaView_autosize.setUpperBound(1);
+    vegaView_autosize.setDefaultValueLiteral("PAD");
     vegaViewClass.getEStructuralFeatures().push(vegaView_autosize);
     UimodelVegaPackage.Literals.VEGA_VIEW__AUTOSIZE = vegaView_autosize;
 
@@ -560,6 +623,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaFacetSpec_facetSort.setName('facetSort');
     vegaFacetSpec_facetSort.setLowerBound(0);
     vegaFacetSpec_facetSort.setUpperBound(1);
+    vegaFacetSpec_facetSort.setDefaultValueLiteral("ASCENDING");
     vegaFacetSpecClass.getEStructuralFeatures().push(vegaFacetSpec_facetSort);
     UimodelVegaPackage.Literals.VEGA_FACET_SPEC__FACET_SORT = vegaFacetSpec_facetSort;
 
@@ -636,6 +700,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaMarkDef_filled.setName('filled');
     vegaMarkDef_filled.setLowerBound(0);
     vegaMarkDef_filled.setUpperBound(1);
+    vegaMarkDef_filled.setDefaultValueLiteral("true");
     vegaMarkDefClass.getEStructuralFeatures().push(vegaMarkDef_filled);
     UimodelVegaPackage.Literals.VEGA_MARK_DEF__FILLED = vegaMarkDef_filled;
 
@@ -887,6 +952,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaEncoding_aggregate.setName('aggregate');
     vegaEncoding_aggregate.setLowerBound(0);
     vegaEncoding_aggregate.setUpperBound(1);
+    vegaEncoding_aggregate.setDefaultValueLiteral("NONE");
     vegaEncodingClass.getEStructuralFeatures().push(vegaEncoding_aggregate);
     UimodelVegaPackage.Literals.VEGA_ENCODING__AGGREGATE = vegaEncoding_aggregate;
 
@@ -1020,6 +1086,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaScale_type.setName('type');
     vegaScale_type.setLowerBound(0);
     vegaScale_type.setUpperBound(1);
+    vegaScale_type.setDefaultValueLiteral("LINEAR");
     vegaScaleClass.getEStructuralFeatures().push(vegaScale_type);
     UimodelVegaPackage.Literals.VEGA_SCALE__TYPE = vegaScale_type;
 
@@ -1710,6 +1777,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaIntervalParam_translate.setName('translate');
     vegaIntervalParam_translate.setLowerBound(0);
     vegaIntervalParam_translate.setUpperBound(1);
+    vegaIntervalParam_translate.setDefaultValueLiteral("true");
     vegaIntervalParamClass.getEStructuralFeatures().push(vegaIntervalParam_translate);
     UimodelVegaPackage.Literals.VEGA_INTERVAL_PARAM__TRANSLATE = vegaIntervalParam_translate;
 
@@ -1718,6 +1786,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaIntervalParam_zoom.setName('zoom');
     vegaIntervalParam_zoom.setLowerBound(0);
     vegaIntervalParam_zoom.setUpperBound(1);
+    vegaIntervalParam_zoom.setDefaultValueLiteral("true");
     vegaIntervalParamClass.getEStructuralFeatures().push(vegaIntervalParam_zoom);
     UimodelVegaPackage.Literals.VEGA_INTERVAL_PARAM__ZOOM = vegaIntervalParam_zoom;
 
@@ -2337,6 +2406,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaRegressionTransform_method.setName('method');
     vegaRegressionTransform_method.setLowerBound(0);
     vegaRegressionTransform_method.setUpperBound(1);
+    vegaRegressionTransform_method.setDefaultValueLiteral("LINEAR");
     vegaRegressionTransformClass.getEStructuralFeatures().push(vegaRegressionTransform_method);
     UimodelVegaPackage.Literals.VEGA_REGRESSION_TRANSFORM__METHOD = vegaRegressionTransform_method;
 
@@ -2380,6 +2450,7 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaImputeTransform_method.setName('method');
     vegaImputeTransform_method.setLowerBound(0);
     vegaImputeTransform_method.setUpperBound(1);
+    vegaImputeTransform_method.setDefaultValueLiteral("VALUE");
     vegaImputeTransformClass.getEStructuralFeatures().push(vegaImputeTransform_method);
     UimodelVegaPackage.Literals.VEGA_IMPUTE_TRANSFORM__METHOD = vegaImputeTransform_method;
 
@@ -2457,14 +2528,1821 @@ export class UimodelVegaPackage extends BasicEPackage {
     vegaSortField_order.setName('order');
     vegaSortField_order.setLowerBound(0);
     vegaSortField_order.setUpperBound(1);
+    vegaSortField_order.setDefaultValueLiteral("ASCENDING");
     vegaSortFieldClass.getEStructuralFeatures().push(vegaSortField_order);
     UimodelVegaPackage.Literals.VEGA_SORT_FIELD__ORDER = vegaSortField_order;
+
+    // Create VegaMarkType enum
+    const vegaMarkTypeEnumType = new BasicEEnum();
+    vegaMarkTypeEnumType.setName('VegaMarkType');
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("BAR");
+      literal.setValue(0);
+      literal.setLiteral("BAR");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaMarkType.BAR);
+      vegaMarkTypeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("LINE");
+      literal.setValue(1);
+      literal.setLiteral("LINE");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaMarkType.LINE);
+      vegaMarkTypeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("POINT");
+      literal.setValue(2);
+      literal.setLiteral("POINT");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaMarkType.POINT);
+      vegaMarkTypeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("ARC");
+      literal.setValue(3);
+      literal.setLiteral("ARC");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaMarkType.ARC);
+      vegaMarkTypeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("AREA");
+      literal.setValue(4);
+      literal.setLiteral("AREA");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaMarkType.AREA);
+      vegaMarkTypeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("RECT");
+      literal.setValue(5);
+      literal.setLiteral("RECT");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaMarkType.RECT);
+      vegaMarkTypeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("TEXT");
+      literal.setValue(6);
+      literal.setLiteral("TEXT");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaMarkType.TEXT);
+      vegaMarkTypeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("TICK");
+      literal.setValue(7);
+      literal.setLiteral("TICK");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaMarkType.TICK);
+      vegaMarkTypeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("RULE");
+      literal.setValue(8);
+      literal.setLiteral("RULE");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaMarkType.RULE);
+      vegaMarkTypeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("TRAIL");
+      literal.setValue(9);
+      literal.setLiteral("TRAIL");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaMarkType.TRAIL);
+      vegaMarkTypeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("BOXPLOT");
+      literal.setValue(10);
+      literal.setLiteral("BOXPLOT");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaMarkType.BOXPLOT);
+      vegaMarkTypeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("GEOSHAPE");
+      literal.setValue(11);
+      literal.setLiteral("GEOSHAPE");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaMarkType.GEOSHAPE);
+      vegaMarkTypeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("CIRCLE");
+      literal.setValue(12);
+      literal.setLiteral("CIRCLE");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaMarkType.CIRCLE);
+      vegaMarkTypeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("SQUARE");
+      literal.setValue(13);
+      literal.setLiteral("SQUARE");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaMarkType.SQUARE);
+      vegaMarkTypeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("IMAGE");
+      literal.setValue(14);
+      literal.setLiteral("IMAGE");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaMarkType.IMAGE);
+      vegaMarkTypeEnumType.addLiteral(literal);
+    }
+    UimodelVegaPackage.Literals.VEGA_MARK_TYPE = vegaMarkTypeEnumType;
+    this.getEClassifiers().push(vegaMarkTypeEnumType);
+
+    // Create VegaChannel enum
+    const vegaChannelEnumType = new BasicEEnum();
+    vegaChannelEnumType.setName('VegaChannel');
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("X");
+      literal.setValue(0);
+      literal.setLiteral("X");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaChannel.X);
+      vegaChannelEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("Y");
+      literal.setValue(1);
+      literal.setLiteral("Y");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaChannel.Y);
+      vegaChannelEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("X2");
+      literal.setValue(2);
+      literal.setLiteral("X2");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaChannel.X2);
+      vegaChannelEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("Y2");
+      literal.setValue(3);
+      literal.setLiteral("Y2");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaChannel.Y2);
+      vegaChannelEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("X_OFFSET");
+      literal.setValue(4);
+      literal.setLiteral("X_OFFSET");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaChannel.X_OFFSET);
+      vegaChannelEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("Y_OFFSET");
+      literal.setValue(5);
+      literal.setLiteral("Y_OFFSET");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaChannel.Y_OFFSET);
+      vegaChannelEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("COLOR");
+      literal.setValue(6);
+      literal.setLiteral("COLOR");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaChannel.COLOR);
+      vegaChannelEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("FILL");
+      literal.setValue(7);
+      literal.setLiteral("FILL");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaChannel.FILL);
+      vegaChannelEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("STROKE");
+      literal.setValue(8);
+      literal.setLiteral("STROKE");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaChannel.STROKE);
+      vegaChannelEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("OPACITY");
+      literal.setValue(9);
+      literal.setLiteral("OPACITY");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaChannel.OPACITY);
+      vegaChannelEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("SIZE");
+      literal.setValue(10);
+      literal.setLiteral("SIZE");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaChannel.SIZE);
+      vegaChannelEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("SHAPE");
+      literal.setValue(11);
+      literal.setLiteral("SHAPE");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaChannel.SHAPE);
+      vegaChannelEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("STROKE_DASH");
+      literal.setValue(12);
+      literal.setLiteral("STROKE_DASH");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaChannel.STROKE_DASH);
+      vegaChannelEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("STROKE_WIDTH");
+      literal.setValue(13);
+      literal.setLiteral("STROKE_WIDTH");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaChannel.STROKE_WIDTH);
+      vegaChannelEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("TEXT");
+      literal.setValue(14);
+      literal.setLiteral("TEXT");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaChannel.TEXT);
+      vegaChannelEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("TOOLTIP");
+      literal.setValue(15);
+      literal.setLiteral("TOOLTIP");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaChannel.TOOLTIP);
+      vegaChannelEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("ANGLE");
+      literal.setValue(16);
+      literal.setLiteral("ANGLE");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaChannel.ANGLE);
+      vegaChannelEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("THETA");
+      literal.setValue(17);
+      literal.setLiteral("THETA");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaChannel.THETA);
+      vegaChannelEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("THETA2");
+      literal.setValue(18);
+      literal.setLiteral("THETA2");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaChannel.THETA2);
+      vegaChannelEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("RADIUS");
+      literal.setValue(19);
+      literal.setLiteral("RADIUS");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaChannel.RADIUS);
+      vegaChannelEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("RADIUS2");
+      literal.setValue(20);
+      literal.setLiteral("RADIUS2");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaChannel.RADIUS2);
+      vegaChannelEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("ROW");
+      literal.setValue(21);
+      literal.setLiteral("ROW");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaChannel.ROW);
+      vegaChannelEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("COLUMN");
+      literal.setValue(22);
+      literal.setLiteral("COLUMN");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaChannel.COLUMN);
+      vegaChannelEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("FACET");
+      literal.setValue(23);
+      literal.setLiteral("FACET");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaChannel.FACET);
+      vegaChannelEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("DETAIL");
+      literal.setValue(24);
+      literal.setLiteral("DETAIL");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaChannel.DETAIL);
+      vegaChannelEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("ORDER");
+      literal.setValue(25);
+      literal.setLiteral("ORDER");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaChannel.ORDER);
+      vegaChannelEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("HREF");
+      literal.setValue(26);
+      literal.setLiteral("HREF");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaChannel.HREF);
+      vegaChannelEnumType.addLiteral(literal);
+    }
+    UimodelVegaPackage.Literals.VEGA_CHANNEL = vegaChannelEnumType;
+    this.getEClassifiers().push(vegaChannelEnumType);
+
+    // Create VegaFieldType enum
+    const vegaFieldTypeEnumType = new BasicEEnum();
+    vegaFieldTypeEnumType.setName('VegaFieldType');
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("QUANTITATIVE");
+      literal.setValue(0);
+      literal.setLiteral("QUANTITATIVE");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaFieldType.QUANTITATIVE);
+      vegaFieldTypeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("ORDINAL");
+      literal.setValue(1);
+      literal.setLiteral("ORDINAL");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaFieldType.ORDINAL);
+      vegaFieldTypeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("NOMINAL");
+      literal.setValue(2);
+      literal.setLiteral("NOMINAL");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaFieldType.NOMINAL);
+      vegaFieldTypeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("TEMPORAL");
+      literal.setValue(3);
+      literal.setLiteral("TEMPORAL");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaFieldType.TEMPORAL);
+      vegaFieldTypeEnumType.addLiteral(literal);
+    }
+    UimodelVegaPackage.Literals.VEGA_FIELD_TYPE = vegaFieldTypeEnumType;
+    this.getEClassifiers().push(vegaFieldTypeEnumType);
+
+    // Create VegaAggregate enum
+    const vegaAggregateEnumType = new BasicEEnum();
+    vegaAggregateEnumType.setName('VegaAggregate');
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("NONE");
+      literal.setValue(0);
+      literal.setLiteral("NONE");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaAggregate.NONE);
+      vegaAggregateEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("COUNT");
+      literal.setValue(1);
+      literal.setLiteral("COUNT");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaAggregate.COUNT);
+      vegaAggregateEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("SUM");
+      literal.setValue(2);
+      literal.setLiteral("SUM");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaAggregate.SUM);
+      vegaAggregateEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("MEAN");
+      literal.setValue(3);
+      literal.setLiteral("MEAN");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaAggregate.MEAN);
+      vegaAggregateEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("MIN");
+      literal.setValue(4);
+      literal.setLiteral("MIN");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaAggregate.MIN);
+      vegaAggregateEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("MAX");
+      literal.setValue(5);
+      literal.setLiteral("MAX");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaAggregate.MAX);
+      vegaAggregateEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("MEDIAN");
+      literal.setValue(6);
+      literal.setLiteral("MEDIAN");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaAggregate.MEDIAN);
+      vegaAggregateEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("VARIANCE");
+      literal.setValue(7);
+      literal.setLiteral("VARIANCE");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaAggregate.VARIANCE);
+      vegaAggregateEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("STDEV");
+      literal.setValue(8);
+      literal.setLiteral("STDEV");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaAggregate.STDEV);
+      vegaAggregateEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("STDERR");
+      literal.setValue(9);
+      literal.setLiteral("STDERR");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaAggregate.STDERR);
+      vegaAggregateEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("Q1");
+      literal.setValue(10);
+      literal.setLiteral("Q1");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaAggregate.Q1);
+      vegaAggregateEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("Q3");
+      literal.setValue(11);
+      literal.setLiteral("Q3");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaAggregate.Q3);
+      vegaAggregateEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("CI0");
+      literal.setValue(12);
+      literal.setLiteral("CI0");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaAggregate.CI0);
+      vegaAggregateEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("CI1");
+      literal.setValue(13);
+      literal.setLiteral("CI1");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaAggregate.CI1);
+      vegaAggregateEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("DISTINCT");
+      literal.setValue(14);
+      literal.setLiteral("DISTINCT");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaAggregate.DISTINCT);
+      vegaAggregateEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("VALID");
+      literal.setValue(15);
+      literal.setLiteral("VALID");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaAggregate.VALID);
+      vegaAggregateEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("MISSING");
+      literal.setValue(16);
+      literal.setLiteral("MISSING");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaAggregate.MISSING);
+      vegaAggregateEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("ARGMIN");
+      literal.setValue(17);
+      literal.setLiteral("ARGMIN");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaAggregate.ARGMIN);
+      vegaAggregateEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("ARGMAX");
+      literal.setValue(18);
+      literal.setLiteral("ARGMAX");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaAggregate.ARGMAX);
+      vegaAggregateEnumType.addLiteral(literal);
+    }
+    UimodelVegaPackage.Literals.VEGA_AGGREGATE = vegaAggregateEnumType;
+    this.getEClassifiers().push(vegaAggregateEnumType);
+
+    // Create VegaScaleType enum
+    const vegaScaleTypeEnumType = new BasicEEnum();
+    vegaScaleTypeEnumType.setName('VegaScaleType');
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("LINEAR");
+      literal.setValue(0);
+      literal.setLiteral("LINEAR");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaScaleType.LINEAR);
+      vegaScaleTypeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("LOG");
+      literal.setValue(1);
+      literal.setLiteral("LOG");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaScaleType.LOG);
+      vegaScaleTypeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("POW");
+      literal.setValue(2);
+      literal.setLiteral("POW");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaScaleType.POW);
+      vegaScaleTypeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("SQRT");
+      literal.setValue(3);
+      literal.setLiteral("SQRT");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaScaleType.SQRT);
+      vegaScaleTypeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("SYMLOG");
+      literal.setValue(4);
+      literal.setLiteral("SYMLOG");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaScaleType.SYMLOG);
+      vegaScaleTypeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("TIME");
+      literal.setValue(5);
+      literal.setLiteral("TIME");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaScaleType.TIME);
+      vegaScaleTypeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("UTC");
+      literal.setValue(6);
+      literal.setLiteral("UTC");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaScaleType.UTC);
+      vegaScaleTypeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("BAND");
+      literal.setValue(7);
+      literal.setLiteral("BAND");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaScaleType.BAND);
+      vegaScaleTypeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("POINT");
+      literal.setValue(8);
+      literal.setLiteral("POINT");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaScaleType.POINT);
+      vegaScaleTypeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("ORDINAL");
+      literal.setValue(9);
+      literal.setLiteral("ORDINAL");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaScaleType.ORDINAL);
+      vegaScaleTypeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("QUANTILE");
+      literal.setValue(10);
+      literal.setLiteral("QUANTILE");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaScaleType.QUANTILE);
+      vegaScaleTypeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("QUANTIZE");
+      literal.setValue(11);
+      literal.setLiteral("QUANTIZE");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaScaleType.QUANTIZE);
+      vegaScaleTypeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("THRESHOLD");
+      literal.setValue(12);
+      literal.setLiteral("THRESHOLD");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaScaleType.THRESHOLD);
+      vegaScaleTypeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("BIN_ORDINAL");
+      literal.setValue(13);
+      literal.setLiteral("BIN_ORDINAL");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaScaleType.BIN_ORDINAL);
+      vegaScaleTypeEnumType.addLiteral(literal);
+    }
+    UimodelVegaPackage.Literals.VEGA_SCALE_TYPE = vegaScaleTypeEnumType;
+    this.getEClassifiers().push(vegaScaleTypeEnumType);
+
+    // Create VegaInterpolate enum
+    const vegaInterpolateEnumType = new BasicEEnum();
+    vegaInterpolateEnumType.setName('VegaInterpolate');
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("LINEAR");
+      literal.setValue(0);
+      literal.setLiteral("LINEAR");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaInterpolate.LINEAR);
+      vegaInterpolateEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("STEP");
+      literal.setValue(1);
+      literal.setLiteral("STEP");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaInterpolate.STEP);
+      vegaInterpolateEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("STEP_BEFORE");
+      literal.setValue(2);
+      literal.setLiteral("STEP_BEFORE");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaInterpolate.STEP_BEFORE);
+      vegaInterpolateEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("STEP_AFTER");
+      literal.setValue(3);
+      literal.setLiteral("STEP_AFTER");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaInterpolate.STEP_AFTER);
+      vegaInterpolateEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("BASIS");
+      literal.setValue(4);
+      literal.setLiteral("BASIS");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaInterpolate.BASIS);
+      vegaInterpolateEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("CARDINAL");
+      literal.setValue(5);
+      literal.setLiteral("CARDINAL");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaInterpolate.CARDINAL);
+      vegaInterpolateEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("MONOTONE");
+      literal.setValue(6);
+      literal.setLiteral("MONOTONE");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaInterpolate.MONOTONE);
+      vegaInterpolateEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("BUNDLE");
+      literal.setValue(7);
+      literal.setLiteral("BUNDLE");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaInterpolate.BUNDLE);
+      vegaInterpolateEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("NATURAL");
+      literal.setValue(8);
+      literal.setLiteral("NATURAL");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaInterpolate.NATURAL);
+      vegaInterpolateEnumType.addLiteral(literal);
+    }
+    UimodelVegaPackage.Literals.VEGA_INTERPOLATE = vegaInterpolateEnumType;
+    this.getEClassifiers().push(vegaInterpolateEnumType);
+
+    // Create VegaTimeUnit enum
+    const vegaTimeUnitEnumType = new BasicEEnum();
+    vegaTimeUnitEnumType.setName('VegaTimeUnit');
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("YEAR");
+      literal.setValue(0);
+      literal.setLiteral("YEAR");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaTimeUnit.YEAR);
+      vegaTimeUnitEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("QUARTER");
+      literal.setValue(1);
+      literal.setLiteral("QUARTER");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaTimeUnit.QUARTER);
+      vegaTimeUnitEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("MONTH");
+      literal.setValue(2);
+      literal.setLiteral("MONTH");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaTimeUnit.MONTH);
+      vegaTimeUnitEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("WEEK");
+      literal.setValue(3);
+      literal.setLiteral("WEEK");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaTimeUnit.WEEK);
+      vegaTimeUnitEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("DAY");
+      literal.setValue(4);
+      literal.setLiteral("DAY");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaTimeUnit.DAY);
+      vegaTimeUnitEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("DAYOFYEAR");
+      literal.setValue(5);
+      literal.setLiteral("DAYOFYEAR");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaTimeUnit.DAYOFYEAR);
+      vegaTimeUnitEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("DATE");
+      literal.setValue(6);
+      literal.setLiteral("DATE");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaTimeUnit.DATE);
+      vegaTimeUnitEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("HOURS");
+      literal.setValue(7);
+      literal.setLiteral("HOURS");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaTimeUnit.HOURS);
+      vegaTimeUnitEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("MINUTES");
+      literal.setValue(8);
+      literal.setLiteral("MINUTES");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaTimeUnit.MINUTES);
+      vegaTimeUnitEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("SECONDS");
+      literal.setValue(9);
+      literal.setLiteral("SECONDS");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaTimeUnit.SECONDS);
+      vegaTimeUnitEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("MILLISECONDS");
+      literal.setValue(10);
+      literal.setLiteral("MILLISECONDS");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaTimeUnit.MILLISECONDS);
+      vegaTimeUnitEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("YEARMONTH");
+      literal.setValue(11);
+      literal.setLiteral("YEARMONTH");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaTimeUnit.YEARMONTH);
+      vegaTimeUnitEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("YEARMONTHDATE");
+      literal.setValue(12);
+      literal.setLiteral("YEARMONTHDATE");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaTimeUnit.YEARMONTHDATE);
+      vegaTimeUnitEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("MONTHDATE");
+      literal.setValue(13);
+      literal.setLiteral("MONTHDATE");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaTimeUnit.MONTHDATE);
+      vegaTimeUnitEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("HOURSMINUTES");
+      literal.setValue(14);
+      literal.setLiteral("HOURSMINUTES");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaTimeUnit.HOURSMINUTES);
+      vegaTimeUnitEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("HOURSMINUTESSECONDS");
+      literal.setValue(15);
+      literal.setLiteral("HOURSMINUTESSECONDS");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaTimeUnit.HOURSMINUTESSECONDS);
+      vegaTimeUnitEnumType.addLiteral(literal);
+    }
+    UimodelVegaPackage.Literals.VEGA_TIME_UNIT = vegaTimeUnitEnumType;
+    this.getEClassifiers().push(vegaTimeUnitEnumType);
+
+    // Create VegaOrientation enum
+    const vegaOrientationEnumType = new BasicEEnum();
+    vegaOrientationEnumType.setName('VegaOrientation');
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("VERTICAL");
+      literal.setValue(0);
+      literal.setLiteral("VERTICAL");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaOrientation.VERTICAL);
+      vegaOrientationEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("HORIZONTAL");
+      literal.setValue(1);
+      literal.setLiteral("HORIZONTAL");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaOrientation.HORIZONTAL);
+      vegaOrientationEnumType.addLiteral(literal);
+    }
+    UimodelVegaPackage.Literals.VEGA_ORIENTATION = vegaOrientationEnumType;
+    this.getEClassifiers().push(vegaOrientationEnumType);
+
+    // Create VegaAxisOrient enum
+    const vegaAxisOrientEnumType = new BasicEEnum();
+    vegaAxisOrientEnumType.setName('VegaAxisOrient');
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("TOP");
+      literal.setValue(0);
+      literal.setLiteral("TOP");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaAxisOrient.TOP);
+      vegaAxisOrientEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("BOTTOM");
+      literal.setValue(1);
+      literal.setLiteral("BOTTOM");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaAxisOrient.BOTTOM);
+      vegaAxisOrientEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("LEFT");
+      literal.setValue(2);
+      literal.setLiteral("LEFT");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaAxisOrient.LEFT);
+      vegaAxisOrientEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("RIGHT");
+      literal.setValue(3);
+      literal.setLiteral("RIGHT");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaAxisOrient.RIGHT);
+      vegaAxisOrientEnumType.addLiteral(literal);
+    }
+    UimodelVegaPackage.Literals.VEGA_AXIS_ORIENT = vegaAxisOrientEnumType;
+    this.getEClassifiers().push(vegaAxisOrientEnumType);
+
+    // Create VegaLegendOrient enum
+    const vegaLegendOrientEnumType = new BasicEEnum();
+    vegaLegendOrientEnumType.setName('VegaLegendOrient');
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("LEFT");
+      literal.setValue(0);
+      literal.setLiteral("LEFT");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaLegendOrient.LEFT);
+      vegaLegendOrientEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("RIGHT");
+      literal.setValue(1);
+      literal.setLiteral("RIGHT");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaLegendOrient.RIGHT);
+      vegaLegendOrientEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("TOP");
+      literal.setValue(2);
+      literal.setLiteral("TOP");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaLegendOrient.TOP);
+      vegaLegendOrientEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("BOTTOM");
+      literal.setValue(3);
+      literal.setLiteral("BOTTOM");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaLegendOrient.BOTTOM);
+      vegaLegendOrientEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("TOP_LEFT");
+      literal.setValue(4);
+      literal.setLiteral("TOP_LEFT");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaLegendOrient.TOP_LEFT);
+      vegaLegendOrientEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("TOP_RIGHT");
+      literal.setValue(5);
+      literal.setLiteral("TOP_RIGHT");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaLegendOrient.TOP_RIGHT);
+      vegaLegendOrientEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("BOTTOM_LEFT");
+      literal.setValue(6);
+      literal.setLiteral("BOTTOM_LEFT");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaLegendOrient.BOTTOM_LEFT);
+      vegaLegendOrientEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("BOTTOM_RIGHT");
+      literal.setValue(7);
+      literal.setLiteral("BOTTOM_RIGHT");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaLegendOrient.BOTTOM_RIGHT);
+      vegaLegendOrientEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("NONE");
+      literal.setValue(8);
+      literal.setLiteral("NONE");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaLegendOrient.NONE);
+      vegaLegendOrientEnumType.addLiteral(literal);
+    }
+    UimodelVegaPackage.Literals.VEGA_LEGEND_ORIENT = vegaLegendOrientEnumType;
+    this.getEClassifiers().push(vegaLegendOrientEnumType);
+
+    // Create VegaLegendType enum
+    const vegaLegendTypeEnumType = new BasicEEnum();
+    vegaLegendTypeEnumType.setName('VegaLegendType');
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("SYMBOL");
+      literal.setValue(0);
+      literal.setLiteral("SYMBOL");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaLegendType.SYMBOL);
+      vegaLegendTypeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("GRADIENT");
+      literal.setValue(1);
+      literal.setLiteral("GRADIENT");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaLegendType.GRADIENT);
+      vegaLegendTypeEnumType.addLiteral(literal);
+    }
+    UimodelVegaPackage.Literals.VEGA_LEGEND_TYPE = vegaLegendTypeEnumType;
+    this.getEClassifiers().push(vegaLegendTypeEnumType);
+
+    // Create VegaDirection enum
+    const vegaDirectionEnumType = new BasicEEnum();
+    vegaDirectionEnumType.setName('VegaDirection');
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("VERTICAL");
+      literal.setValue(0);
+      literal.setLiteral("VERTICAL");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaDirection.VERTICAL);
+      vegaDirectionEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("HORIZONTAL");
+      literal.setValue(1);
+      literal.setLiteral("HORIZONTAL");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaDirection.HORIZONTAL);
+      vegaDirectionEnumType.addLiteral(literal);
+    }
+    UimodelVegaPackage.Literals.VEGA_DIRECTION = vegaDirectionEnumType;
+    this.getEClassifiers().push(vegaDirectionEnumType);
+
+    // Create VegaSortOrder enum
+    const vegaSortOrderEnumType = new BasicEEnum();
+    vegaSortOrderEnumType.setName('VegaSortOrder');
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("ASCENDING");
+      literal.setValue(0);
+      literal.setLiteral("ASCENDING");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaSortOrder.ASCENDING);
+      vegaSortOrderEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("DESCENDING");
+      literal.setValue(1);
+      literal.setLiteral("DESCENDING");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaSortOrder.DESCENDING);
+      vegaSortOrderEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("NONE");
+      literal.setValue(2);
+      literal.setLiteral("NONE");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaSortOrder.NONE);
+      vegaSortOrderEnumType.addLiteral(literal);
+    }
+    UimodelVegaPackage.Literals.VEGA_SORT_ORDER = vegaSortOrderEnumType;
+    this.getEClassifiers().push(vegaSortOrderEnumType);
+
+    // Create VegaStack enum
+    const vegaStackEnumType = new BasicEEnum();
+    vegaStackEnumType.setName('VegaStack');
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("ZERO");
+      literal.setValue(0);
+      literal.setLiteral("ZERO");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaStack.ZERO);
+      vegaStackEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("NORMALIZE");
+      literal.setValue(1);
+      literal.setLiteral("NORMALIZE");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaStack.NORMALIZE);
+      vegaStackEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("CENTER");
+      literal.setValue(2);
+      literal.setLiteral("CENTER");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaStack.CENTER);
+      vegaStackEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("NONE");
+      literal.setValue(3);
+      literal.setLiteral("NONE");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaStack.NONE);
+      vegaStackEnumType.addLiteral(literal);
+    }
+    UimodelVegaPackage.Literals.VEGA_STACK = vegaStackEnumType;
+    this.getEClassifiers().push(vegaStackEnumType);
+
+    // Create VegaAutosize enum
+    const vegaAutosizeEnumType = new BasicEEnum();
+    vegaAutosizeEnumType.setName('VegaAutosize');
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("PAD");
+      literal.setValue(0);
+      literal.setLiteral("PAD");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaAutosize.PAD);
+      vegaAutosizeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("FIT");
+      literal.setValue(1);
+      literal.setLiteral("FIT");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaAutosize.FIT);
+      vegaAutosizeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("FIT_X");
+      literal.setValue(2);
+      literal.setLiteral("FIT_X");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaAutosize.FIT_X);
+      vegaAutosizeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("FIT_Y");
+      literal.setValue(3);
+      literal.setLiteral("FIT_Y");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaAutosize.FIT_Y);
+      vegaAutosizeEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("NONE");
+      literal.setValue(4);
+      literal.setLiteral("NONE");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaAutosize.NONE);
+      vegaAutosizeEnumType.addLiteral(literal);
+    }
+    UimodelVegaPackage.Literals.VEGA_AUTOSIZE = vegaAutosizeEnumType;
+    this.getEClassifiers().push(vegaAutosizeEnumType);
+
+    // Create VegaAlign enum
+    const vegaAlignEnumType = new BasicEEnum();
+    vegaAlignEnumType.setName('VegaAlign');
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("LEFT");
+      literal.setValue(0);
+      literal.setLiteral("LEFT");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaAlign.LEFT);
+      vegaAlignEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("CENTER");
+      literal.setValue(1);
+      literal.setLiteral("CENTER");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaAlign.CENTER);
+      vegaAlignEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("RIGHT");
+      literal.setValue(2);
+      literal.setLiteral("RIGHT");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaAlign.RIGHT);
+      vegaAlignEnumType.addLiteral(literal);
+    }
+    UimodelVegaPackage.Literals.VEGA_ALIGN = vegaAlignEnumType;
+    this.getEClassifiers().push(vegaAlignEnumType);
+
+    // Create VegaBaseline enum
+    const vegaBaselineEnumType = new BasicEEnum();
+    vegaBaselineEnumType.setName('VegaBaseline');
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("TOP");
+      literal.setValue(0);
+      literal.setLiteral("TOP");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaBaseline.TOP);
+      vegaBaselineEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("MIDDLE");
+      literal.setValue(1);
+      literal.setLiteral("MIDDLE");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaBaseline.MIDDLE);
+      vegaBaselineEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("BOTTOM");
+      literal.setValue(2);
+      literal.setLiteral("BOTTOM");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaBaseline.BOTTOM);
+      vegaBaselineEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("ALPHABETIC");
+      literal.setValue(3);
+      literal.setLiteral("ALPHABETIC");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaBaseline.ALPHABETIC);
+      vegaBaselineEnumType.addLiteral(literal);
+    }
+    UimodelVegaPackage.Literals.VEGA_BASELINE = vegaBaselineEnumType;
+    this.getEClassifiers().push(vegaBaselineEnumType);
+
+    // Create VegaLabelOverlap enum
+    const vegaLabelOverlapEnumType = new BasicEEnum();
+    vegaLabelOverlapEnumType.setName('VegaLabelOverlap');
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("TRUE");
+      literal.setValue(0);
+      literal.setLiteral("TRUE");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaLabelOverlap.TRUE);
+      vegaLabelOverlapEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("FALSE");
+      literal.setValue(1);
+      literal.setLiteral("FALSE");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaLabelOverlap.FALSE);
+      vegaLabelOverlapEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("GREEDY");
+      literal.setValue(2);
+      literal.setLiteral("GREEDY");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaLabelOverlap.GREEDY);
+      vegaLabelOverlapEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("PARITY");
+      literal.setValue(3);
+      literal.setLiteral("PARITY");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaLabelOverlap.PARITY);
+      vegaLabelOverlapEnumType.addLiteral(literal);
+    }
+    UimodelVegaPackage.Literals.VEGA_LABEL_OVERLAP = vegaLabelOverlapEnumType;
+    this.getEClassifiers().push(vegaLabelOverlapEnumType);
+
+    // Create VegaWindowOp enum
+    const vegaWindowOpEnumType = new BasicEEnum();
+    vegaWindowOpEnumType.setName('VegaWindowOp');
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("ROW_NUMBER");
+      literal.setValue(0);
+      literal.setLiteral("ROW_NUMBER");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaWindowOp.ROW_NUMBER);
+      vegaWindowOpEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("RANK");
+      literal.setValue(1);
+      literal.setLiteral("RANK");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaWindowOp.RANK);
+      vegaWindowOpEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("DENSE_RANK");
+      literal.setValue(2);
+      literal.setLiteral("DENSE_RANK");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaWindowOp.DENSE_RANK);
+      vegaWindowOpEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("PERCENT_RANK");
+      literal.setValue(3);
+      literal.setLiteral("PERCENT_RANK");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaWindowOp.PERCENT_RANK);
+      vegaWindowOpEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("CUME_DIST");
+      literal.setValue(4);
+      literal.setLiteral("CUME_DIST");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaWindowOp.CUME_DIST);
+      vegaWindowOpEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("NTILE");
+      literal.setValue(5);
+      literal.setLiteral("NTILE");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaWindowOp.NTILE);
+      vegaWindowOpEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("LAG");
+      literal.setValue(6);
+      literal.setLiteral("LAG");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaWindowOp.LAG);
+      vegaWindowOpEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("LEAD");
+      literal.setValue(7);
+      literal.setLiteral("LEAD");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaWindowOp.LEAD);
+      vegaWindowOpEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("FIRST_VALUE");
+      literal.setValue(8);
+      literal.setLiteral("FIRST_VALUE");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaWindowOp.FIRST_VALUE);
+      vegaWindowOpEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("LAST_VALUE");
+      literal.setValue(9);
+      literal.setLiteral("LAST_VALUE");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaWindowOp.LAST_VALUE);
+      vegaWindowOpEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("NTH_VALUE");
+      literal.setValue(10);
+      literal.setLiteral("NTH_VALUE");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaWindowOp.NTH_VALUE);
+      vegaWindowOpEnumType.addLiteral(literal);
+    }
+    UimodelVegaPackage.Literals.VEGA_WINDOW_OP = vegaWindowOpEnumType;
+    this.getEClassifiers().push(vegaWindowOpEnumType);
+
+    // Create VegaRegressionMethod enum
+    const vegaRegressionMethodEnumType = new BasicEEnum();
+    vegaRegressionMethodEnumType.setName('VegaRegressionMethod');
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("LINEAR");
+      literal.setValue(0);
+      literal.setLiteral("LINEAR");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaRegressionMethod.LINEAR);
+      vegaRegressionMethodEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("LOG");
+      literal.setValue(1);
+      literal.setLiteral("LOG");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaRegressionMethod.LOG);
+      vegaRegressionMethodEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("EXP");
+      literal.setValue(2);
+      literal.setLiteral("EXP");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaRegressionMethod.EXP);
+      vegaRegressionMethodEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("POW");
+      literal.setValue(3);
+      literal.setLiteral("POW");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaRegressionMethod.POW);
+      vegaRegressionMethodEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("QUAD");
+      literal.setValue(4);
+      literal.setLiteral("QUAD");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaRegressionMethod.QUAD);
+      vegaRegressionMethodEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("POLY");
+      literal.setValue(5);
+      literal.setLiteral("POLY");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaRegressionMethod.POLY);
+      vegaRegressionMethodEnumType.addLiteral(literal);
+    }
+    UimodelVegaPackage.Literals.VEGA_REGRESSION_METHOD = vegaRegressionMethodEnumType;
+    this.getEClassifiers().push(vegaRegressionMethodEnumType);
+
+    // Create VegaImputeMethod enum
+    const vegaImputeMethodEnumType = new BasicEEnum();
+    vegaImputeMethodEnumType.setName('VegaImputeMethod');
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("VALUE");
+      literal.setValue(0);
+      literal.setLiteral("VALUE");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaImputeMethod.VALUE);
+      vegaImputeMethodEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("MEAN");
+      literal.setValue(1);
+      literal.setLiteral("MEAN");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaImputeMethod.MEAN);
+      vegaImputeMethodEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("MEDIAN");
+      literal.setValue(2);
+      literal.setLiteral("MEDIAN");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaImputeMethod.MEDIAN);
+      vegaImputeMethodEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("MAX");
+      literal.setValue(3);
+      literal.setLiteral("MAX");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaImputeMethod.MAX);
+      vegaImputeMethodEnumType.addLiteral(literal);
+    }
+    {
+      const literal = new BasicEEnumLiteral();
+      literal.setName("MIN");
+      literal.setValue(4);
+      literal.setLiteral("MIN");
+      // the generated string constant is the literal's instance, so
+      // createFromString returns the value the generated type declares (#53)
+      literal.setInstance(VegaImputeMethod.MIN);
+      vegaImputeMethodEnumType.addLiteral(literal);
+    }
+    UimodelVegaPackage.Literals.VEGA_IMPUTE_METHOD = vegaImputeMethodEnumType;
+    this.getEClassifiers().push(vegaImputeMethodEnumType);
 
 
     // ============================================
     // Set ESuperTypes (must be done after all classes are created)
     // ============================================
-    (UimodelVegaPackage.Literals.VEGA_VIEW as BasicEClass).getESuperTypes().push(EPackageRegistry.INSTANCE.getEPackage('http://uimodel/1.0')!.getEClassifier('Component')! as EClass);
+    (UimodelVegaPackage.Literals.VEGA_VIEW as BasicEClass).getESuperTypes().push(requireEPackage('http://uimodel/1.0').getEClassifier('Component')! as EClass);
     (UimodelVegaPackage.Literals.VEGA_UNIT_SPEC as BasicEClass).getESuperTypes().push(UimodelVegaPackage.Literals.VEGA_SPEC);
     (UimodelVegaPackage.Literals.VEGA_LAYER_SPEC as BasicEClass).getESuperTypes().push(UimodelVegaPackage.Literals.VEGA_SPEC);
     (UimodelVegaPackage.Literals.VEGA_H_CONCAT_SPEC as BasicEClass).getESuperTypes().push(UimodelVegaPackage.Literals.VEGA_SPEC);
@@ -2490,13 +4368,22 @@ export class UimodelVegaPackage extends BasicEPackage {
     (UimodelVegaPackage.Literals.VEGA_JOIN_AGGREGATE_TRANSFORM as BasicEClass).getESuperTypes().push(UimodelVegaPackage.Literals.VEGA_TRANSFORM);
 
     // ============================================
-    // Set ETypes for EReferences (must be done after all classes are created)
+    // Set ETypes for all features (must be done after all classes are created).
+    // An EAttribute without eType leaves the XMI reader no EDataType to
+    // convert against - every value would arrive as a raw string (#37)
     // ============================================
     (UimodelVegaPackage.Literals.VEGA_VIEW__CONTENT as BasicEReference).setEType(UimodelVegaPackage.Literals.VEGA_SPEC);
     (UimodelVegaPackage.Literals.VEGA_VIEW__DATA_SOURCE as BasicEReference).setEType(UimodelVegaPackage.Literals.VEGA_DATA_SOURCE);
     (UimodelVegaPackage.Literals.VEGA_VIEW__PARAMS as BasicEReference).setEType(UimodelVegaPackage.Literals.VEGA_PARAM);
     (UimodelVegaPackage.Literals.VEGA_VIEW__SIGNALS as BasicEReference).setEType(UimodelVegaPackage.Literals.VEGA_SIGNAL_BINDING);
-    (UimodelVegaPackage.Literals.VEGA_VIEW__SPEC_EXPRESSION as BasicEReference).setEType(EPackageRegistry.INSTANCE.getEPackage('http://uimodel/1.0')!.getEClassifier('Expression')!);
+    (UimodelVegaPackage.Literals.VEGA_VIEW__TITLE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelVegaPackage.Literals.VEGA_VIEW__WIDTH as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EInt')!);
+    (UimodelVegaPackage.Literals.VEGA_VIEW__HEIGHT as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EInt')!);
+    (UimodelVegaPackage.Literals.VEGA_VIEW__AUTOSIZE as BasicEAttribute).setEType(UimodelVegaPackage.Literals.VEGA_AUTOSIZE);
+    (UimodelVegaPackage.Literals.VEGA_VIEW__PADDING as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EInt')!);
+    (UimodelVegaPackage.Literals.VEGA_VIEW__BACKGROUND as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelVegaPackage.Literals.VEGA_VIEW__SPEC as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelVegaPackage.Literals.VEGA_VIEW__SPEC_EXPRESSION as BasicEReference).setEType(requireEPackage('http://uimodel/1.0').getEClassifier('Expression')!);
     (UimodelVegaPackage.Literals.VEGA_SPEC__TRANSFORMS as BasicEReference).setEType(UimodelVegaPackage.Literals.VEGA_TRANSFORM);
     (UimodelVegaPackage.Literals.VEGA_UNIT_SPEC__MARK as BasicEReference).setEType(UimodelVegaPackage.Literals.VEGA_MARK_DEF);
     (UimodelVegaPackage.Literals.VEGA_UNIT_SPEC__ENCODINGS as BasicEReference).setEType(UimodelVegaPackage.Literals.VEGA_ENCODING);
@@ -2505,48 +4392,206 @@ export class UimodelVegaPackage extends BasicEPackage {
     (UimodelVegaPackage.Literals.VEGA_H_CONCAT_SPEC__SPECS as BasicEReference).setEType(UimodelVegaPackage.Literals.VEGA_SPEC);
     (UimodelVegaPackage.Literals.VEGA_V_CONCAT_SPEC__SPECS as BasicEReference).setEType(UimodelVegaPackage.Literals.VEGA_SPEC);
     (UimodelVegaPackage.Literals.VEGA_FACET_SPEC__FACET_FIELD as BasicEReference).setEType(getEcorePackage().getEClassifier('EStructuralFeature')!);
+    (UimodelVegaPackage.Literals.VEGA_FACET_SPEC__FACET_FIELD_TYPE as BasicEAttribute).setEType(UimodelVegaPackage.Literals.VEGA_FIELD_TYPE);
+    (UimodelVegaPackage.Literals.VEGA_FACET_SPEC__COLUMNS as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EInt')!);
+    (UimodelVegaPackage.Literals.VEGA_FACET_SPEC__FACET_SORT as BasicEAttribute).setEType(UimodelVegaPackage.Literals.VEGA_SORT_ORDER);
     (UimodelVegaPackage.Literals.VEGA_FACET_SPEC__SPEC as BasicEReference).setEType(UimodelVegaPackage.Literals.VEGA_SPEC);
+    (UimodelVegaPackage.Literals.VEGA_REPEAT_SPEC__FIELDS as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelVegaPackage.Literals.VEGA_REPEAT_SPEC__COLUMNS as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EInt')!);
     (UimodelVegaPackage.Literals.VEGA_REPEAT_SPEC__SPEC as BasicEReference).setEType(UimodelVegaPackage.Literals.VEGA_SPEC);
+    (UimodelVegaPackage.Literals.VEGA_MARK_DEF__TYPE as BasicEAttribute).setEType(UimodelVegaPackage.Literals.VEGA_MARK_TYPE);
+    (UimodelVegaPackage.Literals.VEGA_MARK_DEF__OPACITY as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelVegaPackage.Literals.VEGA_MARK_DEF__FILLED as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EBoolean')!);
+    (UimodelVegaPackage.Literals.VEGA_MARK_DEF__COLOR as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelVegaPackage.Literals.VEGA_MARK_DEF__FILL as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelVegaPackage.Literals.VEGA_MARK_DEF__STROKE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelVegaPackage.Literals.VEGA_MARK_DEF__STROKE_WIDTH as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelVegaPackage.Literals.VEGA_MARK_DEF__CORNER_RADIUS as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelVegaPackage.Literals.VEGA_MARK_DEF__INTERPOLATE as BasicEAttribute).setEType(UimodelVegaPackage.Literals.VEGA_INTERPOLATE);
+    (UimodelVegaPackage.Literals.VEGA_MARK_DEF__SIZE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelVegaPackage.Literals.VEGA_MARK_DEF__CLIP as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EBoolean')!);
+    (UimodelVegaPackage.Literals.VEGA_MARK_DEF__CURSOR as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelVegaPackage.Literals.VEGA_MARK_DEF__POINT as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EBoolean')!);
+    (UimodelVegaPackage.Literals.VEGA_MARK_DEF__LINE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EBoolean')!);
+    (UimodelVegaPackage.Literals.VEGA_MARK_DEF__INNER_RADIUS as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelVegaPackage.Literals.VEGA_MARK_DEF__OUTER_RADIUS as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelVegaPackage.Literals.VEGA_MARK_DEF__PAD_ANGLE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelVegaPackage.Literals.VEGA_MARK_DEF__ORIENT as BasicEAttribute).setEType(UimodelVegaPackage.Literals.VEGA_ORIENTATION);
+    (UimodelVegaPackage.Literals.VEGA_MARK_DEF__FONT_SIZE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelVegaPackage.Literals.VEGA_MARK_DEF__FONT_WEIGHT as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelVegaPackage.Literals.VEGA_MARK_DEF__FONT as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelVegaPackage.Literals.VEGA_MARK_DEF__ALIGN as BasicEAttribute).setEType(UimodelVegaPackage.Literals.VEGA_ALIGN);
+    (UimodelVegaPackage.Literals.VEGA_MARK_DEF__BASELINE as BasicEAttribute).setEType(UimodelVegaPackage.Literals.VEGA_BASELINE);
+    (UimodelVegaPackage.Literals.VEGA_MARK_DEF__DX as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelVegaPackage.Literals.VEGA_MARK_DEF__DY as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelVegaPackage.Literals.VEGA_MARK_DEF__ANGLE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelVegaPackage.Literals.VEGA_MARK_DEF__TOOLTIP as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EBoolean')!);
+    (UimodelVegaPackage.Literals.VEGA_ENCODING__CHANNEL as BasicEAttribute).setEType(UimodelVegaPackage.Literals.VEGA_CHANNEL);
     (UimodelVegaPackage.Literals.VEGA_ENCODING__FEATURE as BasicEReference).setEType(getEcorePackage().getEClassifier('EStructuralFeature')!);
-    (UimodelVegaPackage.Literals.VEGA_ENCODING__EXPRESSION as BasicEReference).setEType(EPackageRegistry.INSTANCE.getEPackage('http://uimodel/1.0')!.getEClassifier('Expression')!);
+    (UimodelVegaPackage.Literals.VEGA_ENCODING__EXPRESSION as BasicEReference).setEType(requireEPackage('http://uimodel/1.0').getEClassifier('Expression')!);
+    (UimodelVegaPackage.Literals.VEGA_ENCODING__VALUE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelVegaPackage.Literals.VEGA_ENCODING__FIELD_TYPE as BasicEAttribute).setEType(UimodelVegaPackage.Literals.VEGA_FIELD_TYPE);
+    (UimodelVegaPackage.Literals.VEGA_ENCODING__AGGREGATE as BasicEAttribute).setEType(UimodelVegaPackage.Literals.VEGA_AGGREGATE);
+    (UimodelVegaPackage.Literals.VEGA_ENCODING__BIN as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EBoolean')!);
+    (UimodelVegaPackage.Literals.VEGA_ENCODING__BIN_STEP as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelVegaPackage.Literals.VEGA_ENCODING__BIN_MAX_BINS as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EInt')!);
+    (UimodelVegaPackage.Literals.VEGA_ENCODING__TIME_UNIT as BasicEAttribute).setEType(UimodelVegaPackage.Literals.VEGA_TIME_UNIT);
+    (UimodelVegaPackage.Literals.VEGA_ENCODING__TITLE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelVegaPackage.Literals.VEGA_ENCODING__FORMAT as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelVegaPackage.Literals.VEGA_ENCODING__FORMAT_TYPE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelVegaPackage.Literals.VEGA_ENCODING__SORT as BasicEAttribute).setEType(UimodelVegaPackage.Literals.VEGA_SORT_ORDER);
+    (UimodelVegaPackage.Literals.VEGA_ENCODING__STACK as BasicEAttribute).setEType(UimodelVegaPackage.Literals.VEGA_STACK);
+    (UimodelVegaPackage.Literals.VEGA_ENCODING__BAND_POSITION as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
     (UimodelVegaPackage.Literals.VEGA_ENCODING__SCALE as BasicEReference).setEType(UimodelVegaPackage.Literals.VEGA_SCALE);
     (UimodelVegaPackage.Literals.VEGA_ENCODING__AXIS as BasicEReference).setEType(UimodelVegaPackage.Literals.VEGA_AXIS);
     (UimodelVegaPackage.Literals.VEGA_ENCODING__LEGEND as BasicEReference).setEType(UimodelVegaPackage.Literals.VEGA_LEGEND);
     (UimodelVegaPackage.Literals.VEGA_ENCODING__CONDITION as BasicEReference).setEType(UimodelVegaPackage.Literals.VEGA_CONDITION);
-    (UimodelVegaPackage.Literals.VEGA_SCALE__DOMAIN_EXPRESSION as BasicEReference).setEType(EPackageRegistry.INSTANCE.getEPackage('http://uimodel/1.0')!.getEClassifier('Expression')!);
-    (UimodelVegaPackage.Literals.VEGA_CONDITION__PREDICATE as BasicEReference).setEType(EPackageRegistry.INSTANCE.getEPackage('http://uimodel/1.0')!.getEClassifier('Expression')!);
+    (UimodelVegaPackage.Literals.VEGA_SCALE__TYPE as BasicEAttribute).setEType(UimodelVegaPackage.Literals.VEGA_SCALE_TYPE);
+    (UimodelVegaPackage.Literals.VEGA_SCALE__DOMAIN as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelVegaPackage.Literals.VEGA_SCALE__DOMAIN_EXPRESSION as BasicEReference).setEType(requireEPackage('http://uimodel/1.0').getEClassifier('Expression')!);
+    (UimodelVegaPackage.Literals.VEGA_SCALE__RANGE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelVegaPackage.Literals.VEGA_SCALE__SCHEME as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelVegaPackage.Literals.VEGA_SCALE__ZERO as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EBoolean')!);
+    (UimodelVegaPackage.Literals.VEGA_SCALE__NICE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EBoolean')!);
+    (UimodelVegaPackage.Literals.VEGA_SCALE__CLAMP as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EBoolean')!);
+    (UimodelVegaPackage.Literals.VEGA_SCALE__ROUND as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EBoolean')!);
+    (UimodelVegaPackage.Literals.VEGA_SCALE__REVERSE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EBoolean')!);
+    (UimodelVegaPackage.Literals.VEGA_SCALE__PADDING as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelVegaPackage.Literals.VEGA_SCALE__PADDING_INNER as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelVegaPackage.Literals.VEGA_SCALE__PADDING_OUTER as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelVegaPackage.Literals.VEGA_SCALE__EXPONENT as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelVegaPackage.Literals.VEGA_SCALE__BASE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelVegaPackage.Literals.VEGA_SCALE__INTERPOLATE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelVegaPackage.Literals.VEGA_AXIS__ORIENT as BasicEAttribute).setEType(UimodelVegaPackage.Literals.VEGA_AXIS_ORIENT);
+    (UimodelVegaPackage.Literals.VEGA_AXIS__TITLE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelVegaPackage.Literals.VEGA_AXIS__TITLE_ANGLE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelVegaPackage.Literals.VEGA_AXIS__TITLE_COLOR as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelVegaPackage.Literals.VEGA_AXIS__TITLE_FONT_SIZE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelVegaPackage.Literals.VEGA_AXIS__TITLE_FONT as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelVegaPackage.Literals.VEGA_AXIS__LABELS as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EBoolean')!);
+    (UimodelVegaPackage.Literals.VEGA_AXIS__LABEL_ANGLE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelVegaPackage.Literals.VEGA_AXIS__LABEL_COLOR as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelVegaPackage.Literals.VEGA_AXIS__LABEL_FONT_SIZE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelVegaPackage.Literals.VEGA_AXIS__LABEL_FONT as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelVegaPackage.Literals.VEGA_AXIS__LABEL_OVERLAP as BasicEAttribute).setEType(UimodelVegaPackage.Literals.VEGA_LABEL_OVERLAP);
+    (UimodelVegaPackage.Literals.VEGA_AXIS__FORMAT as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelVegaPackage.Literals.VEGA_AXIS__FORMAT_TYPE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelVegaPackage.Literals.VEGA_AXIS__GRID as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EBoolean')!);
+    (UimodelVegaPackage.Literals.VEGA_AXIS__GRID_COLOR as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelVegaPackage.Literals.VEGA_AXIS__GRID_OPACITY as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelVegaPackage.Literals.VEGA_AXIS__GRID_WIDTH as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelVegaPackage.Literals.VEGA_AXIS__TICKS as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EBoolean')!);
+    (UimodelVegaPackage.Literals.VEGA_AXIS__TICK_COUNT as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EInt')!);
+    (UimodelVegaPackage.Literals.VEGA_AXIS__TICK_SIZE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelVegaPackage.Literals.VEGA_AXIS__TICK_COLOR as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelVegaPackage.Literals.VEGA_AXIS__TICK_WIDTH as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelVegaPackage.Literals.VEGA_AXIS__VALUES as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelVegaPackage.Literals.VEGA_AXIS__DOMAIN_LINE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EBoolean')!);
+    (UimodelVegaPackage.Literals.VEGA_AXIS__DOMAIN_COLOR as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelVegaPackage.Literals.VEGA_AXIS__DOMAIN_WIDTH as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelVegaPackage.Literals.VEGA_AXIS__OFFSET as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelVegaPackage.Literals.VEGA_AXIS__MIN_EXTENT as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelVegaPackage.Literals.VEGA_AXIS__MAX_EXTENT as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelVegaPackage.Literals.VEGA_AXIS__ZINDEX as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EInt')!);
+    (UimodelVegaPackage.Literals.VEGA_LEGEND__ORIENT as BasicEAttribute).setEType(UimodelVegaPackage.Literals.VEGA_LEGEND_ORIENT);
+    (UimodelVegaPackage.Literals.VEGA_LEGEND__TITLE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelVegaPackage.Literals.VEGA_LEGEND__TITLE_COLOR as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelVegaPackage.Literals.VEGA_LEGEND__TITLE_FONT_SIZE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelVegaPackage.Literals.VEGA_LEGEND__TYPE as BasicEAttribute).setEType(UimodelVegaPackage.Literals.VEGA_LEGEND_TYPE);
+    (UimodelVegaPackage.Literals.VEGA_LEGEND__DIRECTION as BasicEAttribute).setEType(UimodelVegaPackage.Literals.VEGA_DIRECTION);
+    (UimodelVegaPackage.Literals.VEGA_LEGEND__LABEL_COLOR as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelVegaPackage.Literals.VEGA_LEGEND__LABEL_FONT_SIZE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelVegaPackage.Literals.VEGA_LEGEND__SYMBOL_SIZE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelVegaPackage.Literals.VEGA_LEGEND__SYMBOL_TYPE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelVegaPackage.Literals.VEGA_LEGEND__PADDING as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelVegaPackage.Literals.VEGA_LEGEND__OFFSET as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelVegaPackage.Literals.VEGA_LEGEND__COLUMNS as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EInt')!);
+    (UimodelVegaPackage.Literals.VEGA_LEGEND__VALUES as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelVegaPackage.Literals.VEGA_LEGEND__DISABLE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EBoolean')!);
+    (UimodelVegaPackage.Literals.VEGA_CONDITION__PARAM as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelVegaPackage.Literals.VEGA_CONDITION__PREDICATE as BasicEReference).setEType(requireEPackage('http://uimodel/1.0').getEClassifier('Expression')!);
+    (UimodelVegaPackage.Literals.VEGA_CONDITION__VALUE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
     (UimodelVegaPackage.Literals.VEGA_CONDITION__FEATURE as BasicEReference).setEType(getEcorePackage().getEClassifier('EStructuralFeature')!);
+    (UimodelVegaPackage.Literals.VEGA_CONDITION__FIELD_TYPE as BasicEAttribute).setEType(UimodelVegaPackage.Literals.VEGA_FIELD_TYPE);
+    (UimodelVegaPackage.Literals.VEGA_CONDITION__AGGREGATE as BasicEAttribute).setEType(UimodelVegaPackage.Literals.VEGA_AGGREGATE);
+    (UimodelVegaPackage.Literals.VEGA_PARAM__NAME as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelVegaPackage.Literals.VEGA_POINT_PARAM__FIELDS as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelVegaPackage.Literals.VEGA_POINT_PARAM__TOGGLE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EBoolean')!);
+    (UimodelVegaPackage.Literals.VEGA_POINT_PARAM__NEAREST as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EBoolean')!);
+    (UimodelVegaPackage.Literals.VEGA_POINT_PARAM__ON as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelVegaPackage.Literals.VEGA_POINT_PARAM__CLEAR as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelVegaPackage.Literals.VEGA_POINT_PARAM__ENCODINGS as BasicEAttribute).setEType(UimodelVegaPackage.Literals.VEGA_CHANNEL);
+    (UimodelVegaPackage.Literals.VEGA_INTERVAL_PARAM__ENCODINGS as BasicEAttribute).setEType(UimodelVegaPackage.Literals.VEGA_CHANNEL);
     (UimodelVegaPackage.Literals.VEGA_INTERVAL_PARAM__MARK as BasicEReference).setEType(UimodelVegaPackage.Literals.VEGA_SELECTION_MARK);
+    (UimodelVegaPackage.Literals.VEGA_INTERVAL_PARAM__ON as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelVegaPackage.Literals.VEGA_INTERVAL_PARAM__CLEAR as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelVegaPackage.Literals.VEGA_INTERVAL_PARAM__TRANSLATE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EBoolean')!);
+    (UimodelVegaPackage.Literals.VEGA_INTERVAL_PARAM__ZOOM as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EBoolean')!);
+    (UimodelVegaPackage.Literals.VEGA_SELECTION_MARK__FILL as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelVegaPackage.Literals.VEGA_SELECTION_MARK__FILL_OPACITY as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelVegaPackage.Literals.VEGA_SELECTION_MARK__STROKE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelVegaPackage.Literals.VEGA_SELECTION_MARK__STROKE_WIDTH as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
     (UimodelVegaPackage.Literals.VEGA_DATA_SOURCE__FEATURE as BasicEReference).setEType(getEcorePackage().getEClassifier('EStructuralFeature')!);
-    (UimodelVegaPackage.Literals.VEGA_DATA_SOURCE__FILTER_EXPRESSION as BasicEReference).setEType(EPackageRegistry.INSTANCE.getEPackage('http://uimodel/1.0')!.getEClassifier('Expression')!);
+    (UimodelVegaPackage.Literals.VEGA_DATA_SOURCE__FILTER_EXPRESSION as BasicEReference).setEType(requireEPackage('http://uimodel/1.0').getEClassifier('Expression')!);
     (UimodelVegaPackage.Literals.VEGA_DATA_SOURCE__TRANSFORMS as BasicEReference).setEType(UimodelVegaPackage.Literals.VEGA_TRANSFORM);
-    (UimodelVegaPackage.Literals.VEGA_DATA_SOURCE__TRANSFORM_EXPRESSION as BasicEReference).setEType(EPackageRegistry.INSTANCE.getEPackage('http://uimodel/1.0')!.getEClassifier('Expression')!);
+    (UimodelVegaPackage.Literals.VEGA_DATA_SOURCE__TRANSFORM_EXPRESSION as BasicEReference).setEType(requireEPackage('http://uimodel/1.0').getEClassifier('Expression')!);
+    (UimodelVegaPackage.Literals.VEGA_SIGNAL_BINDING__SIGNAL_NAME as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
     (UimodelVegaPackage.Literals.VEGA_SIGNAL_BINDING__TARGET_FEATURE as BasicEReference).setEType(getEcorePackage().getEClassifier('EStructuralFeature')!);
-    (UimodelVegaPackage.Literals.VEGA_SIGNAL_BINDING__TRANSFORM as BasicEReference).setEType(EPackageRegistry.INSTANCE.getEPackage('http://uimodel/1.0')!.getEClassifier('Expression')!);
+    (UimodelVegaPackage.Literals.VEGA_SIGNAL_BINDING__TRANSFORM as BasicEReference).setEType(requireEPackage('http://uimodel/1.0').getEClassifier('Expression')!);
+    (UimodelVegaPackage.Literals.VEGA_FOLD_TRANSFORM__FIELDS as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelVegaPackage.Literals.VEGA_FOLD_TRANSFORM__AS as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
     (UimodelVegaPackage.Literals.VEGA_AGGREGATE_TRANSFORM__GROUP_BY as BasicEReference).setEType(getEcorePackage().getEClassifier('EStructuralFeature')!);
+    (UimodelVegaPackage.Literals.VEGA_AGGREGATE_TRANSFORM__OP as BasicEAttribute).setEType(UimodelVegaPackage.Literals.VEGA_AGGREGATE);
     (UimodelVegaPackage.Literals.VEGA_AGGREGATE_TRANSFORM__FIELD as BasicEReference).setEType(getEcorePackage().getEClassifier('EStructuralFeature')!);
-    (UimodelVegaPackage.Literals.VEGA_CALCULATE_TRANSFORM__CALCULATE as BasicEReference).setEType(EPackageRegistry.INSTANCE.getEPackage('http://uimodel/1.0')!.getEClassifier('Expression')!);
+    (UimodelVegaPackage.Literals.VEGA_AGGREGATE_TRANSFORM__AS as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelVegaPackage.Literals.VEGA_CALCULATE_TRANSFORM__CALCULATE as BasicEReference).setEType(requireEPackage('http://uimodel/1.0').getEClassifier('Expression')!);
+    (UimodelVegaPackage.Literals.VEGA_CALCULATE_TRANSFORM__AS as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
     (UimodelVegaPackage.Literals.VEGA_BIN_TRANSFORM__FIELD as BasicEReference).setEType(getEcorePackage().getEClassifier('EStructuralFeature')!);
+    (UimodelVegaPackage.Literals.VEGA_BIN_TRANSFORM__AS as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelVegaPackage.Literals.VEGA_BIN_TRANSFORM__MAX_BINS as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EInt')!);
+    (UimodelVegaPackage.Literals.VEGA_BIN_TRANSFORM__STEP as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
     (UimodelVegaPackage.Literals.VEGA_TIME_UNIT_TRANSFORM__FIELD as BasicEReference).setEType(getEcorePackage().getEClassifier('EStructuralFeature')!);
-    (UimodelVegaPackage.Literals.VEGA_FILTER_TRANSFORM__FILTER as BasicEReference).setEType(EPackageRegistry.INSTANCE.getEPackage('http://uimodel/1.0')!.getEClassifier('Expression')!);
+    (UimodelVegaPackage.Literals.VEGA_TIME_UNIT_TRANSFORM__TIME_UNIT as BasicEAttribute).setEType(UimodelVegaPackage.Literals.VEGA_TIME_UNIT);
+    (UimodelVegaPackage.Literals.VEGA_TIME_UNIT_TRANSFORM__AS as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelVegaPackage.Literals.VEGA_FILTER_TRANSFORM__FILTER as BasicEReference).setEType(requireEPackage('http://uimodel/1.0').getEClassifier('Expression')!);
+    (UimodelVegaPackage.Literals.VEGA_WINDOW_TRANSFORM__OP as BasicEAttribute).setEType(UimodelVegaPackage.Literals.VEGA_WINDOW_OP);
     (UimodelVegaPackage.Literals.VEGA_WINDOW_TRANSFORM__FIELD as BasicEReference).setEType(getEcorePackage().getEClassifier('EStructuralFeature')!);
+    (UimodelVegaPackage.Literals.VEGA_WINDOW_TRANSFORM__AS as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
     (UimodelVegaPackage.Literals.VEGA_WINDOW_TRANSFORM__GROUP_BY as BasicEReference).setEType(getEcorePackage().getEClassifier('EStructuralFeature')!);
     (UimodelVegaPackage.Literals.VEGA_WINDOW_TRANSFORM__SORT as BasicEReference).setEType(UimodelVegaPackage.Literals.VEGA_SORT_FIELD);
+    (UimodelVegaPackage.Literals.VEGA_WINDOW_TRANSFORM__FRAME_START as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EInt')!);
+    (UimodelVegaPackage.Literals.VEGA_WINDOW_TRANSFORM__FRAME_END as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EInt')!);
     (UimodelVegaPackage.Literals.VEGA_LOOKUP_TRANSFORM__LOOKUP as BasicEReference).setEType(getEcorePackage().getEClassifier('EStructuralFeature')!);
     (UimodelVegaPackage.Literals.VEGA_LOOKUP_TRANSFORM__FROM as BasicEReference).setEType(UimodelVegaPackage.Literals.VEGA_LOOKUP_DATA);
+    (UimodelVegaPackage.Literals.VEGA_LOOKUP_TRANSFORM__AS as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelVegaPackage.Literals.VEGA_LOOKUP_TRANSFORM__DEFAULT as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
     (UimodelVegaPackage.Literals.VEGA_LOOKUP_DATA__FEATURE as BasicEReference).setEType(getEcorePackage().getEClassifier('EStructuralFeature')!);
     (UimodelVegaPackage.Literals.VEGA_LOOKUP_DATA__KEY as BasicEReference).setEType(getEcorePackage().getEClassifier('EStructuralFeature')!);
+    (UimodelVegaPackage.Literals.VEGA_LOOKUP_DATA__FIELDS as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelVegaPackage.Literals.VEGA_FLATTEN_TRANSFORM__FIELDS as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelVegaPackage.Literals.VEGA_FLATTEN_TRANSFORM__AS as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
     (UimodelVegaPackage.Literals.VEGA_PIVOT_TRANSFORM__PIVOT as BasicEReference).setEType(getEcorePackage().getEClassifier('EStructuralFeature')!);
     (UimodelVegaPackage.Literals.VEGA_PIVOT_TRANSFORM__VALUE as BasicEReference).setEType(getEcorePackage().getEClassifier('EStructuralFeature')!);
     (UimodelVegaPackage.Literals.VEGA_PIVOT_TRANSFORM__GROUP_BY as BasicEReference).setEType(getEcorePackage().getEClassifier('EStructuralFeature')!);
+    (UimodelVegaPackage.Literals.VEGA_SAMPLE_TRANSFORM__SAMPLE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EInt')!);
     (UimodelVegaPackage.Literals.VEGA_DENSITY_TRANSFORM__FIELD as BasicEReference).setEType(getEcorePackage().getEClassifier('EStructuralFeature')!);
+    (UimodelVegaPackage.Literals.VEGA_DENSITY_TRANSFORM__BANDWIDTH as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EDouble')!);
+    (UimodelVegaPackage.Literals.VEGA_DENSITY_TRANSFORM__STEPS as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EInt')!);
+    (UimodelVegaPackage.Literals.VEGA_DENSITY_TRANSFORM__AS as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
     (UimodelVegaPackage.Literals.VEGA_REGRESSION_TRANSFORM__ON as BasicEReference).setEType(getEcorePackage().getEClassifier('EStructuralFeature')!);
     (UimodelVegaPackage.Literals.VEGA_REGRESSION_TRANSFORM__REGRESSION as BasicEReference).setEType(getEcorePackage().getEClassifier('EStructuralFeature')!);
+    (UimodelVegaPackage.Literals.VEGA_REGRESSION_TRANSFORM__METHOD as BasicEAttribute).setEType(UimodelVegaPackage.Literals.VEGA_REGRESSION_METHOD);
+    (UimodelVegaPackage.Literals.VEGA_REGRESSION_TRANSFORM__AS as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
     (UimodelVegaPackage.Literals.VEGA_IMPUTE_TRANSFORM__IMPUTE as BasicEReference).setEType(getEcorePackage().getEClassifier('EStructuralFeature')!);
     (UimodelVegaPackage.Literals.VEGA_IMPUTE_TRANSFORM__KEY as BasicEReference).setEType(getEcorePackage().getEClassifier('EStructuralFeature')!);
+    (UimodelVegaPackage.Literals.VEGA_IMPUTE_TRANSFORM__METHOD as BasicEAttribute).setEType(UimodelVegaPackage.Literals.VEGA_IMPUTE_METHOD);
+    (UimodelVegaPackage.Literals.VEGA_IMPUTE_TRANSFORM__VALUE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
+    (UimodelVegaPackage.Literals.VEGA_JOIN_AGGREGATE_TRANSFORM__OP as BasicEAttribute).setEType(UimodelVegaPackage.Literals.VEGA_AGGREGATE);
     (UimodelVegaPackage.Literals.VEGA_JOIN_AGGREGATE_TRANSFORM__FIELD as BasicEReference).setEType(getEcorePackage().getEClassifier('EStructuralFeature')!);
+    (UimodelVegaPackage.Literals.VEGA_JOIN_AGGREGATE_TRANSFORM__AS as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
     (UimodelVegaPackage.Literals.VEGA_JOIN_AGGREGATE_TRANSFORM__GROUP_BY as BasicEReference).setEType(getEcorePackage().getEClassifier('EStructuralFeature')!);
     (UimodelVegaPackage.Literals.VEGA_SORT_FIELD__FIELD as BasicEReference).setEType(getEcorePackage().getEClassifier('EStructuralFeature')!);
+    (UimodelVegaPackage.Literals.VEGA_SORT_FIELD__ORDER as BasicEAttribute).setEType(UimodelVegaPackage.Literals.VEGA_SORT_ORDER);
 
     // ============================================
     // Register XML name mappings from ExtendedMetaData annotations

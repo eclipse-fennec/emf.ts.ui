@@ -7,8 +7,8 @@
 
 import { BasicEObject } from '@emfts/core';
 import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { Symbol } from './Symbol';
-import { UimodelMapsPackage } from './UimodelMapsPackage';
+import type { Symbol } from './Symbol.js';
+import { UimodelMapsPackage } from './UimodelMapsPackage.js';
 
 /**
  * Implementation of Symbol

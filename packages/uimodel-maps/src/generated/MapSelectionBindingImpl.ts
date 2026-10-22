@@ -7,8 +7,8 @@
 
 import { BasicEObject } from '@emfts/core';
 import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { MapSelectionBinding } from './MapSelectionBinding';
-import { UimodelMapsPackage } from './UimodelMapsPackage';
+import type { MapSelectionBinding } from './MapSelectionBinding.js';
+import { UimodelMapsPackage } from './UimodelMapsPackage.js';
 
 /**
  * Implementation of MapSelectionBinding

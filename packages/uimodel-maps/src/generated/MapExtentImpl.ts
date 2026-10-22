@@ -7,8 +7,8 @@
 
 import { BasicEObject } from '@emfts/core';
 import type { EClass, EStructuralFeature } from '@emfts/core';
-import type { MapExtent } from './MapExtent';
-import { UimodelMapsPackage } from './UimodelMapsPackage';
+import type { MapExtent } from './MapExtent.js';
+import { UimodelMapsPackage } from './UimodelMapsPackage.js';
 
 /**
  * Implementation of MapExtent
@@ -22,10 +22,10 @@ export class MapExtentImpl extends BasicEObject implements MapExtent {
   static readonly MAX_LAT: number = 3;
 
   // Private fields
-  private _minLon?: number;
-  private _minLat?: number;
-  private _maxLon?: number;
-  private _maxLat?: number;
+  private _minLon: number = 0;
+  private _minLat: number = 0;
+  private _maxLon: number = 0;
+  private _maxLat: number = 0;
 
   /**
    * Returns the EClass of this object
@@ -186,13 +186,13 @@ export class MapExtentImpl extends BasicEObject implements MapExtent {
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case MapExtentImpl.MIN_LON:
-        return this._minLon !== undefined;
+        return this._minLon !== 0;
       case MapExtentImpl.MIN_LAT:
-        return this._minLat !== undefined;
+        return this._minLat !== 0;
       case MapExtentImpl.MAX_LON:
-        return this._maxLon !== undefined;
+        return this._maxLon !== 0;
       case MapExtentImpl.MAX_LAT:
-        return this._maxLat !== undefined;
+        return this._maxLat !== 0;
       default:
         return super.eIsSet(feature);
     }
@@ -205,16 +205,16 @@ export class MapExtentImpl extends BasicEObject implements MapExtent {
     const featureID = this.eClass().getFeatureID(feature);
     switch (featureID) {
       case MapExtentImpl.MIN_LON:
-        this._minLon = undefined;
+        this._minLon = 0;
         return;
       case MapExtentImpl.MIN_LAT:
-        this._minLat = undefined;
+        this._minLat = 0;
         return;
       case MapExtentImpl.MAX_LON:
-        this._maxLon = undefined;
+        this._maxLon = 0;
         return;
       case MapExtentImpl.MAX_LAT:
-        this._maxLat = undefined;
+        this._maxLat = 0;
         return;
       default:
         super.eUnset(feature);

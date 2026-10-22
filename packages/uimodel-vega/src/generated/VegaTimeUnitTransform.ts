@@ -6,8 +6,8 @@
  */
 
 import type { EObject, EStructuralFeature, BasicEObject, EClass } from '@emfts/core';
-import type { VegaTransform } from './VegaTransform';
-import type { VegaTimeUnit } from './VegaTimeUnit';
+import type { VegaTransform } from './VegaTransform.js';
+import type { VegaTimeUnit } from './VegaTimeUnit.js';
 
 /**
  * VegaTimeUnitTransform

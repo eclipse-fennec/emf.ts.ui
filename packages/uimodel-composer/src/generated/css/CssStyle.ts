@@ -5,17 +5,17 @@
  * @generated
  */
 
-import type { EObject, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
+import type { EObject, EList, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
 import type { BaseStyle } from '..';
-import type { CssDeclaration } from './CssDeclaration';
-import type { CssState } from './CssState';
+import type { CssDeclaration } from './CssDeclaration.js';
+import type { CssState } from './CssState.js';
 
 /**
  * CssStyle
  * @generated
  */
 export interface CssStyle extends BaseStyle {
-  declarations: CssDeclaration[];
-  states: CssState[];
+  declarations: EList<CssDeclaration>;
+  states: EList<CssState>;
 
 }

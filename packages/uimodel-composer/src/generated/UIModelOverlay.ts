@@ -5,9 +5,9 @@
  * @generated
  */
 
-import type { EObject, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
-import type { WidgetComponent } from './WidgetComponent';
-import type { TemplateCase } from './TemplateCase';
+import type { EObject, EList, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
+import type { WidgetComponent } from './WidgetComponent.js';
+import type { TemplateCase } from './TemplateCase.js';
 
 /**
  * UIModelOverlay
@@ -16,7 +16,7 @@ import type { TemplateCase } from './TemplateCase';
 export interface UIModelOverlay extends EObject {
   name?: string;
   priority?: number;
-  templates: WidgetComponent[];
-  cases: TemplateCase[];
+  templates: EList<WidgetComponent>;
+  cases: EList<TemplateCase>;
 
 }

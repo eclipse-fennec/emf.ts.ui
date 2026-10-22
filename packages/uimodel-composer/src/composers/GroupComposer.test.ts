@@ -39,12 +39,12 @@ function group(init: { label?: string; visibleJs?: string; labelBindingJs?: stri
     const binding = factory.createPropertyBinding();
     binding.property = 'label';
     binding.expression = jsExpr(init.labelBindingJs);
-    g.bindings = [binding];
+    g.bindings.push(binding);
   }
   const child = factory.createInputWidget();
   child.name = 'firstName';
   child.feature = model.eClass().getEStructuralFeature('firstName')!;
-  g.fields = [child];
+  g.fields.push(child);
   return g;
 }
 

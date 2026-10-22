@@ -18,6 +18,7 @@ import type { StyleSheet } from '../generated/css/StyleSheet';
 import type { CssStyle } from '../generated/css/CssStyle';
 import type { StyleRule } from '../generated/css/StyleRule';
 import type { Component } from '../generated/Component';
+import type { EList } from '@emfts/core';
 
 // ─── Test-Doubles ──────────────────────────────────────────────────────
 // Reine Struktur-Doubles für die pure Engine (kein EMF-Laufzeitverhalten
@@ -30,11 +31,14 @@ function fakeEClass(name: string, supers: string[] = []) {
   };
 }
 
+/** Partial, in dem EList-Features auch als Plain-Array angegeben werden dürfen. */
+type Fake<T> = { [K in keyof T]?: T[K] extends EList<infer U> ? U[] | T[K] : T[K] };
+
 function decl(property: string, value: string, important = false) {
   return { property, value, important } as never;
 }
 
-function sheet(partial: Partial<StyleSheet>): StyleSheet {
+function sheet(partial: Fake<StyleSheet>): StyleSheet {
   return {
     name: 'test',
     tokens: [],
@@ -45,7 +49,7 @@ function sheet(partial: Partial<StyleSheet>): StyleSheet {
   } as unknown as StyleSheet;
 }
 
-function cssStyle(name: string, partial: Partial<CssStyle> = {}): CssStyle {
+function cssStyle(name: string, partial: Fake<CssStyle> = {}): CssStyle {
   return {
     name,
     declarations: [],
@@ -55,7 +59,7 @@ function cssStyle(name: string, partial: Partial<CssStyle> = {}): CssStyle {
   } as unknown as CssStyle;
 }
 
-function rule(partial: Partial<StyleRule>): StyleRule {
+function rule(partial: Fake<StyleRule>): StyleRule {
   return {
     includeSubtypes: true,
     priority: 0,
@@ -65,7 +69,7 @@ function rule(partial: Partial<StyleRule>): StyleRule {
   } as unknown as StyleRule;
 }
 
-function component(eclass: string, supers: string[], partial: Partial<Component> = {}): Component {
+function component(eclass: string, supers: string[], partial: Fake<Component> = {}): Component {
   return {
     name: 'c1',
     styles: [],

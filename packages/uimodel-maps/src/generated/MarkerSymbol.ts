@@ -6,8 +6,8 @@
  */
 
 import type { EObject, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
-import type { Symbol } from './Symbol';
-import type { MarkerShape } from './MarkerShape';
+import type { Symbol } from './Symbol.js';
+import type { MarkerShape } from './MarkerShape.js';
 
 /**
  * MarkerSymbol

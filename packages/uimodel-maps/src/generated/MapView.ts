@@ -5,19 +5,19 @@
  * @generated
  */
 
-import type { EObject, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
+import type { EObject, EList, BasicEObject, EClass, EStructuralFeature } from '@emfts/core';
 import type { Component } from '@emfts/uimodel-composer';
-import type { MapLayer } from './MapLayer';
-import type { MapSelectionBinding } from './MapSelectionBinding';
-import type { MapExtent } from './MapExtent';
+import type { MapLayer } from './MapLayer.js';
+import type { MapSelectionBinding } from './MapSelectionBinding.js';
+import type { MapExtent } from './MapExtent.js';
 
 /**
  * MapView
  * @generated
  */
 export interface MapView extends Component {
-  layers: MapLayer[];
-  bindings: MapSelectionBinding[];
+  layers: EList<MapLayer>;
+  bindings: EList<MapSelectionBinding>;
   title?: string;
   crs?: string;
   centerLon?: number;
