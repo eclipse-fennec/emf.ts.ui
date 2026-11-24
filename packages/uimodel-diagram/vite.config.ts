@@ -6,7 +6,12 @@ import { resolve } from 'path';
 export default defineConfig({
   plugins: [
     vue(),
-    dts({ insertTypesEntry: true, include: ['src/**/*.ts', 'src/**/*.vue'] }),
+    dts({
+      insertTypesEntry: true,
+      include: ['src/**/*.ts', 'src/**/*.vue'],
+      // Tests und ihre Domänen-Fixture gehören nicht ins veröffentlichte Paket.
+      exclude: ['src/**/*.test.ts', 'src/testFixture.ts'],
+    }),
   ],
   build: {
     lib: {

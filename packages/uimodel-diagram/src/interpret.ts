@@ -17,6 +17,15 @@ import {
 } from '@emfts/core'
 import type { ElkNode } from 'elkjs/lib/elk.bundled.js'
 import { evaluateBoolean } from '@emfts/uimodel-composer'
+import { Grouper, type FrameRef } from './grouping'
+import {
+  COMPARTMENT_SYMBOL,
+  measureSymbolNode,
+  resolveEdgeSymbol,
+  resolveNodeSymbol,
+  type EdgeSymbolView,
+  type SymbolView,
+} from './symbology'
 
 /** Read a single-valued feature by name. */
 function get(o: EObject, name: string): any {
@@ -42,6 +51,8 @@ export interface NodeRef {
 }
 export interface EdgeMeta {
   kind: string
+  /** Farbe, Breite und Strichart aus dem EdgeRenderer. */
+  symbol: EdgeSymbolView
   sourceCardinality: string
   targetCardinality: string
   sourceDecoration: string
@@ -56,6 +67,8 @@ export interface InterpretResult {
   edgeMeta: Map<string, EdgeMeta>
   /** port id → node id (for resolving port-based edge sources back to nodes). */
   portNodeMap: Map<string, string>
+  /** frame id → the NodeGrouping and group object behind it. */
+  frames: Map<string, FrameRef>
 }
 export interface SubRowView {
   label: string
@@ -85,6 +98,8 @@ export interface CompartmentView {
 }
 export interface NodeView {
   title: string
+  /** Second label line, e.g. a device's first IP address, or ''. */
+  sublabel: string
   stereotype: string
   /** Small subtitle under the title (e.g. EPackage.nsURI), or ''. */
   subtitle: string
@@ -148,6 +163,13 @@ function featureOf(mappingObj: EObject, name: string): EStructuralFeature | unde
     | undefined
 }
 
+/** An ordered list of resolved EStructuralFeature references held by a mapping object. */
+function featuresOf(mappingObj: EObject, name: string): EStructuralFeature[] {
+  return items(mappingObj, name)
+    .map((f) => deproxy(f, mappingObj))
+    .filter(Boolean) as EStructuralFeature[]
+}
+
 /** An ordered list of resolved EReferences (a traversal path) held by a mapping object. */
 function pathOf(mappingObj: EObject, name: string): EReference[] {
   return items(mappingObj, name)
@@ -156,7 +178,8 @@ function pathOf(mappingObj: EObject, name: string): EReference[] {
 }
 
 /** Read a scalar value off a domain object via a resolved feature ref. A
- *  reference value (an EObject, e.g. an EAttribute's eType) renders as its name. */
+ *  reference value (an EObject, e.g. an EAttribute's eType) renders as its name;
+ *  a multi-valued feature (e.g. Device.ips) as its values joined by ', '. */
 function readScalar(obj: EObject, feature: EStructuralFeature | undefined): string {
   if (!feature) return ''
   let v: unknown
@@ -165,12 +188,22 @@ function readScalar(obj: EObject, feature: EStructuralFeature | undefined): stri
   } catch {
     return ''
   }
+  return renderValue(v, obj)
+}
+
+function renderValue(v: unknown, obj: EObject): string {
   if (v == null) return ''
   if (typeof (v as { eClass?: unknown }).eClass === 'function') {
     const ref = deproxy(v as EObject, obj)
     const nf = ref?.eClass().getEStructuralFeature('name')
     return nf ? String(ref!.eGet(nf) ?? '') : ''
   }
+  const many = Array.isArray(v)
+    ? (v as unknown[])
+    : typeof (v as { toArray?: unknown }).toArray === 'function'
+      ? (v as { toArray(): unknown[] }).toArray()
+      : null
+  if (many) return many.map((item) => renderValue(item, obj)).filter(Boolean).join(', ')
   return String(v)
 }
 
@@ -223,6 +256,7 @@ function multiplicityOf(
 /** Resolve the visible content of a node from its NodeMapping + domain object. */
 export function resolveNodeView(obj: EObject, mapping: EObject): NodeView {
   const title = readScalar(obj, featureOf(mapping, 'labelFeature'))
+  const sublabel = readScalar(obj, featureOf(mapping, 'sublabelFeature'))
   const stereotype = String(get(mapping, 'stereotype') ?? '')
   const subtitle = readScalar(obj, featureOf(mapping, 'subtitleFeature'))
   const icon = String(get(mapping, 'icon') ?? '')
@@ -288,7 +322,7 @@ export function resolveNodeView(obj: EObject, mapping: EObject): NodeView {
       })
     if (rows.length) compartments.push({ separator, title, rows })
   }
-  return { title, stereotype, subtitle, icon, compartments }
+  return { title, sublabel, stereotype, subtitle, icon, compartments }
 }
 
 /** Lay out a node's compartments into positioned items (title bands, rows,
@@ -337,28 +371,57 @@ export function nodeHeaderColor(mapping: EObject): string {
   return style ? String(get(style, 'headerColor') ?? '#1e3a8a') : '#1e3a8a'
 }
 
+/** The side-effect maps that buildNodes fills while walking the mappings. */
+interface BuildCtx {
+  index: Map<string, NodeRef>
+  portNodeMap: Map<string, string>
+  rowYMap: Map<string, number>
+  grouper: Grouper
+}
+
+/** The effective symbol of a node, as declared by its NodeMapping's renderer. */
+export function nodeSymbolOf(obj: EObject, mapping: EObject): SymbolView {
+  return resolveNodeSymbol(obj, deproxy(get(mapping, 'renderer') as EObject | undefined, mapping))
+}
+
+/** The ELK padding a container node uses to leave room for its title. */
+function containerLayout(): Record<string, string> {
+  return {
+    'elk.padding': `[top=${HEADER_H + 16},left=20,bottom=20,right=20]`,
+    'elk.spacing.nodeNode': '80',
+    'elk.layered.spacing.nodeNodeBetweenLayers': '100',
+  }
+}
+
 /** Build ELK nodes for a set of NodeMappings relative to a parent domain object.
  *  A mapping with `children` becomes a container (size computed by ELK).
+ *  A mapping whose renderer declares a shape other than COMPARTMENTS becomes a
+ *  symbol node of fixed size, measured together with its label.
+ *  A mapping with `groupings` does not return its nodes: they go into the frame
+ *  the Grouper builds for them, which lands on the top level.
  *  portNodeMap/rowYMap are populated as a side-effect for later port placement. */
 function buildNodes(
   mappings: EObject[],
   parentObj: EObject,
-  index: Map<string, NodeRef>,
-  portNodeMap: Map<string, string>,
-  rowYMap: Map<string, number>,
+  ctx: BuildCtx,
 ): NonNullable<ElkNode['children']> {
   const out: NonNullable<ElkNode['children']> = []
+  const emit = (node: NonNullable<ElkNode['children']>[number], frameId: string | null) => {
+    if (frameId) ctx.grouper.place(frameId, node)
+    else out.push(node)
+  }
+
   for (const nm of mappings) {
     // Group node: a synthetic visual bucket (no domain object). Its children are
     // built from the SAME parent object; it is keyed stably off the parent.
     if (truthy(get(nm, 'group'))) {
-      const groupChildren = buildNodes(items(nm, 'children'), parentObj, index, portNodeMap, rowYMap)
+      const groupChildren = buildNodes(items(nm, 'children'), parentObj, ctx)
       if (groupChildren.length) {
         out.push({
           id: `${nodeId(parentObj)}::${String(get(nm, 'name') ?? 'group')}`,
           labels: [{ text: String(get(nm, 'groupLabel') ?? '') }],
           children: groupChildren,
-          layoutOptions: { 'elk.padding': `[top=${HEADER_H + 16},left=20,bottom=20,right=20]`, 'elk.spacing.nodeNode': '80', 'elk.layered.spacing.nodeNodeBetweenLayers': '100' },
+          layoutOptions: containerLayout(),
         })
       }
       continue
@@ -367,6 +430,11 @@ function buildNodes(
     // Optional metaclass filter (e.g. only EEnum, only EDataType).
     const sc = deproxy(get(nm, 'sourceClass') as EObject | undefined, nm)
     const sourceClassName = sc ? String(get(sc, 'name') ?? '') : ''
+    const renderer = deproxy(get(nm, 'renderer') as EObject | undefined, nm)
+    const groupings = items(nm, 'groupings')
+      .map((g) => deproxy(g, nm))
+      .filter(Boolean) as EObject[]
+
     for (const obj of follow(parentObj, pathOf(nm, 'from'))) {
       if (sourceClassName && obj.eClass().getName() !== sourceClassName) continue
       // Optional filter: skip objects that don't satisfy the NodeMapping condition.
@@ -377,51 +445,59 @@ function buildNodes(
         continue
       }
       const id = nodeId(obj)
-      index.set(id, { obj, mapping: nm })
+      ctx.index.set(id, { obj, mapping: nm })
       const view = resolveNodeView(obj, nm)
-      const childNodes = buildNodes(items(nm, 'children'), obj, index, portNodeMap, rowYMap)
-
-      // Record row Y positions for port placement (first occurrence only per rowObjId).
-      // Also count bracket pairs (rows with same rowObjId) for extra width.
-      let bracketCount = 0
-      if (!childNodes.length) {
-        const lay = layoutNode(view)
-        const seen = new Set<string>()
-        const rowIdCounts = new Map<string, number>()
-        for (const item of lay.items) {
-          if (item.type === 'row' && item.row.rowObjId) {
-            rowIdCounts.set(item.row.rowObjId, (rowIdCounts.get(item.row.rowObjId) ?? 0) + 1)
-            if (!seen.has(item.row.rowObjId)) {
-              seen.add(item.row.rowObjId)
-              const portId = `${id}__port__${item.row.rowObjId}`
-              const yCenter = HEADER_H + item.y + ROW_H / 2
-              portNodeMap.set(portId, id)
-              rowYMap.set(portId, yCenter)
-            }
-          }
-        }
-        for (const c of rowIdCounts.values()) if (c >= 2) bracketCount++
-      }
-
-      // Extra width so bracket lines fit inside the widened node frame.
-      const bracketExtra = bracketCount > 0 ? 10 + bracketCount * 9 : 0
+      const childNodes = buildNodes(items(nm, 'children'), obj, ctx)
+      const frameId = ctx.grouper.frameFor(obj, groupings)
 
       if (childNodes.length) {
         // Container: ELK sizes it to fit children; padding leaves room for the title.
-        out.push({
+        emit({
           id,
           labels: [{ text: view.title }],
           children: childNodes,
-          layoutOptions: { 'elk.padding': `[top=${HEADER_H + 16},left=20,bottom=20,right=20]`, 'elk.spacing.nodeNode': '80', 'elk.layered.spacing.nodeNodeBetweenLayers': '100' },
-        })
-      } else {
-        out.push({
-          id,
-          width: NODE_W + bracketExtra,
-          height: HEADER_H + layoutNode(view).height,
-          labels: [{ text: view.title }],
-        })
+          layoutOptions: containerLayout(),
+        }, frameId)
+        continue
       }
+
+      const symbol = resolveNodeSymbol(obj, renderer)
+      if (symbol.shape !== 'COMPARTMENTS') {
+        // Symbol node: fixed size from the symbol, widened for its label.
+        const box = measureSymbolNode(symbol, [view.title, view.sublabel])
+        emit({ id, width: box.w, height: box.h, labels: [{ text: view.title }] }, frameId)
+        continue
+      }
+
+      // Box node: height from the compartment rows, width fixed plus bracket lane.
+      // Record row Y positions for port placement (first occurrence only per rowObjId).
+      // Also count bracket pairs (rows with same rowObjId) for extra width.
+      let bracketCount = 0
+      const lay = layoutNode(view)
+      const seen = new Set<string>()
+      const rowIdCounts = new Map<string, number>()
+      for (const item of lay.items) {
+        if (item.type === 'row' && item.row.rowObjId) {
+          rowIdCounts.set(item.row.rowObjId, (rowIdCounts.get(item.row.rowObjId) ?? 0) + 1)
+          if (!seen.has(item.row.rowObjId)) {
+            seen.add(item.row.rowObjId)
+            const portId = `${id}__port__${item.row.rowObjId}`
+            const yCenter = HEADER_H + item.y + ROW_H / 2
+            ctx.portNodeMap.set(portId, id)
+            ctx.rowYMap.set(portId, yCenter)
+          }
+        }
+      }
+      for (const c of rowIdCounts.values()) if (c >= 2) bracketCount++
+      // Extra width so bracket lines fit inside the widened node frame.
+      const bracketExtra = bracketCount > 0 ? 10 + bracketCount * 9 : 0
+
+      emit({
+        id,
+        width: COMPARTMENT_SYMBOL.width + bracketExtra,
+        height: HEADER_H + lay.height,
+        labels: [{ text: view.title }],
+      }, frameId)
     }
   }
   return out
@@ -431,7 +507,11 @@ export function interpret(model: EObject, root: EObject): InterpretResult {
   const index = new Map<string, NodeRef>()
   const portNodeMap = new Map<string, string>()
   const rowYMap = new Map<string, number>()
-  const children = buildNodes(items(model, 'nodes'), root, index, portNodeMap, rowYMap)
+  const grouper = new Grouper(root, { get, items, featureOf, pathOf, featuresOf, follow })
+  const ctx: BuildCtx = { index, portNodeMap, rowYMap, grouper }
+  // Nodes that fall into a frame are placed there by the Grouper; what comes
+  // back here are the nodes that belong on the top level directly.
+  const children = [...buildNodes(items(model, 'nodes'), root, ctx), ...grouper.roots()]
 
   const edges: NonNullable<ElkNode['edges']> = []
   const edgeMeta = new Map<string, EdgeMeta>()
@@ -447,8 +527,17 @@ export function interpret(model: EObject, root: EObject): InterpretResult {
     const targetDecoration = String(get(em, 'targetDecoration') ?? '')
     const edgeSC = deproxy(get(em, 'sourceClass') as EObject | undefined, em)
     const edgeSCName = edgeSC ? String(get(edgeSC, 'name') ?? '') : ''
+    const edgeRenderer = deproxy(get(em, 'renderer') as EObject | undefined, em)
+    const edgeCond = get(em, 'condition') as EObject | undefined | null
     for (const e of follow(root, pathOf(em, 'fromPath'))) {
       if (edgeSCName && e.eClass().getName() !== edgeSCName) continue
+      if (edgeCond && !evaluateBoolean(
+        { language: String(get(edgeCond, 'language') ?? ''), body: String(get(edgeCond, 'body') ?? '') } as any,
+        e,
+      )) {
+        continue
+      }
+      const symbol = resolveEdgeSymbol(e, edgeRenderer)
       // No sourcePath → the edge object itself is the source (e.g. inheritance).
       const srcObj = sourcePath.length ? (follow(e, sourcePath)[0] ?? null) : e
       const srcNode = nodeContaining(srcObj, index)
@@ -471,6 +560,7 @@ export function interpret(model: EObject, root: EObject): InterpretResult {
         })
         edgeMeta.set(id, {
           kind,
+          symbol,
           sourceCardinality,
           targetCardinality,
           sourceDecoration,
@@ -505,5 +595,11 @@ export function interpret(model: EObject, root: EObject): InterpretResult {
     layoutOptions[String(get(opt, 'key'))] = String(get(opt, 'value'))
   }
 
-  return { graph: { id: 'root', layoutOptions, children, edges }, index, edgeMeta, portNodeMap }
+  return {
+    graph: { id: 'root', layoutOptions, children, edges },
+    index,
+    edgeMeta,
+    portNodeMap,
+    frames: grouper.frames,
+  }
 }

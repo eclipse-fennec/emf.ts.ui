@@ -15,6 +15,7 @@ import { ref, shallowRef, reactive, watch, onMounted, onBeforeUnmount, type Ref 
 import ELK, { type ElkNode } from 'elkjs/lib/elk.bundled.js'
 import { EContentAdapter, NotificationType, type EObject, type Notification } from '@emfts/core'
 import { interpret, type NodeRef, type EdgeMeta } from './interpret'
+import type { FrameRef } from './grouping'
 
 const elk = new ELK()
 
@@ -34,6 +35,8 @@ export interface ElkLayout {
   pins: Map<string, { x: number; y: number }>
   pin: (id: string, x: number, y: number) => void
   portNodeMap: Ref<Map<string, string>>
+  /** frame id → the NodeGrouping and group object behind it. */
+  frames: Ref<Map<string, FrameRef>>
 }
 
 export function useElkLayout(model: EObject, root: EObject): ElkLayout {
@@ -44,6 +47,7 @@ export function useElkLayout(model: EObject, root: EObject): ElkLayout {
   const nodeIndex = shallowRef<Map<string, NodeRef>>(new Map())
   const edgeMeta = shallowRef<Map<string, EdgeMeta>>(new Map())
   const portNodeMap = shallowRef<Map<string, string>>(new Map())
+  const frames = shallowRef<Map<string, FrameRef>>(new Map())
 
   class SyncAdapter extends EContentAdapter {
     notifyChanged(notification: Notification): void {
@@ -58,10 +62,11 @@ export function useElkLayout(model: EObject, root: EObject): ElkLayout {
   let timer: ReturnType<typeof setTimeout> | undefined
 
   async function run(): Promise<void> {
-    const { graph, index, edgeMeta: meta, portNodeMap: ports } = interpret(model, root)
+    const { graph, index, edgeMeta: meta, portNodeMap: ports, frames: frameIndex } = interpret(model, root)
     nodeIndex.value = index
     edgeMeta.value = meta
     portNodeMap.value = ports
+    frames.value = frameIndex
 
     // Drop pins whose node no longer exists (walk full tree).
     const ids = new Set<string>()
@@ -111,5 +116,5 @@ export function useElkLayout(model: EObject, root: EObject): ElkLayout {
     layoutVersion.value++ // trigger ELK re-layout with the new pinned position
   }
 
-  return { laidOut, nodeIndex, edgeMeta, renderVersion, layoutVersion, pins, pin, portNodeMap }
+  return { laidOut, nodeIndex, edgeMeta, renderVersion, layoutVersion, pins, pin, portNodeMap, frames }
 }

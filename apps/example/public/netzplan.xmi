@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Ein kleines Unternehmensnetz als Beispieldaten: zwei Standorte, ein
+  Rechenzentrum mit Rack, dreizehn Geräte, ihre Verkabelung, VLANs und IP-Netze.
+
+  Nachgebildet nach dem Netzplan der Sparkasse Jena (Testinstanz), dort aus
+  GLPI über Data-Atlas gelesen. Die Zahlen sind erfunden.
+
+  Die Standorthierarchie steht in den Pfaden, nicht im Containment:
+  'Hauptstelle > Rechenzentrum > RZ Hauptstelle' ist ein Serverraum in einem
+  Rechenzentrum an einem Standort. Das Rack nennt seinen Ort über rack.site.
+-->
+<netzplan:Network xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:netzplan="http://netzplan/1.0"
+    name="Sparkasse Jena (Beispiel)" asOf="2026-11-24">
+
+  <!-- Orte: Standortbaum, Rechenzentrum und Serverraum -->
+  <sites key="loc:1" kind="LOCATION" name="Hauptstelle" path="Hauptstelle"
+      longitude="11.5861" latitude="50.9271"/>
+  <sites key="loc:2" kind="LOCATION" name="Etage 1" path="Hauptstelle &gt; Etage 1" parent="Hauptstelle"/>
+  <sites xmi:id="site-dc1" key="dc:1" kind="DATACENTER" name="Rechenzentrum"
+      path="Hauptstelle &gt; Rechenzentrum" parent="Hauptstelle"/>
+  <sites xmi:id="site-room1" key="room:1" kind="ROOM" name="RZ Hauptstelle"
+      path="Hauptstelle &gt; Rechenzentrum &gt; RZ Hauptstelle" parent="Hauptstelle &gt; Rechenzentrum"/>
+  <sites key="loc:3" kind="LOCATION" name="Filiale Nord" path="Filiale Nord"
+      longitude="11.5972" latitude="50.9402"/>
+
+  <racks xmi:id="rack-a1" key="rack:1" name="Rack A1" units="42 HE" serial="RK-2024-0001"
+      inventoryNumber="INV-RK-001" site="Hauptstelle &gt; Rechenzentrum &gt; RZ Hauptstelle"/>
+
+  <!-- VLANs -->
+  <vlans xmi:id="vlan-10" id="vlan:10" tag="10" name="Verwaltung"/>
+  <vlans xmi:id="vlan-20" id="vlan:20" tag="20" name="Arbeitsplätze"/>
+  <vlans xmi:id="vlan-30" id="vlan:30" tag="30" name="Server"/>
+  <vlans xmi:id="vlan-40" id="vlan:40" tag="40" name="Gäste"/>
+
+  <!-- ===== Rechenzentrum: Router, Firewall, Core, Server, Sensor ===== -->
+  <devices key="dev:rtr-01" name="rtr-01" kind="ROUTER" typeName="Router"
+      manufacturer="Juniper" serial="JN-0001" inventoryNumber="INV-0001"
+      location="Hauptstelle &gt; Rechenzentrum &gt; RZ Hauptstelle" state="in Betrieb"
+      health="OK" ips="192.168.1.1">
+    <ports xmi:id="p-rtr-wan" id="port:rtr-wan" name="ge-0/0/0" number="0" mac="00:11:22:33:44:00" speed="1000"/>
+    <ports xmi:id="p-rtr-lan" id="port:rtr-lan" name="ge-0/0/1" number="1" mac="00:11:22:33:44:01" speed="1000"/>
+    <mount rack="rack-a1" position="HE 42, vorne" room="site-room1" datacenter="site-dc1"/>
+  </devices>
+
+  <devices key="dev:fw-01" name="fw-01" kind="FIREWALL" typeName="Firewall"
+      manufacturer="Fortinet" serial="FG-0002" inventoryNumber="INV-0002"
+      location="Hauptstelle &gt; Rechenzentrum &gt; RZ Hauptstelle" state="in Betrieb"
+      health="OK" ips="192.168.1.2">
+    <ports xmi:id="p-fw-wan" id="port:fw-wan" name="port1" number="1" mac="00:11:22:33:45:01" speed="1000"/>
+    <ports xmi:id="p-fw-lan" id="port:fw-lan" name="port2" number="2" mac="00:11:22:33:45:02" speed="10000"/>
+    <mount rack="rack-a1" position="HE 41, vorne" room="site-room1" datacenter="site-dc1"/>
+  </devices>
+
+  <devices key="dev:core-01" name="core-01" kind="CORE" typeName="Core-Switch"
+      manufacturer="Cisco" serial="CS-0003" inventoryNumber="INV-0003"
+      location="Hauptstelle &gt; Rechenzentrum &gt; RZ Hauptstelle" state="in Betrieb"
+      health="OK" ips="192.168.1.3">
+    <ports xmi:id="p-core-up" id="port:core-up" name="xe-0/0/1" number="1" mac="00:11:22:33:46:01" speed="10000"/>
+    <ports xmi:id="p-core-srv1" id="port:core-srv1" name="xe-0/0/2" number="2" mac="00:11:22:33:46:02" speed="10000"/>
+    <ports xmi:id="p-core-srv2" id="port:core-srv2" name="xe-0/0/3" number="3" mac="00:11:22:33:46:03" speed="10000"/>
+    <ports xmi:id="p-core-sens" id="port:core-sens" name="ge-0/0/4" number="4" mac="00:11:22:33:46:04" speed="1000"/>
+    <ports xmi:id="p-core-e1" id="port:core-e1" name="xe-0/0/5" number="5" mac="00:11:22:33:46:05" speed="10000"/>
+    <ports xmi:id="p-core-fil" id="port:core-fil" name="xe-0/0/6" number="6" mac="00:11:22:33:46:06" speed="10000"/>
+    <mount rack="rack-a1" position="HE 40, vorne" room="site-room1" datacenter="site-dc1"/>
+  </devices>
+
+  <devices key="dev:srv-01" name="srv-01" kind="SERVER" typeName="Server"
+      manufacturer="Dell" serial="DL-0004" inventoryNumber="INV-0004"
+      location="Hauptstelle &gt; Rechenzentrum &gt; RZ Hauptstelle" state="in Betrieb"
+      health="OK" ips="10.10.30.11">
+    <ports xmi:id="p-srv1-eth0" id="port:srv1-eth0" name="eth0" number="0" mac="00:11:22:33:47:01" speed="10000"
+        hostname="srv-01.intern" ips="10.10.30.11"/>
+    <mount rack="rack-a1" position="HE 20, vorne" room="site-room1" datacenter="site-dc1"/>
+  </devices>
+
+  <devices key="dev:srv-02" name="srv-02" kind="SERVER" typeName="Server"
+      manufacturer="Dell" serial="DL-0005" inventoryNumber="INV-0005"
+      location="Hauptstelle &gt; Rechenzentrum &gt; RZ Hauptstelle" state="in Betrieb"
+      health="PROBLEM" ips="10.10.30.12">
+    <ports xmi:id="p-srv2-eth0" id="port:srv2-eth0" name="eth0" number="0" mac="00:11:22:33:47:02" speed="10000"
+        hostname="srv-02.intern" ips="10.10.30.12"/>
+    <mount rack="rack-a1" position="HE 18, vorne" room="site-room1" datacenter="site-dc1"/>
+  </devices>
+
+  <devices key="dev:sensor-01" name="sensor-01" kind="SENSOR" typeName="Klimasensor"
+      manufacturer="Didactum" serial="DD-0006" inventoryNumber="INV-0006"
+      location="Hauptstelle &gt; Rechenzentrum &gt; RZ Hauptstelle" state="in Betrieb"
+      health="OK" ips="192.168.1.50">
+    <ports xmi:id="p-sens-eth0" id="port:sens-eth0" name="eth0" number="0" mac="00:11:22:33:48:01" speed="100"/>
+    <mount rack="rack-a1" position="HE 1, hinten" room="site-room1" datacenter="site-dc1"/>
+  </devices>
+
+  <!-- ===== Etage 1: Zugangsswitch, WLAN, Arbeitsplätze ===== -->
+  <devices key="dev:sw-e1-01" name="sw-e1-01" kind="SWITCH" typeName="Access-Switch"
+      manufacturer="HPE" serial="HP-0007" inventoryNumber="INV-0007"
+      location="Hauptstelle &gt; Etage 1" state="in Betrieb" health="OK" ips="192.168.1.11">
+    <ports xmi:id="p-swe1-up" id="port:swe1-up" name="uplink" number="0" mac="00:11:22:33:49:00" speed="10000"/>
+    <ports xmi:id="p-swe1-1" id="port:swe1-1" name="ge-1" number="1" mac="00:11:22:33:49:01" speed="1000"/>
+    <ports xmi:id="p-swe1-2" id="port:swe1-2" name="ge-2" number="2" mac="00:11:22:33:49:02" speed="1000"/>
+    <ports xmi:id="p-swe1-3" id="port:swe1-3" name="ge-3" number="3" mac="00:11:22:33:49:03" speed="1000"/>
+    <ports xmi:id="p-swe1-4" id="port:swe1-4" name="ge-4" number="4" mac="00:11:22:33:49:04" speed="1000"/>
+    <ports xmi:id="p-swe1-5" id="port:swe1-5" name="ge-5" number="5" mac="00:11:22:33:49:05" speed="1000"/>
+  </devices>
+
+  <devices key="dev:ap-e1-01" name="ap-e1-01" kind="AP" typeName="WLAN Access Point"
+      manufacturer="Ubiquiti" serial="UB-0008" inventoryNumber="INV-0008"
+      location="Hauptstelle &gt; Etage 1" state="in Betrieb" health="OK" ips="192.168.1.21">
+    <ports xmi:id="p-ap-eth0" id="port:ap-eth0" name="eth0" number="0" mac="00:11:22:33:4a:01" speed="1000"/>
+  </devices>
+
+  <devices key="dev:pc-001" name="pc-001" kind="CLIENT" typeName="Arbeitsplatz"
+      manufacturer="Lenovo" serial="LN-0009" inventoryNumber="INV-0009"
+      location="Hauptstelle &gt; Etage 1" state="in Betrieb" health="OK" ips="10.10.20.21">
+    <ports xmi:id="p-pc1-eth0" id="port:pc1-eth0" name="eth0" number="0" mac="00:11:22:33:4b:01" speed="1000"
+        hostname="pc-001.intern" ips="10.10.20.21"/>
+  </devices>
+
+  <devices key="dev:pc-002" name="pc-002" kind="CLIENT" typeName="Arbeitsplatz"
+      manufacturer="Lenovo" serial="LN-0010" inventoryNumber="INV-0010"
+      location="Hauptstelle &gt; Etage 1" state="in Betrieb" health="OK" ips="10.10.20.22">
+    <ports xmi:id="p-pc2-eth0" id="port:pc2-eth0" name="eth0" number="0" mac="00:11:22:33:4b:02" speed="1000"
+        hostname="pc-002.intern" ips="10.10.20.22"/>
+  </devices>
+
+  <devices key="dev:prn-01" name="prn-01" kind="PRINTER" typeName="Drucker"
+      manufacturer="Kyocera" serial="KY-0011" inventoryNumber="INV-0011"
+      location="Hauptstelle &gt; Etage 1" state="in Betrieb" health="OK" ips="10.10.20.60">
+    <ports xmi:id="p-prn-eth0" id="port:prn-eth0" name="eth0" number="0" mac="00:11:22:33:4c:01" speed="100"/>
+  </devices>
+
+  <devices key="dev:tel-01" name="tel-01" kind="PHONE" typeName="IP Phone"
+      manufacturer="Snom" serial="SN-0012" inventoryNumber="INV-0012"
+      location="Hauptstelle &gt; Etage 1" locationDerived="true" state="in Betrieb"
+      health="UNKNOWN" ips="10.10.20.80">
+    <ports xmi:id="p-tel-eth0" id="port:tel-eth0" name="eth0" number="0" mac="00:11:22:33:4d:01" speed="100"/>
+  </devices>
+
+  <!-- ===== Filiale Nord: Switch und Geldautomat ===== -->
+  <devices key="dev:sw-fil-01" name="sw-fil-01" kind="SWITCH" typeName="Access-Switch"
+      manufacturer="HPE" serial="HP-0013" inventoryNumber="INV-0013"
+      location="Filiale Nord" state="in Betrieb" health="OK" ips="192.168.1.12">
+    <ports xmi:id="p-swfil-up" id="port:swfil-up" name="uplink" number="0" mac="00:11:22:33:4e:00" speed="10000"/>
+    <ports xmi:id="p-swfil-1" id="port:swfil-1" name="ge-1" number="1" mac="00:11:22:33:4e:01" speed="1000"/>
+  </devices>
+
+  <devices key="dev:atm-01" name="atm-01" kind="ATM" typeName="Geldautomat"
+      manufacturer="Diebold Nixdorf" serial="DN-0014" inventoryNumber="INV-0014"
+      location="Filiale Nord" state="Störung" health="DOWN" ips="10.10.20.101">
+    <ports xmi:id="p-atm-eth0" id="port:atm-eth0" name="eth0" number="0" mac="00:11:22:33:4f:01" speed="100"
+        hostname="atm-01.intern" ips="10.10.20.101"/>
+  </devices>
+
+  <!-- ===== Verkabelung ===== -->
+  <links id="link:rtr-fw" a="p-rtr-lan" b="p-fw-wan"/>
+  <links id="link:fw-core" a="p-fw-lan" b="p-core-up" trunk="true"/>
+  <links id="link:core-srv1" a="p-core-srv1" b="p-srv1-eth0"/>
+  <links id="link:core-srv2" a="p-core-srv2" b="p-srv2-eth0"/>
+  <links id="link:core-sens" a="p-core-sens" b="p-sens-eth0"/>
+  <links id="link:core-swe1" a="p-core-e1" b="p-swe1-up" trunk="true"/>
+  <links id="link:core-swfil" a="p-core-fil" b="p-swfil-up" trunk="true"/>
+  <links id="link:swe1-ap" a="p-swe1-1" b="p-ap-eth0"/>
+  <links id="link:swe1-pc1" a="p-swe1-2" b="p-pc1-eth0"/>
+  <links id="link:swe1-pc2" a="p-swe1-3" b="p-pc2-eth0"/>
+  <links id="link:swe1-prn" a="p-swe1-4" b="p-prn-eth0"/>
+  <links id="link:swe1-tel" a="p-swe1-5" b="p-tel-eth0"/>
+  <links id="link:swfil-atm" a="p-swfil-1" b="p-atm-eth0"/>
+
+  <!-- ===== IP-Netze ===== -->
+  <networks id="net:1" name="Verwaltung" address="192.168.1.0" netmask="255.255.255.0"
+      prefix="24" cidr="192.168.1.0/24" gateway="192.168.1.1" capacity="254" vlans="vlan-10">
+    <addresses ip="192.168.1.1"/>
+    <addresses ip="192.168.1.2"/>
+    <addresses ip="192.168.1.3"/>
+    <addresses ip="192.168.1.11"/>
+    <addresses ip="192.168.1.12"/>
+    <addresses ip="192.168.1.21"/>
+    <addresses ip="192.168.1.50"/>
+  </networks>
+  <networks id="net:2" name="Arbeitsplätze" address="10.10.20.0" netmask="255.255.255.0"
+      prefix="24" cidr="10.10.20.0/24" gateway="10.10.20.1" capacity="254" vlans="vlan-20">
+    <addresses ip="10.10.20.21"/>
+    <addresses ip="10.10.20.22"/>
+    <addresses ip="10.10.20.60"/>
+    <addresses ip="10.10.20.80"/>
+    <addresses ip="10.10.20.101"/>
+  </networks>
+  <networks id="net:3" name="Server" address="10.10.30.0" netmask="255.255.255.0"
+      prefix="24" cidr="10.10.30.0/24" gateway="10.10.30.1" capacity="254" vlans="vlan-30">
+    <addresses ip="10.10.30.11"/>
+    <addresses ip="10.10.30.12"/>
+  </networks>
+</netzplan:Network>

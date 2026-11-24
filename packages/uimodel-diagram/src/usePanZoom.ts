@@ -44,5 +44,26 @@ export function usePanZoom() {
     isPanning = false
   }
 
-  return { view, onWheel, onPanStart, onPanMove, onPanEnd }
+  /**
+   * Passt den Inhalt in den Zeichenbereich ein — zentriert und so weit
+   * verkleinert, dass er ganz hineinpasst (nie über 1:1 vergrößert).
+   * Ohne das stünde der Betrachter beim ersten Blick in der linken oberen Ecke
+   * eines Plans, der weit darüber hinausreicht.
+   */
+  function fitTo(
+    content: { x: number; y: number; w: number; h: number },
+    viewport: { w: number; h: number },
+    padding = 24,
+  ): void {
+    if (content.w <= 0 || content.h <= 0 || viewport.w <= 0 || viewport.h <= 0) return
+    const scale = Math.max(
+      0.2,
+      Math.min(1, (viewport.w - 2 * padding) / content.w, (viewport.h - 2 * padding) / content.h),
+    )
+    view.scale = scale
+    view.x = (viewport.w - content.w * scale) / 2 - content.x * scale
+    view.y = (viewport.h - content.h * scale) / 2 - content.y * scale
+  }
+
+  return { view, onWheel, onPanStart, onPanMove, onPanEnd, fitTo }
 }
