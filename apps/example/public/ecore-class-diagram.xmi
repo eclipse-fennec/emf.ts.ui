@@ -12,9 +12,9 @@
   markers (◆ containment / › navigable); datatypes & enums grouped into
   DATATYPES / ENUMERATIONS buckets.
 -->
-<diagrammodel:DiagramModel xmi:version="2.0"
+<uidiagram:DiagramModel xmi:version="2.0"
     xmlns:xmi="http://www.omg.org/XMI"
-    xmlns:diagrammodel="http://diagrammodel/1.0"
+    xmlns:uidiagram="http://uimodel/diagram/1.0"
     name="Ecore Class Diagram">
   <targetClass href="http://www.eclipse.org/emf/2002/Ecore#//EPackage"/>
   <layoutOptions key="elk.algorithm" value="layered"/>
@@ -225,4 +225,4 @@
     <targetPath href="http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/eType"/>
     <labelFeature href="http://www.eclipse.org/emf/2002/Ecore#//ENamedElement/name"/>
   </edges>
-</diagrammodel:DiagramModel>
+</uidiagram:DiagramModel>

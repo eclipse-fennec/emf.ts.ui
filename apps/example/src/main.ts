@@ -1,5 +1,7 @@
 import { createApp } from 'vue';
 import '@emfts/uimodel-composer/style.css';
+// Ohne das bliebe das Diagramm-SVG bei seiner Standardgröße von 300×150.
+import '@emfts/uimodel-diagram/style.css';
 import App from './App.vue';
 import { EmftsRendererPlugin, componentRegistry } from '@emfts/vue-registry';
 import StringFieldWidget from './components/StringFieldWidget.vue';
@@ -10,8 +12,8 @@ componentRegistry.registerForDataType('EString', StringFieldWidget);
 
 // Ressourcen laden, dann App mounten
 loadResources()
-  .then(({ uiModel, chartModel, mapModel, transitMapModel, transitNetwork, persons, dataset, diagramModel, ecoreDomain }) => {
-    const app = createApp(App, { uiModel, chartModel, mapModel, transitMapModel, transitNetwork, persons, dataset, diagramModel, ecoreDomain });
+  .then((loaded) => {
+    const app = createApp(App, { ...loaded });
     // Plugin registriert componentRegistry via provide() — nötig für useComponentRegistry()
     app.use(EmftsRendererPlugin, { registerDefaults: false, registry: componentRegistry });
     app.mount('#app');

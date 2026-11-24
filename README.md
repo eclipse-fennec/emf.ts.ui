@@ -14,7 +14,7 @@ und eines modellierten, CSS-basierten Styling-Konzepts.
 | [`packages/uimodel-composer`](packages/uimodel-composer) | `@emfts/uimodel-composer` | Core: UIModel-Metamodell, Vue-Composer, AllFeatures-Expansion, PropertyBindings, strukturelle Platzhalter, CSS-Styling-Modell |
 | [`packages/uimodel-vega`](packages/uimodel-vega) | `@emfts/uimodel-vega` | Charts via Vega-Lite (`VegaView`) |
 | [`packages/uimodel-maps`](packages/uimodel-maps) | `@emfts/uimodel-maps` | Karten via OpenLayers (`MapView`, QGIS-orientiert) |
-| [`packages/uimodel-diagram`](packages/uimodel-diagram) | `@emfts/uimodel-diagram` | Modellgetriebene Diagramme (ELK-Layout, orthogonales Routing) |
+| [`packages/uimodel-diagram`](packages/uimodel-diagram) | `@emfts/uimodel-diagram` | Modellgetriebene Diagramme (`DiagramView`, ELK-Layout, orthogonales Routing, Symbologie und Rahmen aus Feature-Werten) |
 | [`packages/tsrouter`](packages/tsrouter) | `@emfts/tsrouter` | Orthogonaler Graph-Router (vom Diagram-Paket genutzt) |
 
 Die Erweiterungen definieren eigene EPackages, die das Core-UIModel **nicht**

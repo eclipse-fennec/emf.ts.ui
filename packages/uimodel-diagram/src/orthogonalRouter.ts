@@ -12,6 +12,13 @@ export interface NodeRect {
   id: string
   x: number; y: number; w: number; h: number
   parentId?: string
+  /** Symbolknoten ohne Kopfzeile: Ports gehören mittig auf die Seite, nicht in
+   *  ein Kopfband — bei 22 px Höhe läge ein 34-px-Band außerhalb des Knotens. */
+  compact?: boolean
+  /** Höhe des Kopfbandes, das als Hindernis gilt. Ein Rahmen aus einer
+   *  NodeGrouping trägt nur eine Beschriftungszeile oben links; ein volles
+   *  34-px-Band würde in einem engen Rahmen jeden Weg versperren. */
+  labelHeight?: number
 }
 export interface EdgeInput {
   id: string
@@ -89,10 +96,12 @@ export function routeAllEdges(
   // Add permeable container HEADERS as obstacles
   for (const n of nodes) {
     if (globalPermeable.has(n.id) && isContainer.has(n.id)) {
+      const height = n.labelHeight ?? HEADER_HEIGHT
+      if (height <= 0) continue
       const hdrId = n.id + '__hdr'
       router.addNode({
         id: hdrId,
-        rect: { x: n.x, y: n.y, width: n.w, height: HEADER_HEIGHT },
+        rect: { x: n.x, y: n.y, width: n.w, height },
         ports: [],
       })
       addedNodes.add(hdrId)
@@ -143,6 +152,9 @@ export function routeAllEdges(
       let offset: number
       if (side === 'top') {
         offset = count === 1 ? 0.5 : 0.2 + (0.6 * idx) / (count - 1)
+      } else if (tgt.compact) {
+        // Ein Symbol hat keine Kopfzeile: mittig, bei mehreren Kanten gefächert.
+        offset = count === 1 ? 0.5 : 0.25 + (0.5 * idx) / (count - 1)
       } else {
         // Spread within header zone on left/right
         const headerTop = HEADER_HEIGHT * 0.2 / tgt.h
@@ -151,6 +163,8 @@ export function routeAllEdges(
           ? Math.min(0.5, (HEADER_HEIGHT / 2) / tgt.h)
           : headerTop + ((headerBot - headerTop) * idx) / (count - 1)
       }
+      // Ein Port außerhalb des Knotens lässt tsrouter die Kante verwerfen.
+      offset = Math.min(0.9, Math.max(0.1, offset))
 
       const portId = i === 0 ? tgtPortId : `${edge.id}__tgt_alt${i}`
       nodePortsMap.get(edge.tgtId)!.push({ id: portId, nodeId: edge.tgtId, side, offset })
@@ -182,22 +196,49 @@ export function routeAllEdges(
   // Route all at once
   const routeResult = router.route()
 
-  // Build results — only tsrouter paths, no fallback
+  // Build results. Wo tsrouter keinen Weg findet — in einem engen Rahmen kann
+  // das vorkommen —, tritt eine gerade Manhattan-Verbindung an die Stelle:
+  // eine etwas grobe Kante ist allemal besser als eine fehlende.
   const result = new Map<string, EdgeRoute>()
+  const unrouted: string[] = []
   for (const edge of edges) {
     const routed = routeResult.paths.find(p => p.connectionId === edge.id)
     if (routed && routed.points.length >= 2) {
       const d = 'M' + routed.points.map(p => `${p.x},${p.y}`).join(' L')
       result.set(edge.id, { path: routed.points, d })
+      continue
     }
+    const src = nodeMap.get(edge.srcId)
+    const tgt = nodeMap.get(edge.tgtId)
+    if (!src || !tgt) continue
+    result.set(edge.id, directRoute(src, tgt))
+    unrouted.push(edge.id)
   }
 
-  // Log errors
-  if (routeResult.errors?.length) {
-    console.warn('[tsrouter]', routeResult.errors)
+  if (unrouted.length) {
+    console.debug(`[tsrouter] ${unrouted.length} Kanten direkt verbunden:`, unrouted)
   }
 
   return result
+}
+
+/** Eine orthogonale Verbindung mit einem Knick, von Rand zu Rand. */
+function directRoute(src: NodeRect, tgt: NodeRect): EdgeRoute {
+  const sc = { x: src.x + src.w / 2, y: src.y + src.h / 2 }
+  const tc = { x: tgt.x + tgt.w / 2, y: tgt.y + tgt.h / 2 }
+  const srcSide = bestSide(src, tgt)
+  const horizontal = srcSide === 'left' || srcSide === 'right'
+  const start = horizontal
+    ? { x: srcSide === 'right' ? src.x + src.w : src.x, y: sc.y }
+    : { x: sc.x, y: srcSide === 'bottom' ? src.y + src.h : src.y }
+  const tgtSide = bestSide(tgt, src)
+  const end = tgtSide === 'left' || tgtSide === 'right'
+    ? { x: tgtSide === 'right' ? tgt.x + tgt.w : tgt.x, y: tc.y }
+    : { x: tc.x, y: tgtSide === 'bottom' ? tgt.y + tgt.h : tgt.y }
+  const bend = horizontal ? { x: end.x, y: start.y } : { x: start.x, y: end.y }
+  const same = (a: Point, b: Point) => a.x === b.x && a.y === b.y
+  const points = same(bend, start) || same(bend, end) ? [start, end] : [start, bend, end]
+  return { path: points, d: 'M' + points.map(p => `${p.x},${p.y}`).join(' L') }
 }
 
 function bestSide(from: NodeRect, to: NodeRect): 'top' | 'right' | 'bottom' | 'left' {

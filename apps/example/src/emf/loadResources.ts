@@ -14,7 +14,7 @@ import { UimodelPackage, UimodelFactory, registerOclEvaluator } from '@emfts/uim
 import type { UIModel } from '@emfts/uimodel-composer';
 import { DemographicStructurePackage, DemographicStructureFactory } from '../generated/demographic/index.js';
 import { TransitPackage, TransitFactory } from '../generated/transit/index.js';
-import { DiagrammodelPackage } from '../generated/diagrammodel/index.js';
+import { NetzplanPackage, NetzplanFactory } from '../generated/netzplan/index.js';
 import { DgePackage } from './DgePackage';
 import { OclAdapter } from './oclAdapter';
 
@@ -28,6 +28,10 @@ export interface LoadedData {
   dataset: EObject;
   diagramModel: EObject;
   ecoreDomain: EObject;
+  /** UIModel mit der DiagramView des Netzplans */
+  netzplanModel: UIModel;
+  /** Die Netzdaten, die diese Ansicht projiziert */
+  netzplan: EObject;
   personEClass: ReturnType<typeof DgePackage.eINSTANCE>['personClass'];
 }
 
@@ -70,9 +74,17 @@ export async function loadResources(): Promise<LoadedData> {
   transitPkg.setEFactoryInstance(TransitFactory.eINSTANCE);
   EPackageRegistry.INSTANCE.set(transitPkg.getNsURI()!, transitPkg);
 
-  // Diagram-Packages registrieren
-  const diagramPkg = DiagrammodelPackage.eINSTANCE;
+  // Diagramm-Package (erbt Component/Expression aus dem Core-UIModel, daher
+  // dynamisch NACH dessen Registrierung)
+  const { UimodelDiagramPackage, UimodelDiagramFactory } = await import('@emfts/uimodel-diagram');
+  const diagramPkg = UimodelDiagramPackage.eINSTANCE;
+  diagramPkg.setEFactoryInstance(UimodelDiagramFactory.eINSTANCE);
   EPackageRegistry.INSTANCE.set(diagramPkg.getNsURI()!, diagramPkg);
+
+  // Netzplan-Domäne (eigenständiges Package)
+  const netzplanPkg = NetzplanPackage.eINSTANCE;
+  netzplanPkg.setEFactoryInstance(NetzplanFactory.eINSTANCE);
+  EPackageRegistry.INSTANCE.set(netzplanPkg.getNsURI()!, netzplanPkg);
   // Ecore metamodel — domain for the Ecore class diagram
   const { getEcorePackage } = await import('@emfts/core');
   const ecorePkg = getEcorePackage();
@@ -84,7 +96,7 @@ export async function loadResources(): Promise<LoadedData> {
   rs.getResourceFactoryRegistry().getExtensionToFactoryMap().set('xmi', xmiFactory);
 
   // 4. Alle XMI-Dateien parallel laden
-  const [formXml, personsXml, chartXml, demoXml, mapXml, transitXml, transitMapXml, ecoreDiagramXml, libraryEcoreXml] = await Promise.all([
+  const [formXml, personsXml, chartXml, demoXml, mapXml, transitXml, transitMapXml, ecoreDiagramXml, libraryEcoreXml, netzplanXml, netzplanDiagramXml] = await Promise.all([
     fetchXml('/form.xmi'),
     fetchXml('/persons.xmi'),
     fetchXml('/chart.xmi'),
@@ -94,6 +106,8 @@ export async function loadResources(): Promise<LoadedData> {
     fetchXml('/transitmap.xmi'),
     fetchXml('/ecore-class-diagram.xmi'),
     fetchXml('/library.ecore'),
+    fetchXml('/netzplan.xmi'),
+    fetchXml('/netzplan-diagram.xmi'),
   ]);
 
   // form.xmi → UIModel (PersonForm)
@@ -156,6 +170,20 @@ export async function loadResources(): Promise<LoadedData> {
   if (libraryResource.getContents().length === 0) throw new Error('library.ecore konnte nicht geladen werden');
   const ecoreDomain = libraryResource.getContents()[0];
 
+  // netzplan.xmi → Network (Geräte, Kabel, Standorte, Racks)
+  const netzplanResource = rs.createResource(URI.createURI('/netzplan.xmi')) as XMIResource;
+  netzplanResource.loadFromString(netzplanXml);
+  if (netzplanResource.getContents().length === 0) throw new Error('netzplan.xmi konnte nicht geladen werden');
+  const netzplan = netzplanResource.getContents()[0];
+
+  // netzplan-diagram.xmi → UIModel mit DiagramView
+  const netzplanDiagramResource = rs.createResource(URI.createURI('/netzplan-diagram.xmi')) as XMIResource;
+  netzplanDiagramResource.loadFromString(netzplanDiagramXml);
+  if (netzplanDiagramResource.getContents().length === 0) {
+    throw new Error('netzplan-diagram.xmi konnte nicht geladen werden');
+  }
+  const netzplanModel = netzplanDiagramResource.getContents()[0] as UIModel;
+
   // 5. OCL-Evaluator registrieren + vorparsen
   registerOclEvaluator(OclAdapter);
   await Promise.all([
@@ -163,7 +191,20 @@ export async function loadResources(): Promise<LoadedData> {
     prepareDiagramOcl(diagramModel),
   ]);
 
-  return { uiModel, chartModel, mapModel, transitMapModel, transitNetwork, persons, dataset, diagramModel, ecoreDomain, personEClass: dge.personClass };
+  return {
+    uiModel,
+    chartModel,
+    mapModel,
+    transitMapModel,
+    transitNetwork,
+    persons,
+    dataset,
+    diagramModel,
+    ecoreDomain,
+    netzplanModel,
+    netzplan,
+    personEClass: dge.personClass,
+  };
 }
 
 /** Pre-parse all OCL expressions found in a DiagramModel (conditions, rowConditions). */
@@ -185,8 +226,9 @@ function toArray(val: any): EObject[] {
 }
 
 function collectDiagramOclBodies(obj: EObject, tasks: Promise<void>[]): void {
-  // Check for condition/rowCondition features (Expression-like objects with language+body)
-  for (const featureName of ['condition', 'rowCondition']) {
+  // Check for condition/rowCondition/filter features (Expression-like objects
+  // with language+body). `filter` sits on NodeRule/EdgeRule in the symbology.
+  for (const featureName of ['condition', 'rowCondition', 'filter']) {
     const expr = eget(obj, featureName) as EObject | undefined;
     if (expr) {
       const lang = String(eget(expr, 'language') ?? 'OCL');

@@ -1,10 +1,20 @@
 <script setup lang="ts">
-import { computed, reactive, watch } from 'vue'
-import type { EObject } from '@emfts/core'
+import { computed, inject, nextTick, reactive, ref, watch } from 'vue'
+import type { EObject, EReference, EStructuralFeature } from '@emfts/core'
 import { useElkLayout } from './useElkLayout'
 import { usePanZoom } from './usePanZoom'
-import { HEADER_H, ROW_H, NODE_W, resolveNodeView, nodeHeaderColor, layoutNode } from './interpret'
+import { HEADER_H, ROW_H, NODE_W, resolveNodeView, nodeHeaderColor, layoutNode, nodeSymbolOf } from './interpret'
 import type { LayoutItem, RowView } from './interpret'
+import {
+  COMPARTMENT_SYMBOL,
+  dashArray,
+  measureSymbolNode,
+  resolveFrameSymbol,
+  shapePath,
+  type SymbolBox,
+  type SymbolView,
+} from './symbology'
+import { DIAGRAM_SELECTION_KEY, type DiagramSelectionHandler } from './useDiagramSelection'
 import { routeAllEdges, type NodeRect, type EdgeInput } from './orthogonalRouter'
 
 interface Bracket {
@@ -26,17 +36,55 @@ const props = defineProps<{
   model: EObject      // Domain object to render
 }>()
 
-// The DiagramView component references a DiagramModel (the diagram definition)
-// and uses the domain model as the data source.
-// Falls back to component/model if not set.
-const diagModel = (eGet(props.component, 'diagramModel') ?? props.component) as EObject
-const diagRoot = (eGet(props.component, 'diagramRoot') ?? props.model) as EObject
+// Optional: ancestor can react to node clicks (in addition to the bindings' eSet)
+const onSelection = inject<DiagramSelectionHandler | null>(DIAGRAM_SELECTION_KEY, null)
 
-const { laidOut, nodeIndex, edgeMeta, renderVersion, pins, pin, portNodeMap } = useElkLayout(
+// A DiagramView holds its DiagramModel in `diagram` and reaches the diagram root
+// through `rootPath`. Passing a bare DiagramModel as the component also works —
+// that is how the Ecore class diagram is wired.
+const diagModel = (eGet(props.component, 'diagram') ?? props.component) as EObject
+const diagRoot = followRootPath(props.component, props.model)
+
+/** Follows DiagramView.rootPath from the data object to the diagram root. */
+function followRootPath(component: EObject, model: EObject): EObject {
+  const path = eGet(component, 'rootPath') as { toArray(): EReference[] } | undefined
+  let current: EObject = model
+  for (const ref of path?.toArray() ?? []) {
+    const value = current.eGet(ref)
+    const next = Array.isArray(value)
+      ? value[0]
+      : typeof (value as { toArray?: unknown })?.toArray === 'function'
+        ? (value as { toArray(): EObject[] }).toArray()[0]
+        : value
+    if (!next) return current
+    current = next as EObject
+  }
+  return current
+}
+
+/** Writes the DiagramSelectionBindings and notifies an ancestor, like maps does. */
+function select(obj: EObject | undefined): void {
+  const bindings = (eGet(props.component, 'bindings') as { toArray(): EObject[] } | undefined)?.toArray() ?? []
+  for (const binding of bindings) {
+    const targetFeature = eGet(binding, 'targetFeature') as EStructuralFeature | undefined
+    if (!targetFeature) continue
+    const sourceFeature = eGet(binding, 'sourceFeature') as EStructuralFeature | undefined
+    const value = sourceFeature && obj ? obj.eGet(sourceFeature) : obj
+    try {
+      props.model.eSet(targetFeature, value)
+    } catch (e) {
+      console.warn('[diagram-composer] binding eSet failed:', e)
+    }
+  }
+  onSelection?.(obj, props.component)
+}
+
+const { laidOut, nodeIndex, edgeMeta, renderVersion, pins, pin, portNodeMap, frames } = useElkLayout(
   diagModel,
   diagRoot,
 )
-const { view, onWheel, onPanStart, onPanMove, onPanEnd } = usePanZoom()
+const { view, onWheel, onPanStart, onPanMove, onPanEnd, fitTo } = usePanZoom()
+const wrapper = ref<HTMLElement>()
 
 // Ghost position during drag — only used for the ghost overlay, not for node positions.
 const dragPos = reactive(new Map<string, { x: number; y: number }>())
@@ -52,6 +100,8 @@ interface RNode {
   w: number
   h: number
   name: string
+  /** Second label line of a symbol node (e.g. an IP address), or ''. */
+  sublabel: string
   stereotype: string
   subtitle: string
   icon: string
@@ -60,10 +110,35 @@ interface RNode {
   container: boolean
   /** Px reserved on the right for default-bracket lines (0 if no brackets). */
   bracketLane: number
+  /** Resolved symbology; shape COMPARTMENTS means the classic box node. */
+  symbol: SymbolView
+  /** Geometry of a symbol node — undefined for box nodes and containers. */
+  box?: SymbolBox
+  /** A frame built by a NodeGrouping (a site, a rack), not a domain node. */
+  frame: boolean
 }
 
 // Clear drag positions when ELK produces a fresh layout (structural change).
 watch(laidOut, () => { dragPos.clear() })
+
+/** Fits the whole diagram into the canvas once a layout is in. */
+function fit(): void {
+  const box = wrapper.value?.getBoundingClientRect()
+  if (!box || !nodes.value.length) return
+  let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity
+  for (const n of nodes.value) {
+    minX = Math.min(minX, n.x)
+    minY = Math.min(minY, n.y)
+    maxX = Math.max(maxX, n.x + n.w)
+    maxY = Math.max(maxY, n.y + n.h)
+  }
+  fitTo({ x: minX, y: minY, w: maxX - minX, h: maxY - minY }, { w: box.width, h: box.height })
+}
+
+// A fresh layout is fitted once; panning and zooming afterwards stay untouched.
+watch(laidOut, () => { void nextTick(fit) })
+
+defineExpose({ fit })
 
 // Walk the (possibly hierarchical) ELK tree, producing render nodes with
 // ABSOLUTE coordinates — ELK gives child coords relative to their parent.
@@ -83,10 +158,36 @@ const nodes = computed<RNode[]>(() => {
       const y = d?.y ?? offY + (c.y ?? 0)
       nodeParentOff.set(c.id, { x: offX, y: offY })
       if (parentNodeId) nodeParentId.set(c.id, parentNodeId)
+      const frameRef = frames.value.get(c.id)
       let rnode: RNode | undefined
-      if (ref) {
+      if (frameRef) {
+        // A frame from a NodeGrouping: label and symbology come from the grouping.
+        rnode = {
+          id: c.id,
+          x,
+          y,
+          w: c.width ?? NODE_W,
+          h: c.height ?? HEADER_H,
+          name: frameRef.label,
+          sublabel: '',
+          stereotype: '',
+          subtitle: '',
+          icon: '',
+          headerColor: '#475569',
+          items: [],
+          container: true,
+          bracketLane: 0,
+          symbol: resolveFrameSymbol(frameRef.obj, eGet(frameRef.grouping, 'renderer')),
+          frame: true,
+        }
+        out.push(rnode)
+        level.push(rnode)
+      } else if (ref) {
         const view = resolveNodeView(ref.obj, ref.mapping)
-        const nodeItems = layoutNode(view).items
+        const symbol = nodeSymbolOf(ref.obj, ref.mapping)
+        const isContainer = (c.children?.length ?? 0) > 0
+        const symbolNode = symbol.shape !== 'COMPARTMENTS' && !isContainer
+        const nodeItems = symbolNode ? [] : layoutNode(view).items
         const bc = countBrackets(nodeItems)
         rnode = {
           id: c.id,
@@ -95,13 +196,17 @@ const nodes = computed<RNode[]>(() => {
           w: c.width ?? NODE_W,
           h: c.height ?? HEADER_H + ROW_H,
           name: view.title,
+          sublabel: view.sublabel,
           stereotype: view.stereotype,
           subtitle: view.subtitle,
           icon: view.icon,
           headerColor: nodeHeaderColor(ref.mapping),
           items: nodeItems,
-          container: (c.children?.length ?? 0) > 0,
+          container: isContainer,
           bracketLane: bc > 0 ? 6 + bc * 9 : 0,
+          symbol,
+          box: symbolNode ? measureSymbolNode(symbol, [view.title, view.sublabel]) : undefined,
+          frame: false,
         }
         out.push(rnode)
         level.push(rnode)
@@ -114,6 +219,7 @@ const nodes = computed<RNode[]>(() => {
           w: c.width ?? NODE_W,
           h: c.height ?? HEADER_H,
           name: c.labels?.[0]?.text ?? '',
+          sublabel: '',
           stereotype: '',
           subtitle: '',
           icon: '',
@@ -121,6 +227,8 @@ const nodes = computed<RNode[]>(() => {
           items: [],
           container: true,
           bracketLane: 0,
+          symbol: COMPARTMENT_SYMBOL,
+          frame: false,
         }
         out.push(rnode)
         level.push(rnode)
@@ -132,8 +240,10 @@ const nodes = computed<RNode[]>(() => {
   }
   walk(g, 0, 0)
 
-  // Adjust container bounds to encompass all children (including dragged ones)
+  // Adjust container bounds to encompass all children (including dragged ones).
+  // A frame only needs room for its label line, a box container for its header.
   const PAD_TOP = 50, PAD_SIDE = 20, PAD_BOTTOM = 20
+  const FRAME_PAD_TOP = 24
   const childrenOf = new Map<string, RNode[]>()
   for (const n of out) {
     const pid = nodeParentId.get(n.id)
@@ -156,7 +266,7 @@ const nodes = computed<RNode[]>(() => {
         maxY = Math.max(maxY, k.y + k.h)
       }
       const needX = minX - PAD_SIDE
-      const needY = minY - PAD_TOP
+      const needY = minY - (c.frame ? FRAME_PAD_TOP : PAD_TOP)
       const needR = maxX + PAD_SIDE
       const needB = maxY + PAD_BOTTOM
       if (needX < c.x) c.x = needX
@@ -169,10 +279,13 @@ const nodes = computed<RNode[]>(() => {
   return out
 })
 
-// z-order: containers (behind) → edges → leaf nodes (in front), so package
-// frames sit under the classes and never cover the edges.
-const containerNodes = computed(() => nodes.value.filter((n) => n.container))
-const leafNodes = computed(() => nodes.value.filter((n) => !n.container))
+// z-order: frames and containers (behind) → edges → leaf nodes (in front), so
+// package frames sit under the classes and never cover the edges. Frames from a
+// NodeGrouping are drawn first of all and nest, so outer ones stay behind inner.
+const frameNodes = computed(() => nodes.value.filter((n) => n.frame).sort((a, b) => b.w * b.h - a.w * a.h))
+const containerNodes = computed(() => nodes.value.filter((n) => n.container && !n.frame))
+const boxNodes = computed(() => nodes.value.filter((n) => !n.container && !n.box))
+const symbolNodes = computed(() => nodes.value.filter((n) => !n.container && n.box))
 
 /** Cached per-node column layout for table alignment. */
 const nodeColsMap = computed(() => {
@@ -180,6 +293,15 @@ const nodeColsMap = computed(() => {
   for (const n of nodes.value) m.set(n.id, computeNodeCols(n.items, n.w, n.bracketLane))
   return m
 })
+
+/** Stroke colour, width and dash pattern of a node or frame, from its symbol. */
+function strokeOf(n: RNode) {
+  return {
+    stroke: n.symbol.strokeColor,
+    strokeWidth: n.symbol.strokeWidth,
+    strokeDasharray: dashArray(n.symbol.strokeStyle, n.symbol.strokeWidth),
+  }
+}
 
 const nodeById = computed(() => {
   const m = new Map<string, RNode>()
@@ -301,7 +423,17 @@ const edges = computed(() => {
   const root = nodes.value[0]
   const nodeRects: NodeRect[] = nodes.value
     .filter(n => n !== root)
-    .map(n => ({ id: n.id, x: n.x, y: n.y, w: n.w, h: n.h, parentId: nodeParentId.get(n.id) }))
+    .map(n => ({
+      id: n.id,
+      x: n.x,
+      y: n.y,
+      w: n.w,
+      h: n.h,
+      parentId: nodeParentId.get(n.id),
+      compact: n.box !== undefined,
+      // Ein Rahmen trägt nur seine Beschriftungszeile, kein Kastenkopf.
+      labelHeight: n.frame ? n.symbol.fontSize + 8 : undefined,
+    }))
 
   // Build edge inputs from ELK graph
   const elkEdges = (g.edges ?? []) as any[]
@@ -327,15 +459,27 @@ const edges = computed(() => {
     const sp = path[0] ?? { x: 0, y: 0 }
     const ep = path[path.length - 1] ?? { x: 0, y: 0 }
     const mid = path[Math.floor(path.length / 2)] ?? sp
+    // An EdgeRenderer overrides the kind-derived CSS class; without one the
+    // symbol carries the defaults and the class keeps its say.
+    const sym = meta?.symbol
+    const styled = sym !== undefined && (sym.color !== '#94a3b8' || sym.width !== 1.2 || sym.style !== 'SOLID')
     return { id: e.id, d: route?.d ?? '', lx: mid.x, ly: mid.y - 8,
-      label: lbl?.text ?? '', cls, start, end, sCard, tCard, sp, ep }
+      label: lbl?.text ?? '', cls, start, end, sCard, tCard, sp, ep,
+      stroke: styled ? sym!.color : undefined,
+      strokeWidth: styled ? sym!.width : undefined,
+      strokeDasharray: styled ? dashArray(sym!.style, sym!.width) : undefined,
+      opacity: sym && sym.opacity !== 1 ? sym.opacity : undefined }
   })
 })
 
 const viewTransform = computed(() => `translate(${view.x}, ${view.y}) scale(${view.scale})`)
 
+// DiagramView.height bestimmt den Zeichenbereich; ohne Angabe füllt er die Seite.
+const canvasHeight = computed(() => (eGet(props.component, 'height') as string | undefined) || '100vh')
+
 // --- node drag → direct position update (Manhattan re-routes live) ---
 let dragging: string | null = null
+let moved = false
 let startX = 0
 let startY = 0
 let startNodeX = 0
@@ -345,6 +489,7 @@ function onNodeDown(e: PointerEvent, n: RNode) {
   if (e.button !== 0) return
   if (n.container) return // containers are not directly draggable
   dragging = n.id
+  moved = false
   startX = e.clientX
   startY = e.clientY
   startNodeX = n.x
@@ -356,6 +501,7 @@ function onNodeDown(e: PointerEvent, n: RNode) {
 
 function onNodeMove(e: PointerEvent) {
   if (!dragging) return
+  moved = true
   let nx = startNodeX + (e.clientX - startX) / view.scale
   let ny = startNodeY + (e.clientY - startY) / view.scale
   const dn = nodeById.value.get(dragging)
@@ -386,6 +532,12 @@ function onNodeMove(e: PointerEvent) {
   dragPos.set(dragging, { x: nx, y: ny })
 }
 
+/** A click (not a drag) selects the node: writes the bindings, tells the ancestor. */
+function onNodeClick(n: RNode): void {
+  if (moved) return
+  select(nodeIndex.value.get(n.id)?.obj)
+}
+
 function onNodeUp() {
   if (dragging) {
     // dragPos stays as-is — no ELK re-layout needed.
@@ -400,7 +552,7 @@ function onNodeUp() {
 </script>
 
 <template>
-  <div class="canvas-wrapper">
+  <div ref="wrapper" class="canvas-wrapper" :style="{ height: canvasHeight }">
     <svg
       class="diagram-svg"
       @wheel.prevent="onWheel"
@@ -437,6 +589,35 @@ function onNodeUp() {
       </defs>
 
       <g :transform="viewTransform">
+        <!-- frames from a NodeGrouping (sites, racks) — furthest back, nested -->
+        <g
+          v-for="node in frameNodes"
+          :key="node.id"
+          :transform="`translate(${node.x}, ${node.y})`"
+          :data-id="node.id"
+          class="node frame-group"
+        >
+          <path
+            :d="shapePath(node.symbol.shape, node.w, node.h)"
+            class="grouping-frame"
+            :style="{
+              fill: node.symbol.fillColor,
+              fillOpacity: node.symbol.opacity,
+              ...strokeOf(node),
+            }"
+          />
+          <text
+            x="10"
+            :y="node.symbol.fontSize + 3"
+            class="grouping-label"
+            :style="{
+              fill: node.symbol.textColor,
+              fontSize: `${node.symbol.fontSize}px`,
+              fontWeight: node.symbol.bold ? 600 : 400,
+            }"
+          >{{ node.name }}</text>
+        </g>
+
         <!-- containers (packages) — rendered first so they stay behind edges + classes -->
         <g
           v-for="node in containerNodes"
@@ -470,20 +651,69 @@ function onNodeUp() {
             :class="edge.cls"
             :marker-start="edge.start || undefined"
             :marker-end="edge.end || undefined"
+            :style="{
+              stroke: edge.stroke,
+              strokeWidth: edge.strokeWidth,
+              strokeDasharray: edge.strokeDasharray,
+              opacity: edge.opacity,
+            }"
           />
           <text v-if="edge.label" :x="edge.lx" :y="edge.ly" class="edge-label">{{ edge.label }}</text>
           <text v-if="edge.sCard" :x="edge.sp.x + 6" :y="edge.sp.y - 4" class="edge-card">{{ edge.sCard }}</text>
           <text v-if="edge.tCard" :x="edge.ep.x + 6" :y="edge.ep.y - 4" class="edge-card">{{ edge.tCard }}</text>
         </g>
 
+        <!-- symbol nodes (devices) — a shape with its label beside it -->
+        <g
+          v-for="node in symbolNodes"
+          :key="node.id"
+          :transform="`translate(${node.x}, ${node.y})`"
+          :data-id="node.id"
+          class="node symbol-node"
+          @pointerdown="onNodeDown($event, node)"
+          @click="onNodeClick(node)"
+        >
+          <path
+            :d="shapePath(node.symbol.shape, node.symbol.width, node.symbol.height)"
+            :transform="`translate(${node.box!.symbolX}, ${node.box!.symbolY})`"
+            class="symbol"
+            :style="{
+              fill: node.symbol.fillColor,
+              fillOpacity: node.symbol.opacity,
+              ...strokeOf(node),
+            }"
+          />
+          <text
+            v-if="node.symbol.labelPlacement !== 'NONE'"
+            :x="node.box!.labelX"
+            :y="node.box!.labelY"
+            :text-anchor="node.box!.anchor"
+            class="symbol-label"
+            :style="{
+              fill: node.symbol.textColor,
+              fontSize: `${node.symbol.fontSize}px`,
+              fontWeight: node.symbol.bold ? 600 : 400,
+            }"
+          >{{ node.name }}</text>
+          <text
+            v-if="node.sublabel && node.symbol.labelPlacement !== 'NONE'"
+            :x="node.box!.labelX"
+            :y="node.box!.labelY + node.symbol.fontSize * 1.35"
+            :text-anchor="node.box!.anchor"
+            class="symbol-sublabel"
+            :style="{ fill: node.symbol.textColor, fontSize: `${node.symbol.fontSize * 0.88}px` }"
+          >{{ node.sublabel }}</text>
+        </g>
+
         <!-- leaf nodes (classes/tables) — rendered last so they sit on top -->
         <g
-          v-for="node in leafNodes"
+          v-for="node in boxNodes"
           :key="node.id"
           :transform="`translate(${node.x}, ${node.y})`"
           :data-id="node.id"
           class="node"
           @pointerdown="onNodeDown($event, node)"
+          @click="onNodeClick(node)"
         >
           <rect class="frame" x="0" y="0" :width="node.w" :height="node.h" rx="4" ry="4" />
           <rect class="header" x="0" y="0" :width="node.w" :height="HEADER_H" rx="4" ry="4"
@@ -548,8 +778,7 @@ function onNodeUp() {
 
 <style scoped>
 .canvas-wrapper {
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
   overflow: hidden;
 }
 .diagram-svg {
@@ -560,6 +789,27 @@ function onNodeUp() {
 }
 .node {
   cursor: move;
+}
+.frame-group {
+  cursor: default;
+}
+.grouping-frame {
+  pointer-events: none;
+}
+.grouping-label {
+  pointer-events: none;
+  user-select: none;
+}
+.symbol-node:hover .symbol {
+  filter: drop-shadow(0 2px 6px rgba(59, 130, 246, 0.45));
+}
+.symbol-label,
+.symbol-sublabel {
+  user-select: none;
+  dominant-baseline: auto;
+}
+.symbol-sublabel {
+  opacity: 0.75;
 }
 .node:hover .frame {
   filter: drop-shadow(0 2px 6px rgba(59, 130, 246, 0.35));

@@ -1,0 +1,517 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Modellgetriebene Diagramme als UIModel-Komponente.
+
+  Ein DiagramModel projiziert ein beliebiges EMF-Modell auf einen Graphen: welche
+  EClass ein Knoten wird, welches Feature die Beschriftung liefert, welches
+  Referenzpaar eine Kante bildet. Ein generischer Interpreter führt das zur
+  Laufzeit gegen ein Domänen-EObject aus (src/interpret.ts) — kein Code je Domäne.
+
+  Alle *Feature*-Referenzen (labelFeature, detailFeature, keyFeature …) sind
+  typisierte EReferences in das Ecore-Metamodell, wie in uimodel.ecore
+  (WidgetComponent.feature → EStructuralFeature). Mehrwertige, geordnete
+  Referenzen (upperBound="-1") sind Navigationspfade, z. B.
+  from = [Database.tables, Table.foreignKeys].
+
+  Die Symbologie folgt uimodel-maps (SingleSymbolRenderer / CategorizedRenderer /
+  RuleBasedRenderer): dieselben Begriffe für Karte und Diagramm.
+-->
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    name="uimodel.diagram" nsURI="http://uimodel/diagram/1.0" nsPrefix="uidiagram">
+
+  <!-- ================================================================ -->
+  <!-- DiagramView — Top-Level Component                                -->
+  <!-- ================================================================ -->
+  <eClassifiers xsi:type="ecore:EClass" name="DiagramView">
+    <eAnnotations source="documentation">
+      <details key="documentation" value="Hängt ein Diagramm in ein UIModel — das Gegenstück zu MapView und VegaView."/>
+    </eAnnotations>
+    <eSuperTypes href="http://uimodel/1.0#//Component"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" eType="#//DiagramModel"
+        name="diagram" containment="true"/>
+    <!-- Pfad vom übergebenen Datenobjekt zur Diagrammwurzel; leer = das Objekt selbst -->
+    <eStructuralFeatures xsi:type="ecore:EReference" upperBound="-1" ordered="true"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EReference" name="rootPath"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="title"/>
+    <!-- CSS-Höhe des Zeichenbereichs, z. B. 70vh -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EString" name="height"
+        defaultValueLiteral="60vh"/>
+    <!-- Klick-Bindings zurück ins EMF-Modell (wie MapSelectionBinding) -->
+    <eStructuralFeatures xsi:type="ecore:EReference" upperBound="-1"
+        eType="#//DiagramSelectionBinding" name="bindings" containment="true"/>
+  </eClassifiers>
+
+  <!-- ================================================================ -->
+  <!-- DiagramModel — die Projektion                                    -->
+  <!-- ================================================================ -->
+  <eClassifiers xsi:type="ecore:EClass" name="DiagramModel">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <!-- Typisierte Referenz auf die Wurzel-EClass des dargestellten Modells -->
+    <eStructuralFeatures xsi:type="ecore:EReference" name="targetClass"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EClass"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="layoutOptions"
+        upperBound="-1" eType="#//LayoutOption" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="nodes"
+        upperBound="-1" eType="#//NodeMapping" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="edges"
+        upperBound="-1" eType="#//EdgeMapping" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="styles"
+        upperBound="-1" eType="#//DiagramStyle" containment="true"/>
+    <!-- Rahmen um die Knoten: Gruppen aus Feature-Werten, nicht aus Containment -->
+    <eStructuralFeatures xsi:type="ecore:EReference" name="groupings"
+        upperBound="-1" eType="#//NodeGrouping" containment="true"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EClass" name="LayoutOption">
+    <eAnnotations source="documentation">
+      <details key="documentation" value="Eine ELK-Layoutoption, z. B. key='elk.algorithm' value='layered'."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="key"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+
+  <!-- ================================================================ -->
+  <!-- NodeMapping                                                      -->
+  <!-- ================================================================ -->
+  <eClassifiers xsi:type="ecore:EClass" name="NodeMapping">
+    <eAnnotations source="documentation">
+      <details key="documentation" value="Projiziert jedes über 'from' erreichte Domänenobjekt auf einen Knoten. 'from' ist eine geordnete Liste von EReferences ab der Diagrammwurzel (z. B. [Database.tables])."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <!-- Stereotyp über dem Titel, z. B. «Class» -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="stereotype"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <!-- Kleines Typ-Glyph im Kopf neben der Art -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="icon"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <!-- Feature als kleine Unterzeile unter dem Titel (z. B. EPackage.nsURI) -->
+    <eStructuralFeatures xsi:type="ecore:EReference" name="subtitleFeature"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature"/>
+    <!-- Ein "group"-Knoten hat kein eigenes Domänenobjekt: ein synthetischer
+         Behälter (z. B. DATATYPES), dessen `children` aus dem ELTERN-Objekt
+         gebaut werden. groupLabel ist der feste Kopftext. -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="group"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="groupLabel"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <!-- Metaklassen-Filter: nur Objekte genau dieser EClass werden Knoten -->
+    <eStructuralFeatures xsi:type="ecore:EReference" name="sourceClass"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EClass"/>
+    <!-- Filter: nur Objekte, für die dieser Ausdruck wahr ist, werden Knoten -->
+    <eStructuralFeatures xsi:type="ecore:EReference" name="condition"
+        containment="true">
+      <eType xsi:type="ecore:EClass" href="http://uimodel/1.0#//Expression"/>
+    </eStructuralFeatures>
+    <!-- Geordneter Pfad von EReferences ab der Diagrammwurzel zu den Knotenobjekten -->
+    <eStructuralFeatures xsi:type="ecore:EReference" name="from"
+        upperBound="-1" ordered="true"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EReference"/>
+    <!-- Feature, dessen Wert die Kopfzeile des Knotens beschriftet -->
+    <eStructuralFeatures xsi:type="ecore:EReference" name="labelFeature"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature"/>
+    <!-- Zweite Beschriftungszeile, z. B. die erste IP-Adresse -->
+    <eStructuralFeatures xsi:type="ecore:EReference" name="sublabelFeature"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="style"
+        eType="#//DiagramStyle"/>
+    <!-- Symbologie: entscheidet Form, Größe und Farbe je Knoten. Ohne Renderer
+         bleibt es beim Kastenknoten mit Compartments (NodeShape COMPARTMENTS). -->
+    <eStructuralFeatures xsi:type="ecore:EReference" name="renderer"
+        eType="#//NodeRenderer" containment="true"/>
+    <!-- Rahmen, in die dieser Knoten einsortiert wird. Geordnet: die erste
+         Gruppierung, die für das Objekt einen Schlüssel liefert, gewinnt
+         (z. B. erst das Rack, sonst der Standort). -->
+    <eStructuralFeatures xsi:type="ecore:EReference" name="groupings"
+        upperBound="-1" ordered="true" eType="#//NodeGrouping"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="compartments"
+        upperBound="-1" eType="#//Compartment" containment="true"/>
+    <!-- Verschachtelte Mappings als Kinder in diesem (Container-)Knoten;
+         ihr 'from'-Pfad ist relativ zu DESSEN Domänenobjekt. -->
+    <eStructuralFeatures xsi:type="ecore:EReference" name="children"
+        upperBound="-1" eType="#//NodeMapping" containment="true"/>
+  </eClassifiers>
+
+  <!-- ================================================================ -->
+  <!-- NodeGrouping — Rahmen aus Feature-Werten                         -->
+  <!-- ================================================================ -->
+  <eClassifiers xsi:type="ecore:EClass" name="NodeGrouping">
+    <eAnnotations source="documentation">
+      <details key="documentation" value="Fasst Knoten zu Rahmen zusammen, deren Hierarchie NICHT aus dem Containment kommt: Der Knoten trägt über keyPath/keyFeature einen Schlüssel (z. B. Device.location), die Gruppenobjekte stehen unter 'from' (z. B. Network.sites) und werden über identityFeature (Site.path) getroffen. parentFeature verweist auf den Schlüssel des umgebenden Rahmens (Site.parent) und schachtelt sie so ineinander."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <!-- Pfad vom Knotenobjekt zu dem Objekt, das den Gruppenschlüssel trägt;
+         leer = das Knotenobjekt selbst (z. B. [Device.mount, Mount.rack]) -->
+    <eStructuralFeatures xsi:type="ecore:EReference" name="keyPath"
+        upperBound="-1" ordered="true"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EReference"/>
+    <!-- Das Feature mit dem Gruppenschlüssel (Device.location, Rack.key) -->
+    <eStructuralFeatures xsi:type="ecore:EReference" name="keyFeature"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature"/>
+    <!-- Pfad ab der Diagrammwurzel zu den Gruppenobjekten (Network.sites) -->
+    <eStructuralFeatures xsi:type="ecore:EReference" name="from"
+        upperBound="-1" ordered="true"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EReference"/>
+    <!-- Feature am Gruppenobjekt, das gegen den Schlüssel geprüft wird (Site.path) -->
+    <eStructuralFeatures xsi:type="ecore:EReference" name="identityFeature"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="labelFeature"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature"/>
+    <!-- Weitere Beschriftungsteile, mit ' · ' angefügt (Raum, Höheneinheiten) -->
+    <eStructuralFeatures xsi:type="ecore:EReference" name="sublabelFeature"
+        upperBound="-1" ordered="true"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature"/>
+    <!-- Schlüssel des umgebenden Rahmens (Site.parent, Rack.site) -->
+    <eStructuralFeatures xsi:type="ecore:EReference" name="parentFeature"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature"/>
+    <!-- In welcher Gruppierung dieser Elternschlüssel gesucht wird; leer = in
+         dieser selbst (so entsteht der rekursive Standortbaum). -->
+    <eStructuralFeatures xsi:type="ecore:EReference" name="parentGrouping"
+        eType="#//NodeGrouping"/>
+    <!-- Symbologie des Rahmens; kategorisiert z. B. nach Site.kind -->
+    <eStructuralFeatures xsi:type="ecore:EReference" name="renderer"
+        eType="#//NodeRenderer" containment="true"/>
+    <!-- Abstand zwischen Rahmen und Inhalt -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="padding"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
+        defaultValueLiteral="24.0"/>
+  </eClassifiers>
+
+  <!-- ================================================================ -->
+  <!-- Compartment                                                      -->
+  <!-- ================================================================ -->
+  <eClassifiers xsi:type="ecore:EClass" name="Compartment">
+    <eAnnotations source="documentation">
+      <details key="documentation" value="Eine Gruppe von Zeilen im Knoten. 'from' ist ein geordneter Pfad von EReferences ab dem Knotenobjekt."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="from"
+        upperBound="-1" ordered="true"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EReference"/>
+    <!-- Versalien-Überschrift über den Zeilen (z. B. ATTRIBUTES) -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="title"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="labelFeature"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="detailFeature"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="separator"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <!-- Zeilenfilter: nur Zeilenobjekte, für die der Ausdruck wahr ist -->
+    <eStructuralFeatures xsi:type="ecore:EReference" name="rowCondition"
+        containment="true">
+      <eType xsi:type="ecore:EClass" href="http://uimodel/1.0#//Expression"/>
+    </eStructuralFeatures>
+    <!-- Boolesches Feature → führendes Schlüsselsymbol (z. B. EAttribute.iD) -->
+    <eStructuralFeatures xsi:type="ecore:EReference" name="keyFeature"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature"/>
+    <!-- Boolesches Feature → abschließende Markierung: true = Rauten-Containment (◆),
+         false = navigierbarer Pfeil (›). Z. B. EReference.containment. -->
+    <eStructuralFeatures xsi:type="ecore:EReference" name="markerFeature"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature"/>
+    <!-- Dritte Spalte: Multiplizität als "lower..upper" (-1 = *) -->
+    <eStructuralFeatures xsi:type="ecore:EReference" name="lowerBoundFeature"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="upperBoundFeature"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature"/>
+    <!-- Verschachtelte Zeilen (z. B. Operationsparameter): subFrom ist ein Pfad
+         ab dem Zeilenobjekt, subLabel/subDetail werden je Unterzeile gelesen. -->
+    <eStructuralFeatures xsi:type="ecore:EReference" name="subFrom"
+        upperBound="-1" ordered="true"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EReference"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="subLabelFeature"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="subDetailFeature"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature"/>
+    <!-- Metaklassen-Filter für Zeilen (nur EAttribute, nur EReference) -->
+    <eStructuralFeatures xsi:type="ecore:EReference" name="sourceClass"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EClass"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="badges"
+        upperBound="-1" eType="#//Badge" containment="true"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EClass" name="Badge">
+    <eAnnotations source="documentation">
+      <details key="documentation" value="Ein Symbol an einer Zeile, wenn 'whenFeature' wahr ist, z. B. icon='PK' whenFeature=Column.primaryKey."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="icon"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="whenFeature"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature"/>
+  </eClassifiers>
+
+  <!-- ================================================================ -->
+  <!-- EdgeMapping                                                      -->
+  <!-- ================================================================ -->
+  <eClassifiers xsi:type="ecore:EClass" name="EdgeMapping">
+    <eAnnotations source="documentation">
+      <details key="documentation" value="Projiziert Domänenobjekte auf Kanten. fromPath führt von der Diagrammwurzel zu den Kantenobjekten, sourcePath/targetPath von dort zu den Knotenobjekten. Alle Pfade sind geordnete Listen von EReferences."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="fromPath"
+        upperBound="-1" ordered="true"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EReference"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="sourcePath"
+        upperBound="-1" ordered="true"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EReference"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="targetPath"
+        upperBound="-1" ordered="true"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EReference"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="labelFeature"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="kind"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <!-- Metaklassen-Filter für Kantenobjekte (z. B. nur EReference) -->
+    <eStructuralFeatures xsi:type="ecore:EReference" name="sourceClass"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EClass"/>
+    <!-- Filter: nur Objekte, für die dieser Ausdruck wahr ist, werden Kanten -->
+    <eStructuralFeatures xsi:type="ecore:EReference" name="condition"
+        containment="true">
+      <eType xsi:type="ecore:EClass" href="http://uimodel/1.0#//Expression"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="sourceCardinality"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="targetCardinality"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <!-- Dekoration je Ende, überschreibt die aus 'kind' abgeleitete:
+         NONE | OPEN_ARROW | TRIANGLE_HOLLOW | TRIANGLE_FILLED | DIAMOND_HOLLOW | DIAMOND_FILLED -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="sourceDecoration"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="targetDecoration"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <!-- Symbologie: Farbe, Breite und Strichart je Kante -->
+    <eStructuralFeatures xsi:type="ecore:EReference" name="renderer"
+        eType="#//EdgeRenderer" containment="true"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EClass" name="DiagramStyle">
+    <eAnnotations source="documentation">
+      <details key="documentation" value="Visueller Stil für Kastenknoten (Kopffarbe, freies CSS)."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="headerColor"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="css"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+
+  <!-- ================================================================ -->
+  <!-- Symbologie der Knoten — nach dem Muster von uimodel-maps         -->
+  <!-- ================================================================ -->
+  <eClassifiers xsi:type="ecore:EClass" name="NodeRenderer" abstract="true">
+    <eAnnotations source="documentation">
+      <details key="documentation" value="Jeder Renderer kann Overlays tragen: Regeln, die sich über das ermittelte Symbol legen und nur ihre gesetzten Eigenschaften überschreiben. So bestimmt eine Kategorie die Form (Device.kind → Raute) und ein Overlay den Zustand (Device.health = DOWN → roter Rahmen), ohne dass eines das andere verdrängt."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="overlays"
+        upperBound="-1" ordered="true" eType="#//NodeRule" containment="true"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EClass" name="SingleNodeRenderer">
+    <eSuperTypes href="#//NodeRenderer"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="symbol"
+        eType="#//NodeSymbol" containment="true"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EClass" name="CategorizedNodeRenderer">
+    <eAnnotations source="documentation">
+      <details key="documentation" value="Ein Symbol je Wert eines Features, z. B. Device.kind → Raute für den Router. Der Wert wird als Zeichenkette verglichen; bei einem EEnum ist das der Literalname."/>
+    </eAnnotations>
+    <eSuperTypes href="#//NodeRenderer"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="classFeature"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="categories"
+        upperBound="-1" eType="#//NodeCategory" containment="true"/>
+    <!-- Symbol für Werte ohne eigene Kategorie -->
+    <eStructuralFeatures xsi:type="ecore:EReference" name="fallback"
+        eType="#//NodeSymbol" containment="true"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EClass" name="NodeCategory">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <!-- Beschriftung für die Legende; leer = value -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="label"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="symbol"
+        eType="#//NodeSymbol" containment="true"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EClass" name="RuleBasedNodeRenderer">
+    <eAnnotations source="documentation">
+      <details key="documentation" value="Regeln mit Ausdruck → Symbol, in Reihenfolge geprüft; die erste zutreffende gewinnt. Was sich darüber legen soll, gehört in NodeRenderer.overlays."/>
+    </eAnnotations>
+    <eSuperTypes href="#//NodeRenderer"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="rules"
+        upperBound="-1" ordered="true" eType="#//NodeRule" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="fallback"
+        eType="#//NodeSymbol" containment="true"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EClass" name="NodeRule">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="label"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="filter"
+        containment="true">
+      <eType xsi:type="ecore:EClass" href="http://uimodel/1.0#//Expression"/>
+    </eStructuralFeatures>
+    <!-- Kurzform statt eines Ausdrucks: dieses Feature ist wahr -->
+    <eStructuralFeatures xsi:type="ecore:EReference" name="whenFeature"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="symbol"
+        eType="#//NodeSymbol" containment="true"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EClass" name="NodeSymbol">
+    <eAnnotations source="documentation">
+      <details key="documentation" value="Form, Größe und Farben eines Knotens. Alle Maße in Pixeln des Diagrammkoordinatensystems. Attribute sind unsettable, damit eine Overlay-Regel erkennen kann, was sie überschreiben soll."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="shape"
+        eType="#//NodeShape" defaultValueLiteral="ROUND_RECTANGLE"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="width"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="height"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString" name="fillColor"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString" name="strokeColor"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="strokeWidth"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
+        eType="#//LineStyle" name="strokeStyle"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="opacity"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
+        eType="#//LabelPlacement" name="labelPlacement"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="fontSize"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString" name="textColor"/>
+    <!-- Dickschrift der Beschriftung (Infrastruktur hervorheben) -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="bold"/>
+  </eClassifiers>
+
+  <!-- ================================================================ -->
+  <!-- Symbologie der Kanten                                            -->
+  <!-- ================================================================ -->
+  <eClassifiers xsi:type="ecore:EClass" name="EdgeRenderer" abstract="true">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="overlays"
+        upperBound="-1" ordered="true" eType="#//EdgeRule" containment="true"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EClass" name="SingleEdgeRenderer">
+    <eSuperTypes href="#//EdgeRenderer"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="symbol"
+        eType="#//EdgeSymbol" containment="true"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EClass" name="CategorizedEdgeRenderer">
+    <eSuperTypes href="#//EdgeRenderer"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="classFeature"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="categories"
+        upperBound="-1" eType="#//EdgeCategory" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="fallback"
+        eType="#//EdgeSymbol" containment="true"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EClass" name="EdgeCategory">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="label"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="symbol"
+        eType="#//EdgeSymbol" containment="true"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EClass" name="RuleBasedEdgeRenderer">
+    <eSuperTypes href="#//EdgeRenderer"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="rules"
+        upperBound="-1" ordered="true" eType="#//EdgeRule" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="fallback"
+        eType="#//EdgeSymbol" containment="true"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EClass" name="EdgeRule">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="label"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="filter"
+        containment="true">
+      <eType xsi:type="ecore:EClass" href="http://uimodel/1.0#//Expression"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="whenFeature"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="symbol"
+        eType="#//EdgeSymbol" containment="true"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EClass" name="EdgeSymbol">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString" name="color"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="width"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
+        eType="#//LineStyle" name="style"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble" name="opacity"/>
+  </eClassifiers>
+
+  <!-- ================================================================ -->
+  <!-- DiagramSelectionBinding — Klick zurück ins EMF-Modell            -->
+  <!-- ================================================================ -->
+  <eClassifiers xsi:type="ecore:EClass" name="DiagramSelectionBinding">
+    <eAnnotations source="documentation">
+      <details key="documentation" value="Wie MapSelectionBinding: Beim Klick auf einen Knoten wird targetFeature am Kontextobjekt gesetzt — auf das geklickte EObject oder auf den Wert eines seiner Features."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" lowerBound="1"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature" name="targetFeature"/>
+    <eStructuralFeatures xsi:type="ecore:EReference"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature" name="sourceFeature"/>
+  </eClassifiers>
+
+  <!-- ================================================================ -->
+  <!-- Enums                                                            -->
+  <!-- ================================================================ -->
+  <eClassifiers xsi:type="ecore:EEnum" name="NodeShape">
+    <eAnnotations source="documentation">
+      <details key="documentation" value="COMPARTMENTS ist der Kastenknoten mit Kopf und Zeilen (Klassendiagramm); alle anderen sind Symbolknoten fester Größe mit Beschriftung daneben."/>
+    </eAnnotations>
+    <eLiterals name="COMPARTMENTS" value="0"/>
+    <eLiterals name="RECTANGLE" value="1"/>
+    <eLiterals name="ROUND_RECTANGLE" value="2"/>
+    <eLiterals name="CUT_RECTANGLE" value="3"/>
+    <eLiterals name="ELLIPSE" value="4"/>
+    <eLiterals name="DIAMOND" value="5"/>
+    <eLiterals name="OCTAGON" value="6"/>
+    <eLiterals name="TRIANGLE" value="7"/>
+    <eLiterals name="HEXAGON" value="8"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EEnum" name="LineStyle">
+    <eLiterals name="SOLID" value="0"/>
+    <eLiterals name="DASH" value="1"/>
+    <eLiterals name="DOT" value="2"/>
+    <eLiterals name="DASH_DOT" value="3"/>
+    <eLiterals name="DOUBLE" value="4"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EEnum" name="LabelPlacement">
+    <eLiterals name="BELOW" value="0"/>
+    <eLiterals name="ABOVE" value="1"/>
+    <eLiterals name="LEFT" value="2"/>
+    <eLiterals name="RIGHT" value="3"/>
+    <eLiterals name="CENTER" value="4"/>
+    <eLiterals name="NONE" value="5"/>
+  </eClassifiers>
+
+</ecore:EPackage>

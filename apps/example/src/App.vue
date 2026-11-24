@@ -4,6 +4,9 @@ import type { EObject } from '@emfts/core';
 import type { UIModel } from '@emfts/uimodel-composer';
 import { VegaViewComposer } from '@emfts/uimodel-vega';
 import { MapViewComposer, MAP_SELECTION_KEY } from '@emfts/uimodel-maps';
+// Nur der Injection-Key, damit die Seite auf die Auswahl im Netzplan reagiert;
+// die Komponente selbst bleibt unten lazy.
+import { DIAGRAM_SELECTION_KEY } from '@emfts/uimodel-diagram';
 import {
   UIModelComposer,
   createComposerRegistry,
@@ -27,6 +30,8 @@ const props = defineProps<{
   dataset: EObject;
   diagramModel: EObject;
   ecoreDomain: EObject;
+  netzplanModel: UIModel;
+  netzplan: EObject;
 }>();
 
 // ── kleine EMF-Reflection-Helfer ────────────────────────────────────
@@ -108,7 +113,27 @@ const selectedFields = computed<[string, string][]>(() => {
 });
 
 // Tab-Steuerung
-const activeTab = ref<'form' | 'charts' | 'map' | 'transit' | 'diagram'>('form');
+const activeTab = ref<'form' | 'charts' | 'map' | 'transit' | 'diagram' | 'netzplan'>('form');
+
+// ── Netzplan: Klick auf ein Gerät füllt die Zeile unter dem Plan ─────
+const selectedDevice = ref<EObject | null>(null);
+provide(DIAGRAM_SELECTION_KEY, (node: EObject | undefined) => {
+  selectedDevice.value = node ?? null;
+});
+
+/** Beschreibt das gewählte Gerät aus seinen Features — ganz reflektiv. */
+const selectedDeviceText = computed(() => {
+  const device = selectedDevice.value;
+  if (!device) return '';
+  const parts = [
+    eget(device, 'name'),
+    eget(device, 'typeName'),
+    eget(device, 'manufacturer'),
+    eget(device, 'location'),
+    asList(eget(device, 'ips')).join(', '),
+  ];
+  return parts.filter((p) => p !== undefined && p !== null && p !== '').join(' · ');
+});
 </script>
 
 <template>
@@ -133,6 +158,9 @@ const activeTab = ref<'form' | 'charts' | 'map' | 'transit' | 'diagram'>('form')
         </button>
         <button :class="['tab', { 'tab--active': activeTab === 'diagram' }]" @click="activeTab = 'diagram'">
           Diagramm
+        </button>
+        <button :class="['tab', { 'tab--active': activeTab === 'netzplan' }]" @click="activeTab = 'netzplan'">
+          Netzplan
         </button>
       </nav>
     </header>
@@ -169,6 +197,20 @@ const activeTab = ref<'form' | 'charts' | 'map' | 'transit' | 'diagram'>('form')
       <DiagramViewComposer
         :component="diagramModel"
         :model="ecoreDomain"
+      />
+    </main>
+
+    <!-- Tab: Netzplan (Symbolknoten, Standort- und Rack-Rahmen, Trunk-Kanten) -->
+    <main v-else-if="activeTab === 'netzplan'" class="app-main app-main--diagram">
+      <p class="hint">
+        Geräte als Symbole je Art, Standorte und Racks als Rahmen, Trunks hervorgehoben — alles aus
+        <code>netzplan-diagram.xmi</code>, projiziert auf <code>netzplan.xmi</code>. Ein Klick wählt ein Gerät.
+      </p>
+      <p class="selected-device">{{ selectedDeviceText || 'Kein Gerät gewählt' }}</p>
+      <UIModelComposer
+        :ui-model="netzplanModel"
+        :model="netzplan"
+        :composer-registry="composerRegistry"
       />
     </main>
 
@@ -225,6 +267,9 @@ body { font-family: system-ui, sans-serif; background: #f4f5f7; color: #1a1a2e; 
 .app-main--charts { padding: 2rem 2.5rem; display: flex; flex-direction: column; gap: 2rem; max-width: 900px; }
 
 .tabs { display: flex; gap: .5rem; margin-top: .8rem; }
+.hint { margin: 0 0 .4rem; font-size: .85rem; color: #475569; }
+.hint code { background: #f1f5f9; padding: 0 .25rem; border-radius: 3px; }
+.selected-device { margin: 0 0 .6rem; font-size: .9rem; font-weight: 600; color: #0f172a; min-height: 1.2em; }
 .tab { background: rgba(255,255,255,.1); color: #ccd; border: none; padding: .4rem 1rem; border-radius: 6px; cursor: pointer; font-size: .85rem; transition: background .15s, color .15s; }
 .tab:hover { background: rgba(255,255,255,.2); color: #fff; }
 .tab--active { background: #5b5fd6; color: #fff; }

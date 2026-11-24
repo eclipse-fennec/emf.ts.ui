@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Netzmodell eines Unternehmensnetzes: Geräte, Ports, Verkabelung, IP-Netze, VLANs,
+  Standorte und Racks.
+
+  Nachgebildet nach der Projektion, die der Netzplan der Sparkasse Jena aus
+  DMTF-CIM-Daten rechnet (netzplan-ui/packages/view.netzplan/src/topology.ts).
+  Dort entsteht dieselbe Struktur als TypeScript-Interfaces; hier ist sie ein
+  Ecore-Modell, damit ein DiagramModel sie über typisierte Feature-Referenzen
+  projizieren kann.
+
+  Die Standorthierarchie steht bewusst NICHT im Containment: `Site.parent` und
+  `Device.location` sind Pfadzeichenketten ("Hauptstelle > Etage 1"), wie GLPI
+  sie führt. Genau dafür gibt es NodeGrouping im Diagrammodell.
+-->
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    name="netzplan" nsURI="http://netzplan/1.0" nsPrefix="netzplan">
+
+  <eClassifiers xsi:type="ecore:EClass" name="Network">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <!-- Stand der Erhebung -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="asOf"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="devices"
+        upperBound="-1" eType="#//Device" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="links"
+        upperBound="-1" eType="#//Link" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="networks"
+        upperBound="-1" eType="#//IpNetwork" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="vlans"
+        upperBound="-1" eType="#//Vlan" containment="true"/>
+    <!-- Alle Orte: Standorte, Rechenzentren, Serverräume -->
+    <eStructuralFeatures xsi:type="ecore:EReference" name="sites"
+        upperBound="-1" eType="#//Site" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="racks"
+        upperBound="-1" eType="#//Rack" containment="true"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EClass" name="Device">
+    <!-- Eindeutig über alle Gerätetypen, z. B. glpi:Computer:12 -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="key" iD="true"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="kind"
+        eType="#//DeviceKind" defaultValueLiteral="CLIENT"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="typeName"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="manufacturer"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="serial"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="inventoryNumber"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <!-- Pfad des Standorts ("Hauptstelle > Etage 1"), passend zu Site.path -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="location"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <!-- Standort nicht gepflegt, sondern vom angeschlossenen Switch übernommen -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="locationDerived"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="state"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <!-- Betriebszustand aus dem Monitoring -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="health"
+        eType="#//HealthState" defaultValueLiteral="UNKNOWN"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="ips"
+        upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ports"
+        upperBound="-1" eType="#//Port" containment="true" eOpposite="#//Port/device"/>
+    <!-- Eingebaut in ein Rack -->
+    <eStructuralFeatures xsi:type="ecore:EReference" name="mount"
+        eType="#//Mount" containment="true"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EClass" name="Port">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" iD="true"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="number"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="mac"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <!-- Mbit/s; ungesetzt, wenn unbekannt -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="speed" unsettable="true"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="hostname"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="ips"
+        upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <!-- Das Gerät, in dem der Port steckt — die Rückrichtung, über die eine
+         Kante vom Kabel zum Geräteknoten findet (EdgeMapping.sourcePath). -->
+    <eStructuralFeatures xsi:type="ecore:EReference" name="device"
+        lowerBound="1" eType="#//Device" eOpposite="#//Device/ports"/>
+    <!-- Gegenstelle der Verkabelung -->
+    <eStructuralFeatures xsi:type="ecore:EReference" name="peer" eType="#//Port"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="vlans"
+        upperBound="-1" eType="#//PortVlan" containment="true"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EClass" name="PortVlan">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="vlan"
+        lowerBound="1" eType="#//Vlan"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="tagged"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EClass" name="Vlan">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" iD="true"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="tag"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EClass" name="Link">
+    <eAnnotations source="documentation">
+      <details key="documentation" value="Ein Kabel zwischen zwei Ports. Als Kante projiziert über fromPath=[Network.links], sourcePath=[Link.a, Port.device], targetPath=[Link.b, Port.device]."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" iD="true"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="a"
+        lowerBound="1" eType="#//Port"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="b"
+        lowerBound="1" eType="#//Port"/>
+    <!-- Mehr als ein VLAN getaggt: ein Trunk -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="trunk"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EClass" name="IpNetwork">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" iD="true"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="address"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="netmask"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="prefix"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="cidr"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="gateway"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <!-- Nutzbare Host-Adressen (ohne Netz- und Broadcast-Adresse) -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="capacity"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="addresses"
+        upperBound="-1" eType="#//IpAddress" containment="true"/>
+    <!-- Abgeleitet: die ungetaggten VLANs der Ports mit Adresse in diesem Netz -->
+    <eStructuralFeatures xsi:type="ecore:EReference" name="vlans"
+        upperBound="-1" eType="#//Vlan"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EClass" name="IpAddress">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="ip"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="device" eType="#//Device"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EClass" name="Site">
+    <eAnnotations source="documentation">
+      <details key="documentation" value="Ein Ort: Standort, Rechenzentrum oder Serverraum. 'path' ist der vollständige Pfad ('Hauptstelle > Rechenzentrum'); 'parent' der Pfad des umgebenden Orts — an der Wurzel leer."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="key" iD="true"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="kind"
+        eType="#//SiteKind" defaultValueLiteral="LOCATION"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="path"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="parent"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <!-- Lage für die Karte -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="longitude" unsettable="true"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="latitude" unsettable="true"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EClass" name="Rack">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="key" iD="true"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <!-- Höheneinheiten, wie das Inventar sie führt ("42 HE") -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="units"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="serial"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="inventoryNumber"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <!-- Pfad des Orts, an dem das Rack steht — passend zu Site.path -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="site"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EClass" name="Mount">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="rack"
+        lowerBound="1" eType="#//Rack"/>
+    <!-- Position im Rack ("HE 40, vorne") -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="position"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="room" eType="#//Site"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="datacenter" eType="#//Site"/>
+  </eClassifiers>
+
+  <!-- Wie ein Gerät im Plan erscheint -->
+  <eClassifiers xsi:type="ecore:EEnum" name="DeviceKind">
+    <eLiterals name="ROUTER" value="0"/>
+    <eLiterals name="FIREWALL" value="1"/>
+    <eLiterals name="CORE" value="2"/>
+    <eLiterals name="SWITCH" value="3"/>
+    <eLiterals name="AP" value="4"/>
+    <eLiterals name="SERVER" value="5"/>
+    <eLiterals name="CLIENT" value="6"/>
+    <eLiterals name="THINCLIENT" value="7"/>
+    <eLiterals name="PRINTER" value="8"/>
+    <eLiterals name="PHONE" value="9"/>
+    <eLiterals name="MULTIMEDIA" value="10"/>
+    <eLiterals name="UNMANAGED" value="11"/>
+    <eLiterals name="ATM" value="12"/>
+    <eLiterals name="SENSOR" value="13"/>
+    <eLiterals name="ACCESS" value="14"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EEnum" name="SiteKind">
+    <eLiterals name="LOCATION" value="0"/>
+    <eLiterals name="DATACENTER" value="1"/>
+    <eLiterals name="ROOM" value="2"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EEnum" name="HealthState">
+    <eLiterals name="UNKNOWN" value="0"/>
+    <eLiterals name="OK" value="1"/>
+    <eLiterals name="PROBLEM" value="2"/>
+    <eLiterals name="DOWN" value="3"/>
+  </eClassifiers>
+
+</ecore:EPackage>

@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Der Netzplan als UIModel: Geräte als Symbole, Kabel als Kanten, Standorte und
+  Racks als Rahmen — alles deklariert, kein Code je Domäne.
+
+  Die Vorlage ist der Netzplan der Sparkasse Jena
+  (netzplan-ui/packages/view.netzplan): dort stehen Gerätearten, Rahmen und
+  Trunk-Hervorhebung als cytoscape-Stylesheet und als Vue-Komponente im Code.
+  Hier steht dasselbe im Modell:
+
+    Gerätearten  → CategorizedNodeRenderer über Device.kind
+    Betriebslage → overlays mit Ausdrücken über Device.health
+    Standorte    → NodeGrouping über Device.location, geschachtelt per Site.parent
+    Racks        → NodeGrouping über Device.mount.rack, im Rechenzentrum
+    Trunk        → RuleBasedEdgeRenderer über Link.trunk
+    Auswahl      → DiagramSelectionBinding schreibt das geklickte Gerät zurück
+-->
+<uimodel:UIModel
+    xmlns:xmi="http://www.omg.org/XMI"
+    xmi:version="2.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:uimodel="http://uimodel/1.0"
+    xmlns:uidiagram="http://uimodel/diagram/1.0"
+    name="Netzplan">
+
+  <components xsi:type="uidiagram:DiagramView"
+      name="Topologie"
+      title="Netzwerk-Topologie"
+      height="72vh">
+
+    <diagram name="Netztopologie" targetClass="http://netzplan/1.0#//Network">
+      <!-- Ein Baum von oben nach unten (Router → Firewall → Core → Access →
+           Endgeräte), mit den Rahmen als echter Hierarchie. -->
+      <layoutOptions key="elk.algorithm" value="layered"/>
+      <layoutOptions key="elk.direction" value="DOWN"/>
+      <layoutOptions key="elk.hierarchyHandling" value="INCLUDE_CHILDREN"/>
+      <layoutOptions key="elk.spacing.nodeNode" value="34"/>
+      <layoutOptions key="elk.layered.spacing.nodeNodeBetweenLayers" value="56"/>
+      <layoutOptions key="elk.padding" value="[top=28,left=28,bottom=28,right=28]"/>
+      <layoutOptions key="elk.layered.nodePlacement.strategy" value="NETWORK_SIMPLEX"/>
+
+      <!-- ======================= Rahmen ======================= -->
+      <!-- Standorte: der Schlüssel steht als Pfad am Gerät, die Orte bilden
+           über Site.parent ihren eigenen Baum. -->
+      <groupings xmi:id="g-site" name="site"
+          keyFeature="http://netzplan/1.0#//Device/location"
+          from="http://netzplan/1.0#//Network/sites"
+          identityFeature="http://netzplan/1.0#//Site/path"
+          labelFeature="http://netzplan/1.0#//Site/name"
+          parentFeature="http://netzplan/1.0#//Site/parent"
+          padding="26">
+        <!-- Ein Rechenzentrum hebt sich vom gewöhnlichen Standort ab. -->
+        <renderer xsi:type="uidiagram:CategorizedNodeRenderer"
+            classFeature="http://netzplan/1.0#//Site/kind">
+          <categories value="DATACENTER" label="Rechenzentrum">
+            <symbol shape="ROUND_RECTANGLE" fillColor="#eff6ff" strokeColor="#2563eb"
+                strokeStyle="DASH" strokeWidth="1.5" opacity="0.5"/>
+          </categories>
+          <categories value="ROOM" label="Serverraum">
+            <symbol shape="ROUND_RECTANGLE" fillColor="#f8fafc" strokeColor="#64748b"
+                strokeWidth="1" opacity="0.5"/>
+          </categories>
+          <fallback shape="ROUND_RECTANGLE" fillColor="#f1f5f9" strokeColor="#94a3b8"
+              strokeWidth="1" opacity="0.55" fontSize="13"/>
+        </renderer>
+      </groupings>
+
+      <!-- Racks: der Schlüssel liegt zwei Schritte entfernt (Device.mount →
+           Mount.rack → Rack.key); der Rahmen hängt im Ort des Racks. -->
+      <groupings xmi:id="g-rack" name="rack"
+          keyPath="http://netzplan/1.0#//Device/mount http://netzplan/1.0#//Mount/rack"
+          keyFeature="http://netzplan/1.0#//Rack/key"
+          from="http://netzplan/1.0#//Network/racks"
+          identityFeature="http://netzplan/1.0#//Rack/key"
+          labelFeature="http://netzplan/1.0#//Rack/name"
+          sublabelFeature="http://netzplan/1.0#//Rack/units"
+          parentFeature="http://netzplan/1.0#//Rack/site"
+          parentGrouping="g-site"
+          padding="20">
+        <renderer xsi:type="uidiagram:SingleNodeRenderer">
+          <symbol shape="RECTANGLE" fillColor="#ffffff" strokeColor="#0f766e"
+              strokeWidth="2" opacity="1" fontSize="11.5"/>
+        </renderer>
+      </groupings>
+
+      <!-- ======================= Knoten ======================= -->
+      <!-- Erst das Rack, sonst der Standort: die Reihenfolge entscheidet. -->
+      <nodes name="devices"
+          from="http://netzplan/1.0#//Network/devices"
+          labelFeature="http://netzplan/1.0#//Device/name"
+          sublabelFeature="http://netzplan/1.0#//Device/ips"
+          groupings="g-rack g-site">
+
+        <renderer xsi:type="uidiagram:CategorizedNodeRenderer"
+            classFeature="http://netzplan/1.0#//Device/kind">
+
+          <!-- Infrastruktur trägt das Netz: größer, kräftiger, fett beschriftet -->
+          <categories value="ROUTER" label="Router">
+            <symbol shape="DIAMOND" width="40" fillColor="#dbeafe" strokeColor="#1d4ed8"
+                strokeWidth="2" fontSize="11" bold="true"/>
+          </categories>
+          <categories value="FIREWALL" label="Firewall">
+            <symbol shape="OCTAGON" width="36" fillColor="#fee2e2" strokeColor="#b91c1c"
+                strokeWidth="2" fontSize="11" bold="true"/>
+          </categories>
+          <categories value="CORE" label="Core-Switch">
+            <symbol shape="ROUND_RECTANGLE" width="38" height="30" fillColor="#dbeafe"
+                strokeColor="#1d4ed8" strokeWidth="2" fontSize="11" bold="true"/>
+          </categories>
+          <categories value="SWITCH" label="Access-Switch">
+            <symbol shape="ROUND_RECTANGLE" width="34" height="26" fillColor="#e0f2fe"
+                strokeColor="#0369a1" strokeWidth="2" fontSize="10.5" bold="true"/>
+          </categories>
+          <categories value="AP" label="WLAN-AP">
+            <symbol shape="ELLIPSE" width="26" fillColor="#e0f2fe" strokeColor="#0369a1"
+                strokeWidth="1.5" fontSize="10"/>
+          </categories>
+
+          <!-- Endgeräte hängen daran: kleiner, zurückhaltender -->
+          <categories value="SERVER" label="Server">
+            <symbol shape="ROUND_RECTANGLE" width="26" height="24" fillColor="#ffffff"
+                strokeColor="#0f766e" strokeWidth="2"/>
+          </categories>
+          <categories value="CLIENT" label="Arbeitsplatz">
+            <symbol shape="ROUND_RECTANGLE" width="22" fillColor="#ffffff"
+                strokeColor="#64748b" strokeWidth="1.5"/>
+          </categories>
+          <categories value="THINCLIENT" label="Thin Client">
+            <symbol shape="ROUND_RECTANGLE" width="20" fillColor="#f8fafc"
+                strokeColor="#64748b" strokeWidth="1.5"/>
+          </categories>
+          <categories value="PRINTER" label="Drucker">
+            <symbol shape="ELLIPSE" width="18" fillColor="#ffffff" strokeColor="#7c3aed"
+                strokeWidth="1.5" fontSize="9"/>
+          </categories>
+          <categories value="PHONE" label="Telefon">
+            <symbol shape="ELLIPSE" width="18" fillColor="#ffffff" strokeColor="#7c3aed"
+                strokeWidth="1.5" fontSize="9"/>
+          </categories>
+          <categories value="MULTIMEDIA" label="Multimedia">
+            <symbol shape="TRIANGLE" width="18" fillColor="#ffffff" strokeColor="#7c3aed"
+                strokeWidth="1.5" fontSize="9"/>
+          </categories>
+          <categories value="ATM" label="Geldautomat">
+            <symbol shape="CUT_RECTANGLE" width="26" fillColor="#fef3c7"
+                strokeColor="#b45309" strokeWidth="2"/>
+          </categories>
+          <categories value="SENSOR" label="Sensor">
+            <symbol shape="ELLIPSE" width="16" fillColor="#ffffff" strokeColor="#ca8a04"
+                strokeWidth="2" fontSize="9"/>
+          </categories>
+          <categories value="ACCESS" label="Schließanlage">
+            <symbol shape="RECTANGLE" width="16" fillColor="#ffffff" strokeColor="#ca8a04"
+                strokeWidth="2" fontSize="9"/>
+          </categories>
+          <categories value="UNMANAGED" label="Nicht verwaltet">
+            <symbol shape="ELLIPSE" width="14" fillColor="#ffffff" strokeColor="#94a3b8"
+                strokeStyle="DASH" strokeWidth="1.5" fontSize="9"/>
+          </categories>
+
+          <!-- Was keine Kategorie trifft, erscheint trotzdem -->
+          <fallback shape="ELLIPSE" width="16" fillColor="#ffffff" strokeColor="#94a3b8"
+              strokeStyle="DOT" fontSize="9"/>
+
+          <!-- Die Betriebslage legt sich über die Form, ohne sie zu ersetzen -->
+          <overlays label="Problem (Monitoring)">
+            <filter language="JS" body="self.health === 'PROBLEM'"/>
+            <symbol strokeColor="#d97706" strokeWidth="3"/>
+          </overlays>
+          <overlays label="Nicht erreichbar">
+            <filter language="JS" body="self.health === 'DOWN'"/>
+            <symbol strokeColor="#dc2626" strokeWidth="4" textColor="#dc2626" bold="true"/>
+          </overlays>
+          <overlays label="Standort abgeleitet">
+            <filter language="JS" body="self.locationDerived === true"/>
+            <symbol strokeStyle="DASH"/>
+          </overlays>
+        </renderer>
+      </nodes>
+
+      <!-- ======================= Kanten ======================= -->
+      <!-- Der Pfad endet am Port; der Interpreter steigt von dort über das
+           Containment zum Geräteknoten auf. -->
+      <edges name="links"
+          fromPath="http://netzplan/1.0#//Network/links"
+          sourcePath="http://netzplan/1.0#//Link/a"
+          targetPath="http://netzplan/1.0#//Link/b"
+          kind="ASSOCIATION"
+          sourceDecoration="NONE"
+          targetDecoration="NONE">
+        <renderer xsi:type="uidiagram:RuleBasedEdgeRenderer">
+          <rules label="Trunk">
+            <whenFeature href="http://netzplan/1.0#//Link/trunk"/>
+            <symbol color="#1d4ed8" width="3"/>
+          </rules>
+          <fallback color="#94a3b8" width="1.2"/>
+        </renderer>
+      </edges>
+    </diagram>
+
+    <!-- Klick auf ein Gerät: der Name landet in Network.name, woran ein
+         Detail-Panel hängen kann (dasselbe Muster wie MapSelectionBinding). -->
+    <bindings targetFeature="http://netzplan/1.0#//Network/name"
+        sourceFeature="http://netzplan/1.0#//Device/name"/>
+  </components>
+</uimodel:UIModel>
