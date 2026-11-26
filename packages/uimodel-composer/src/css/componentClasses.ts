@@ -130,10 +130,12 @@ export function componentDataAttrs(component: Component): Record<string, string>
 export function widgetStateClasses(
   widget: WidgetComponent,
   resolvedReadOnly?: boolean,
-  resolvedRequired?: boolean
+  resolvedRequired?: boolean,
+  invalid?: boolean
 ): string[] {
   const classes: string[] = [];
   if (eBool(resolvedRequired ?? widget.required)) classes.push('uim-s-required');
   if (eBool(resolvedReadOnly ?? widget.readOnly)) classes.push('uim-s-readonly');
+  if (invalid) classes.push('uim-s-invalid');
   return classes;
 }
