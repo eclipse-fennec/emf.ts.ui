@@ -15,6 +15,8 @@ export { default as MasterDetailComposer } from './composers/MasterDetailCompose
 export { default as WidgetComposer } from './composers/WidgetComposer.vue';
 export { default as FieldsRenderer } from './composers/FieldsRenderer.vue';
 export { default as GroupComposer } from './composers/GroupComposer.vue';
+export { default as ListComposer } from './composers/ListComposer.vue';
+export { default as SubFormComposer } from './composers/SubFormComposer.vue';
 export { default as FallbackWidget } from './composers/FallbackWidget.vue';
 export { default as ComponentDispatcher } from './composers/ComponentDispatcher.vue';
 
@@ -36,9 +38,12 @@ export {
   resolveStructure,
   isStructural,
   isGroupWidget,
+  isListWidget,
+  isSubFormWidget,
   isConditional,
   isForEach,
 } from './allfeatures/resolveStructure';
+export { SUBFORM_DEPTH_KEY } from './composables/subFormDepth';
 export type { ResolvedEntry } from './allfeatures/resolveStructure';
 
 // Composables
@@ -167,6 +172,9 @@ export type { AllFeatures } from './generated/AllFeatures';
 export type { PropertyBinding } from './generated/PropertyBinding';
 export type { TemplateCase } from './generated/TemplateCase';
 export type { GroupWidget } from './generated/GroupWidget';
+export type { CollectionWidget } from './generated/CollectionWidget';
+export type { ListWidget } from './generated/ListWidget';
+export type { SubFormWidget } from './generated/SubFormWidget';
 export type { UIModelOverlay } from './generated/UIModelOverlay';
 export type { Conditional } from './generated/Conditional';
 export type { ForEach } from './generated/ForEach';

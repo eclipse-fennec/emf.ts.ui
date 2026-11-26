@@ -3,7 +3,8 @@
  * Rendert eine fields-Liste: löst strukturelle Platzhalter (AllFeatures,
  * Conditional, ForEach) über resolveStructure auf und rendert Widgets
  * via WidgetComposer; GroupWidgets über den GroupComposer (Label,
- * Sichtbarkeit, Bindings — Issue #10).
+ * Sichtbarkeit, Bindings — Issue #10), mehrwertige Attribute über den
+ * ListComposer (#24) und Containments über den SubFormComposer (#25).
  */
 import { computed, inject } from 'vue';
 import type { EObject } from '@emfts/core';
@@ -15,6 +16,8 @@ import { STYLE_SHEETS_KEY } from '../css/useStyleSheets';
 import { useTranslate } from '../i18n/translate';
 import WidgetComposer from './WidgetComposer.vue';
 import GroupComposer from './GroupComposer.vue';
+import ListComposer from './ListComposer.vue';
+import SubFormComposer from './SubFormComposer.vue';
 
 const props = defineProps<{
   fields: Iterable<WidgetComponent> | undefined;
@@ -38,6 +41,16 @@ const entries = computed(() => {
     <p v-if="entry.kind === 'note'" class="uimodel-foreach-empty">{{ translate(entry.text, { kind: 'text', owner: entry.owner }) }}</p>
     <GroupComposer
       v-else-if="entry.kind === 'group'"
+      :widget="entry.widget"
+      :model="entry.model"
+    />
+    <ListComposer
+      v-else-if="entry.kind === 'list'"
+      :widget="entry.widget"
+      :model="entry.model"
+    />
+    <SubFormComposer
+      v-else-if="entry.kind === 'subform'"
       :widget="entry.widget"
       :model="entry.model"
     />

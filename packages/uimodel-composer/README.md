@@ -245,6 +245,49 @@ vom `FieldsRenderer` (kein Markup über das Nötigste hinaus):
 </fields>
 ```
 
+## Listen und Unterformulare
+
+Zwei Widgets für Features, die kein einzelnes Eingabefeld fassen kann:
+
+**`ListWidget`** für mehrwertige Attribute
+([#24](https://github.com/eclipse-fennec/emf.ts.ui/issues/24)). Ein
+`EString [0..*]` bekam bisher dasselbe Feld wie ein einwertiges, gebunden
+an eine EList. Jetzt steht je Element ein Feld da — Art nach Datentyp,
+inklusive Auswahl bei Enums —, dazu Hinzufügen, Entfernen und
+Umsortieren. Bearbeitet wird die EList **an Ort und Stelle** (`set`,
+`add`, `removeAt`, `move`), damit Notifications und der Expression-Tick
+greifen.
+
+**`SubFormWidget`** für Containment-Referenzen
+([#25](https://github.com/eclipse-fennec/emf.ts.ui/issues/25)). Ein
+Containment landete bisher wie jede Referenz beim `ReferenceLinkWidget`,
+das enthaltene Objekt war nicht zu bearbeiten. Jetzt stehen seine Felder
+im selben Formular: `[0..1]` legt das Kind bei Bedarf an (`createClass`,
+sonst der Referenztyp), `[0..*]` wird zur Liste von Unterformularen.
+
+```xml
+<fields xsi:type="uimodel:SubFormWidget" feature="…#//Order/items"
+    addLabel="Position hinzufügen" emptyText="Noch keine Positionen" maxDepth="3">
+  <fields xsi:type="uimodel:AllFeatures" name="item">
+    <filter language="JS" body="self.eClass().getName() === 'EAttribute'"/>
+    <cases><widget href="#t-input"/></cases>
+  </fields>
+</fields>
+```
+
+Die Felder des Kindes stehen im Modell — wie überall bestimmt eine
+Fallliste die Widget-Wahl ([#5](https://github.com/eclipse-fennec/emf.ts.ui/issues/5)),
+und ohne `fields` rendert das Unterformular nichts. `maxDepth` begrenzt
+die Schachtelung: Zeigt ein UI-Modell über einen `TemplateCase` auf sich
+selbst und ist das Datenmodell zyklisch (`Person.partner`), bricht das
+Rendern dort ab statt endlos zu laufen.
+
+Beide erben von `CollectionWidget`: `allowAdd`, `allowRemove`,
+`allowReorder` sind erlaubt, solange nichts anderes im Modell steht, und
+`readOnly` am Widget schaltet alles ab. In `generic-default` greifen sie
+von selbst — mehrwertig schlägt den Datentyp, Containments haben eine
+eigene Sektion.
+
 ## Reiter (`TabView`)
 
 `TabViewComposer` rendert eine bedienbare Reiterleiste

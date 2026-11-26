@@ -9,6 +9,8 @@
  *                  model = Element aufgelöst; leer + emptyText ⇒ Note
  *   GroupWidget  → bleibt als Container-Eintrag stehen (der Renderer
  *                  rekurriert über seine fields mit dem Entry-Model)
+ *   ListWidget   → Liste eines mehrwertigen Attributs (#24)
+ *   SubFormWidget→ Unterformular einer Containment-Referenz (#25)
  *   sonst        → normales Widget
  */
 import type { EClass, EObject } from '@emfts/core';
@@ -16,6 +18,8 @@ import type { WidgetComponent } from '../generated/WidgetComponent';
 import type { Conditional } from '../generated/Conditional';
 import type { ForEach } from '../generated/ForEach';
 import type { GroupWidget } from '../generated/GroupWidget';
+import type { ListWidget } from '../generated/ListWidget';
+import type { SubFormWidget } from '../generated/SubFormWidget';
 import {
   expandFeatures,
   isAllFeatures,
@@ -26,6 +30,8 @@ import { evaluateBoolean, evaluateValue } from '../utils/evaluateExpression';
 export type ResolvedEntry =
   | { kind: 'widget'; widget: WidgetComponent; model: EObject }
   | { kind: 'group'; widget: GroupWidget; model: EObject }
+  | { kind: 'list'; widget: ListWidget; model: EObject }
+  | { kind: 'subform'; widget: SubFormWidget; model: EObject }
   | { kind: 'note'; text: string; owner: EObject };
 
 function eclassName(obj: EObject): string {
@@ -34,6 +40,14 @@ function eclassName(obj: EObject): string {
 
 export function isGroupWidget(obj: EObject): obj is GroupWidget {
   return eclassName(obj) === 'GroupWidget';
+}
+
+export function isListWidget(obj: EObject): obj is ListWidget {
+  return eclassName(obj) === 'ListWidget';
+}
+
+export function isSubFormWidget(obj: EObject): obj is SubFormWidget {
+  return eclassName(obj) === 'SubFormWidget';
 }
 
 export function isConditional(obj: EObject): obj is Conditional {
@@ -66,6 +80,19 @@ function toEObjects(value: unknown): EObject[] {
   return result;
 }
 
+/**
+ * Der Eintrag zu einem fertigen Widget — die Klasse entscheidet, wer es
+ * rendert. Gilt auch für Widgets **aus der Expansion**: Ein Prototyp
+ * kann eine Gruppe, eine Liste oder ein Unterformular sein, und ein
+ * Klon davon ist es ebenso.
+ */
+function entryFor(widget: WidgetComponent, model: EObject): ResolvedEntry {
+  if (isGroupWidget(widget)) return { kind: 'group', widget, model };
+  if (isListWidget(widget)) return { kind: 'list', widget, model };
+  if (isSubFormWidget(widget)) return { kind: 'subform', widget, model };
+  return { kind: 'widget', widget, model };
+}
+
 /** Löst eine fields-Liste rekursiv zu einer flachen Render-Liste auf. */
 export function resolveStructure(
   fields: Iterable<WidgetComponent> | undefined,
@@ -78,7 +105,7 @@ export function resolveStructure(
       const eClass = model.eClass?.() as EClass | undefined;
       if (!eClass) continue;
       for (const widget of expandFeatures(eClass, field, context)) {
-        entries.push({ kind: 'widget', widget, model });
+        entries.push(entryFor(widget, model));
       }
     } else if (isConditional(field)) {
       const branch = evaluateBoolean(field.condition, model) ? field.then : field.else;
@@ -92,10 +119,8 @@ export function resolveStructure(
       for (const item of items) {
         entries.push(...resolveStructure(field.body, item, context));
       }
-    } else if (isGroupWidget(field)) {
-      entries.push({ kind: 'group', widget: field, model });
     } else {
-      entries.push({ kind: 'widget', widget: field, model });
+      entries.push(entryFor(field, model));
     }
   }
   return entries;

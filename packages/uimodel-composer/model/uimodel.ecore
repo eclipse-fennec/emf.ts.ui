@@ -270,6 +270,61 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute"
         eType="http://uimodel/1.0#//LocalizedEString" name="emptyText"/>
   </eClassifiers>
+  <!-- Gemeinsame Bedienung aller Widgets, die eine Sammlung bearbeiten
+       (Issue #24/#25): Hinzufügen, Entfernen und Umsortieren sind
+       erlaubt, solange nichts anderes im Modell steht; readOnly am
+       Widget schaltet alles ab. -->
+  <eClassifiers xsi:type="ecore:EClass" name="CollectionWidget" abstract="true">
+    <eSuperTypes href="http://uimodel/1.0#//WidgetComponent"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="allowAdd"
+        defaultValueLiteral="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="allowRemove"
+        defaultValueLiteral="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" unsettable="true"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EBoolean" name="allowReorder"
+        defaultValueLiteral="true"/>
+    <!-- Beschriftung der Hinzufügen-Schaltfläche -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://uimodel/1.0#//LocalizedEString" name="addLabel"/>
+    <!-- Hinweis, solange die Sammlung leer ist -->
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://uimodel/1.0#//LocalizedEString" name="emptyText"/>
+  </eClassifiers>
+
+  <!-- Mehrwertiges Attribut (upperBound != 1) als Liste (Issue #24):
+       ein Eingabefeld je Element, dazu Hinzufügen, Entfernen und
+       Umsortieren. Bearbeitet wird die EList an Ort und Stelle, damit
+       Notifications und der Expression-Tick greifen.
+       itemWidget ist der Prototyp für das einzelne Element; ohne ihn
+       entscheidet der Datentyp über das Eingabefeld. -->
+  <eClassifiers xsi:type="ecore:EClass" name="ListWidget">
+    <eSuperTypes href="http://uimodel/1.0#//CollectionWidget"/>
+    <eStructuralFeatures xsi:type="ecore:EReference"
+        eType="http://uimodel/1.0#//WidgetComponent" name="itemWidget" containment="true"/>
+  </eClassifiers>
+
+  <!-- Containment-Referenz als Unterformular (Issue #25): die Felder
+       des enthaltenen Objekts stehen im selben Formular. [0..1] legt das
+       Kind bei Bedarf an, [0..*] wird zur Liste von Gruppen.
+       fields beschreibt das Kind — ein AllFeatures-Platzhalter mit
+       seinen cases genügt; ohne fields wird nichts gerendert, denn die
+       Widget-Wahl steht im Modell (Issue #5).
+       createClass bestimmt die anzulegende Klasse, wenn die Zielklasse
+       abstrakt ist; maxDepth begrenzt die Schachtelung, damit ein
+       rekursives Modell (Ordner im Ordner) nicht endlos rendert. -->
+  <eClassifiers xsi:type="ecore:EClass" name="SubFormWidget">
+    <eSuperTypes href="http://uimodel/1.0#//CollectionWidget"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" upperBound="-1"
+        eType="http://uimodel/1.0#//WidgetComponent" name="fields" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EClass" name="createClass"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute"
+        eType="http://www.eclipse.org/emf/2002/Ecore#//EInt" name="maxDepth"
+        defaultValueLiteral="3"/>
+  </eClassifiers>
+
   <eClassifiers xsi:type="ecore:EClass" name="ReferenceLinkWidget">
     <eSuperTypes href="http://uimodel/1.0#//WidgetComponent"/>
     <eStructuralFeatures xsi:type="ecore:EReference" eType="http://uimodel/1.0#//Expression" name="displayExpression" containment="true"/>

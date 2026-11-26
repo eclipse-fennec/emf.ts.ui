@@ -9,6 +9,7 @@ import {
   BasicEAnnotation,
   BasicEAttribute,
   BasicEClass,
+  BasicEReference,
   BasicEPackage,
   BasicResourceSet,
   EPackageRegistry,
@@ -76,7 +77,14 @@ function allFeaturesIn(formName: string): AllFeatures {
 describe('generic-default.uimodel.xmi', () => {
   it('Struktur: FormView pro Sektion mit AllFeatures-Platzhalter in fields (Issue #4)', () => {
     expect(uiModel.components.map((c) => c.eClass().getName()))
-      .toEqual(['FormView', 'FormView', 'FormView', 'FormView']);
+      .toEqual(['FormView', 'FormView', 'FormView', 'FormView', 'FormView']);
+    expect(uiModel.components.map((c) => c.name)).toEqual([
+      'identification',
+      'attributes',
+      'containments',
+      'references',
+      'derived',
+    ]);
     const attribute = allFeaturesIn('attributes');
     expect(attribute.eClass().getName()).toBe('AllFeatures');
     expect(attribute.bindings).toHaveLength(1);
@@ -119,6 +127,85 @@ describe('generic-default.uimodel.xmi', () => {
     const widgets = expandFeatures(order, allFeaturesIn('attributes'), ctx);
     expect(widgets).toHaveLength(1);
     expect(resolveBindings(widgets[0], orderObject).values.label).toBe('Liefertermin');
+  });
+
+  it('mehrwertige Attribute bekommen eine Liste (Issue #24)', () => {
+    const ecore = getEcorePackage();
+    const pkg = new BasicEPackage();
+    pkg.setName('t3');
+    pkg.setNsURI('http://t-generic/many');
+    const article = new BasicEClass();
+    article.setName('Article');
+    const tags = new BasicEAttribute();
+    tags.setName('tags');
+    tags.setEType(ecore.getEString());
+    tags.setUpperBound(-1);
+    const title = new BasicEAttribute();
+    title.setName('title');
+    title.setEType(ecore.getEString());
+    article.getEStructuralFeatures().add(tags);
+    article.getEStructuralFeatures().add(title);
+    pkg.getEClassifiers().add(article);
+
+    const ctx = collectExpansionContext(uiModel as unknown as EObject);
+    const widgets = expandFeatures(article, allFeaturesIn('attributes'), ctx);
+    const byName = new Map(widgets.map((w) => [w.name, w.eClass().getName()]));
+    expect(byName.get('tags')).toBe('ListWidget');
+    // einwertig bleibt beim Datentyp
+    expect(byName.get('title')).toBe('InputWidget');
+  });
+
+  it('Containments bekommen ein Unterformular, Referenzen einen Link (Issue #25)', () => {
+    const ecore = getEcorePackage();
+    const pkg = new BasicEPackage();
+    pkg.setName('t4');
+    pkg.setNsURI('http://t-generic/containment');
+    const address = new BasicEClass();
+    address.setName('Address');
+    const street = new BasicEAttribute();
+    street.setName('street');
+    street.setEType(ecore.getEString());
+    address.getEStructuralFeatures().add(street);
+    const order = new BasicEClass();
+    order.setName('Order');
+    const addressRef = new BasicEReference();
+    addressRef.setName('address');
+    addressRef.setEType(address);
+    addressRef.setContainment(true);
+    const customerRef = new BasicEReference();
+    customerRef.setName('customer');
+    customerRef.setEType(address);
+    order.getEStructuralFeatures().add(addressRef);
+    order.getEStructuralFeatures().add(customerRef);
+    pkg.getEClassifiers().add(address);
+    pkg.getEClassifiers().add(order);
+
+    const ctx = collectExpansionContext(uiModel as unknown as EObject);
+    const containments = expandFeatures(order, allFeaturesIn('containments'), ctx);
+    expect(containments.map((w) => [w.name, w.eClass().getName()])).toEqual([
+      ['address', 'SubFormWidget'],
+    ]);
+    // der Prototyp bringt die Felder des Kindes mit
+    expect(containments[0].eClass().getName()).toBe('SubFormWidget');
+    expect(
+      (containments[0] as unknown as { fields: { eClass(): { getName(): string } }[] }).fields
+        .map((f) => f.eClass().getName())
+    ).toEqual(['AllFeatures']);
+
+    const references = expandFeatures(order, allFeaturesIn('references'), ctx);
+    expect(references.map((w) => [w.name, w.eClass().getName()])).toEqual([
+      ['customer', 'ReferenceLinkWidget'],
+    ]);
+  });
+
+  it('ein AllFeatures im Prototypen-Katalog nimmt keine Features weg', () => {
+    // Regression: collectExpansionContext lief in UIModel.templates hinein,
+    // der AllFeatures-Block des SubFormWidget-Prototyps gewann dort die
+    // Zuordnung — die Attribut-Sektion blieb leer.
+    const ctx = collectExpansionContext(uiModel as unknown as EObject);
+    const catalogBlocks = ctx.blocks.filter((b) => b.name === 'child');
+    expect(catalogBlocks).toHaveLength(0);
+    expect(expandFeatures(person, allFeaturesIn('attributes'), ctx)).toHaveLength(2);
   });
 
   it('geerbte Widget-Defaults: readOnly des derived-Platzhalters', () => {
