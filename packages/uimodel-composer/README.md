@@ -166,6 +166,15 @@ Kanonisches Beispiel: [`model/templates/generic-default.uimodel.xmi`](model/temp
 (ID → Attribute → Referenzen → Derived, klassenunabhängig) — im Editor über die
 UIModel-Auswahl der Vorschau live erlebbar.
 
+Die Vorlage liegt im npm-Paket und ist über den Subpfad `./model/*` erreichbar
+([#19](https://github.com/eclipse-fennec/emf.ts.ui/issues/19)), kopieren ist
+also nicht nötig:
+
+```ts
+import template from '@emfts/uimodel-composer/model/templates/generic-default.uimodel.xmi?raw';
+// Node: createRequire(import.meta.url).resolve('@emfts/uimodel-composer/model/templates/generic-default.uimodel.xmi')
+```
+
 ## PropertyBinding — expression-fähige Widget-Parameter
 
 `WidgetComponent.bindings: PropertyBinding[*]` bindet Widget-Parameter an

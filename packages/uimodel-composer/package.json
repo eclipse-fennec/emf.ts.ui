@@ -12,6 +12,7 @@
       "types": "./dist/index.d.ts"
     },
     "./style.css": "./dist/style.css",
+    "./model/*": "./model/*",
     "./css": {
       "import": "./dist/css/index.js",
       "types": "./dist/css/index.d.ts"
