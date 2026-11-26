@@ -245,6 +245,44 @@ vom `FieldsRenderer` (kein Markup über das Nötigste hinaus):
 </fields>
 ```
 
+## Validierung
+
+Ein Widget validiert sich über seine `validations`; das Formular prüft mit
+`FormView.validations`, was nur über mehrere Felder zu sehen ist
+([#20](https://github.com/eclipse-fennec/emf.ts.ui/issues/20)):
+
+```xml
+<components xsi:type="uimodel:FormView" name="period">
+  <fields xsi:type="uimodel:AllFeatures" name="all"/>
+  <validations severity="ERROR" language="JS"
+      defaultMessage="Das Ende muss nach dem Start liegen"
+      body="!self.end || !self.start || self.end &gt; self.start"/>
+</components>
+```
+
+- **Anzeige**: Formularmeldungen stehen als `role="alert"` über den
+  Feldern, die Meldung eines Feldes unter ihm. Deklariert der registrierte
+  Editor eine Prop `validationMessage` oder `invalid`, bekommt er sie
+  durchgereicht und zeigt sie selbst; sonst gibt der Composer sie aus.
+  Ungültige Elemente tragen `uim-s-invalid`.
+- **Mapper**: `validationMappers` an Widget und Formular transformieren
+  Meldungen. Ein Mapper trifft, wenn alle gesetzten `match*`-Felder
+  zutreffen (`matchCode`, `matchSeverity`, `matchExpression` mit `self`
+  und `message`), und überschreibt nur seine gesetzten `mapped*`-Felder;
+  alle treffenden laufen nach `order` kaskadierend. `FormView.mapperOrder`
+  bestimmt, ob Feld- oder Formular-Mapper zuerst greifen.
+- **Zustand für den Host**: Wer `VALIDATION_SINK_KEY` bereitstellt,
+  bekommt bei jeder Änderung Gültigkeit und alle Meldungen — Feldmeldungen
+  laufen im Formular zusammen, ein Speichern lässt sich daran blockieren.
+  `INFO` und `WARNING` machen ein Formular nicht ungültig.
+
+```ts
+import { VALIDATION_SINK_KEY, type FormValidationState } from '@emfts/uimodel-composer';
+const state = ref<FormValidationState>();
+provide(VALIDATION_SINK_KEY, (s) => { state.value = s });
+// <button :disabled="state && !state.valid">Speichern</button>
+```
+
 ## Widget-Extension-Pakete
 
 Eigene Widget-Typen (Code-, Markdown-, RichText-Editoren …) gehören **nicht**

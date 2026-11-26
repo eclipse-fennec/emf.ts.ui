@@ -1,10 +1,13 @@
 <script setup lang="ts">
-import { computed, inject } from 'vue';
+import { computed, inject, onUnmounted, watch } from 'vue';
 import type { EObject } from '@emfts/core';
 import type { WidgetComponent } from '../generated/WidgetComponent';
 import { useVisibility } from '../composables/useVisibility';
 import { useWidgetConfig } from '../composables/useWidgetConfig';
 import { useValidation } from '../composables/useValidation';
+import { useValidationCollector } from '../validation/useFormValidation';
+import type { ValidationMessage, Severity } from '../validation/messages';
+import { applyMappers } from '../validation/messages';
 import { useComponentRegistry } from '@emfts/vue-registry';
 import { buildWidgetMatchContext } from '../registry/widgetRegistry';
 import {
@@ -23,6 +26,9 @@ const props = defineProps<{
 
 /** Bereits gemeldete Widget-Klassen ohne Renderer (eine Warnung genügt). */
 const warnedEClasses = new Set<string>();
+
+/** Laufende Nummer, damit jedes Widget seine Meldung eindeutig meldet. */
+let widgetCounter = 0;
 
 const { getComponent } = useComponentRegistry();
 
@@ -55,6 +61,38 @@ const validation = useValidation(
     feature: () => effectiveFeature.value,
   }
 );
+
+/**
+ * Die Meldung des Widgets, durch die Mapper gelaufen: die eigenen und,
+ * wenn das Widget in einem Formular steht, dessen Mapper in der dort
+ * bestimmten Reihenfolge (#20). Ohne Formular bleiben es die eigenen.
+ */
+const collector = useValidationCollector();
+const reportId = `w-${++widgetCounter}`;
+
+const validationMessage = computed<ValidationMessage | null>(() => {
+  const result = validation.value;
+  if (!result) return null;
+  const raw: ValidationMessage = {
+    message: result.message,
+    severity: result.severity as Severity,
+    source: 'field',
+    featureName: effectiveFeature.value?.getName?.() ?? undefined,
+  };
+  return collector
+    ? collector.mapMessage(raw, props.widget.validationMappers)
+    : applyMappers(raw, props.widget.validationMappers, props.model);
+});
+
+// Das Formular sammelt die Meldungen seiner Felder ein.
+if (collector) {
+  watch(
+    validationMessage,
+    (message) => collector.report(reportId, message),
+    { immediate: true }
+  );
+  onUnmounted(() => collector.report(reportId, null));
+}
 
 /**
  * Match-Kontext der Registry: Feature **und** Widget-Klasse des Modells
@@ -112,11 +150,11 @@ const uiContext = computed(() => ({
   ...(resolvedStyle.value.required !== undefined
     ? { required: resolvedStyle.value.required }
     : {}),
-  ...(validation.value
+  ...(validationMessage.value
     ? {
         invalid: true,
-        validationMessage: validation.value.message,
-        validationSeverity: validation.value.severity,
+        validationMessage: validationMessage.value.message,
+        validationSeverity: validationMessage.value.severity,
       }
     : {}),
   custom: matchContext.value.custom,
@@ -156,7 +194,7 @@ const cssClasses = computed(() => {
       props.widget,
       resolvedStyle.value.readOnly,
       resolvedStyle.value.required,
-      !!validation.value
+      !!validationMessage.value
     ),
   ];
 });
@@ -176,13 +214,13 @@ const dataAttrs = computed(() => componentDataAttrs(props.widget));
       visible &&
       widgetVueComponent &&
       !resolvedStyle.featureSuppressed &&
-      validation &&
+      validationMessage &&
       !editorShowsValidation
     "
     class="uimodel-widget-message"
-    :class="`uimodel-severity-${validation.severity.toLowerCase()}`"
+    :class="`uimodel-severity-${validationMessage.severity.toLowerCase()}`"
     role="alert"
   >
-    {{ validation.message }}
+    {{ validationMessage.message }}
   </p>
 </template>
