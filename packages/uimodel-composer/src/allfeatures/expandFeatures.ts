@@ -73,6 +73,9 @@ function isReference(feature: EStructuralFeature): feature is EReference {
  * Sammelt Blöcke und gebundene Features aus einem UIModel
  * (Traversierung über alle Containments, Dokument-Reihenfolge).
  */
+/** Containment-Features, die Prototypen halten statt Struktur. */
+const CATALOG_FEATURES = new Set(['templates']);
+
 export function collectExpansionContext(root: EObject): ExpansionContext {
   const blocks: AllFeatures[] = [];
   const boundFeatures = new Set<EStructuralFeature>();
@@ -84,6 +87,11 @@ export function collectExpansionContext(root: EObject): ExpansionContext {
     else if (isWidgetComponent(obj) && obj.feature) boundFeatures.add(obj.feature);
     for (const feature of obj.eClass().getEAllStructuralFeatures()) {
       if (!isReference(feature) || !feature.isContainment()) continue;
+      // Der Prototypen-Katalog ist keine Struktur: Ein AllFeatures darin
+      // gehört zu einer Vorlage und nimmt an der Zuordnung erst teil,
+      // wenn ein Klon davon im Baum steht (z. B. die Felder eines
+      // SubFormWidget-Prototyps, #25).
+      if (CATALOG_FEATURES.has(feature.getName() ?? '')) continue;
       const value = obj.eGet(feature);
       if (!value) continue;
       const children = feature.isMany()

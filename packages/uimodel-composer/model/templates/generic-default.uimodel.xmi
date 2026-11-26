@@ -23,6 +23,38 @@
   <templates xsi:type="uimodel:SelectWidget"        xmi:id="t-select"   name="select"/>
   <templates xsi:type="uimodel:ReferenceLinkWidget" xmi:id="t-ref"      name="reference"/>
   <templates xsi:type="uimodel:InputWidget"         xmi:id="t-input"    name="input"/>
+  <templates xsi:type="uimodel:ListWidget"          xmi:id="t-list"     name="list"/>
+  <!-- Das Unterformular bringt die Felder des Kindes mit: dieselbe
+       Fallliste wie die Attribut-Sektion, auf die Klasse des enthaltenen
+       Objekts angewendet. -->
+  <templates xsi:type="uimodel:SubFormWidget" xmi:id="t-subform" name="subform">
+    <fields xsi:type="uimodel:AllFeatures" name="child">
+      <filter language="JS"
+          body="self.eClass().getName() === 'EAttribute' &amp;&amp; !self.derived"/>
+      <cases>
+        <when language="JS" body="self.many === true"/>
+        <widget href="#t-list"/>
+      </cases>
+      <cases>
+        <when language="JS" body="['EBoolean','EBooleanObject'].includes(self.eType?.name)"/>
+        <widget href="#t-checkbox"/>
+      </cases>
+      <cases>
+        <when language="JS"
+            body="['EInt','ELong','EShort','EFloat','EDouble','EBigDecimal','EBigInteger'].includes(self.eType?.name)"/>
+        <widget href="#t-number"/>
+      </cases>
+      <cases>
+        <when language="JS" body="self.eType?.name === 'EDate'"/>
+        <widget href="#t-date"/>
+      </cases>
+      <cases>
+        <when language="JS" body="self.eType?.eClass().getName() === 'EEnum'"/>
+        <widget href="#t-select"/>
+      </cases>
+      <cases><widget href="#t-input"/></cases>
+    </fields>
+  </templates>
 
   <components xsi:type="uimodel:FormView" name="identification" group="Identification">
     <fields xsi:type="uimodel:AllFeatures" name="id">
@@ -44,6 +76,12 @@
         <expression language="JS"
             body="feature.getEAnnotation('http://uimodel/1.0')?.getDetails()?.getByKey('label') ?? feature.name.replace(/([a-z0-9])([A-Z])/g, '$1 $2').replace(/^./, function(c) { return c.toUpperCase(); })"/>
       </bindings>
+      <!-- Mehrwertig schlägt den Datentyp: ein Eingabefeld je Element
+           statt eines Felds, das an eine EList gebunden wäre (#24). -->
+      <cases>
+        <when language="JS" body="self.many === true"/>
+        <widget href="#t-list"/>
+      </cases>
       <cases>
         <when language="JS" body="['EBoolean','EBooleanObject'].includes(self.eType?.name)"/>
         <widget href="#t-checkbox"/>
@@ -66,10 +104,20 @@
     </fields>
   </components>
 
+  <!-- Containments gehören ins Formular, nicht an einen Link: die Felder
+       des enthaltenen Objekts stehen als Unterformular darin (#25). -->
+  <components xsi:type="uimodel:FormView" name="containments" group="Contained">
+    <fields xsi:type="uimodel:AllFeatures" name="containment">
+      <filter language="JS"
+          body="self.eClass().getName() === 'EReference' &amp;&amp; self.containment === true &amp;&amp; !self.derived"/>
+      <cases><widget href="#t-subform"/></cases>
+    </fields>
+  </components>
+
   <components xsi:type="uimodel:FormView" name="references" group="References">
     <fields xsi:type="uimodel:AllFeatures" name="reference">
       <filter language="JS"
-          body="self.eClass().getName() === 'EReference' &amp;&amp; !self.derived"/>
+          body="self.eClass().getName() === 'EReference' &amp;&amp; !self.containment &amp;&amp; !self.derived"/>
       <cases><widget href="#t-ref"/></cases>
     </fields>
   </components>

@@ -48,6 +48,10 @@ import type { Conditional } from './Conditional.js';
 import { ConditionalImpl } from './ConditionalImpl.js';
 import type { ForEach } from './ForEach.js';
 import { ForEachImpl } from './ForEachImpl.js';
+import type { ListWidget } from './ListWidget.js';
+import { ListWidgetImpl } from './ListWidgetImpl.js';
+import type { SubFormWidget } from './SubFormWidget.js';
+import { SubFormWidgetImpl } from './SubFormWidgetImpl.js';
 import type { ReferenceLinkWidget } from './ReferenceLinkWidget.js';
 import { ReferenceLinkWidgetImpl } from './ReferenceLinkWidgetImpl.js';
 import type { UIModelOverlay } from './UIModelOverlay.js';
@@ -226,6 +230,20 @@ export class UimodelFactory extends BasicEFactory {
   }
 
   /**
+   * Create a new ListWidget instance
+   */
+  createListWidget(): ListWidget {
+    return new ListWidgetImpl();
+  }
+
+  /**
+   * Create a new SubFormWidget instance
+   */
+  createSubFormWidget(): SubFormWidget {
+    return new SubFormWidgetImpl();
+  }
+
+  /**
    * Create a new ReferenceLinkWidget instance
    */
   createReferenceLinkWidget(): ReferenceLinkWidget {
@@ -326,6 +344,10 @@ export class UimodelFactory extends BasicEFactory {
         return this.createConditional();
       case 'ForEach':
         return this.createForEach();
+      case 'ListWidget':
+        return this.createListWidget();
+      case 'SubFormWidget':
+        return this.createSubFormWidget();
       case 'ReferenceLinkWidget':
         return this.createReferenceLinkWidget();
       case 'UIModelOverlay':

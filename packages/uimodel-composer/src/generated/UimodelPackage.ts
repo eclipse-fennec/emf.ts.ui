@@ -132,6 +132,18 @@ export class UimodelPackage extends BasicEPackage {
     FOR_EACH__ITEMS: null as unknown as EAttribute | EReference,
     FOR_EACH__BODY: null as unknown as EAttribute | EReference,
     FOR_EACH__EMPTY_TEXT: null as unknown as EAttribute | EReference,
+    COLLECTION_WIDGET: null as unknown as EClass,
+    COLLECTION_WIDGET__ALLOW_ADD: null as unknown as EAttribute | EReference,
+    COLLECTION_WIDGET__ALLOW_REMOVE: null as unknown as EAttribute | EReference,
+    COLLECTION_WIDGET__ALLOW_REORDER: null as unknown as EAttribute | EReference,
+    COLLECTION_WIDGET__ADD_LABEL: null as unknown as EAttribute | EReference,
+    COLLECTION_WIDGET__EMPTY_TEXT: null as unknown as EAttribute | EReference,
+    LIST_WIDGET: null as unknown as EClass,
+    LIST_WIDGET__ITEM_WIDGET: null as unknown as EAttribute | EReference,
+    SUB_FORM_WIDGET: null as unknown as EClass,
+    SUB_FORM_WIDGET__FIELDS: null as unknown as EAttribute | EReference,
+    SUB_FORM_WIDGET__CREATE_CLASS: null as unknown as EAttribute | EReference,
+    SUB_FORM_WIDGET__MAX_DEPTH: null as unknown as EAttribute | EReference,
     REFERENCE_LINK_WIDGET: null as unknown as EClass,
     REFERENCE_LINK_WIDGET__DISPLAY_EXPRESSION: null as unknown as EAttribute | EReference,
     REFERENCE_LINK_WIDGET__TARGET_ROUTE: null as unknown as EAttribute | EReference,
@@ -1022,6 +1034,115 @@ export class UimodelPackage extends BasicEPackage {
     forEachClass.getEStructuralFeatures().push(forEach_emptyText);
     UimodelPackage.Literals.FOR_EACH__EMPTY_TEXT = forEach_emptyText;
 
+    // Create CollectionWidget class
+    const collectionWidgetClass = new BasicEClass();
+    collectionWidgetClass.setName('CollectionWidget');
+    collectionWidgetClass.setAbstract(true);
+    collectionWidgetClass.setInterface(false);
+    this.getEClassifiers().push(collectionWidgetClass);
+    collectionWidgetClass.setEPackage(this);
+    UimodelPackage.Literals.COLLECTION_WIDGET = collectionWidgetClass;
+
+    // Create allowAdd feature
+    const collectionWidget_allowAdd = new BasicEAttribute();
+    collectionWidget_allowAdd.setName('allowAdd');
+    collectionWidget_allowAdd.setLowerBound(0);
+    collectionWidget_allowAdd.setUpperBound(1);
+    collectionWidget_allowAdd.setDefaultValueLiteral("true");
+    collectionWidget_allowAdd.setUnsettable(true);
+    collectionWidgetClass.getEStructuralFeatures().push(collectionWidget_allowAdd);
+    UimodelPackage.Literals.COLLECTION_WIDGET__ALLOW_ADD = collectionWidget_allowAdd;
+
+    // Create allowRemove feature
+    const collectionWidget_allowRemove = new BasicEAttribute();
+    collectionWidget_allowRemove.setName('allowRemove');
+    collectionWidget_allowRemove.setLowerBound(0);
+    collectionWidget_allowRemove.setUpperBound(1);
+    collectionWidget_allowRemove.setDefaultValueLiteral("true");
+    collectionWidget_allowRemove.setUnsettable(true);
+    collectionWidgetClass.getEStructuralFeatures().push(collectionWidget_allowRemove);
+    UimodelPackage.Literals.COLLECTION_WIDGET__ALLOW_REMOVE = collectionWidget_allowRemove;
+
+    // Create allowReorder feature
+    const collectionWidget_allowReorder = new BasicEAttribute();
+    collectionWidget_allowReorder.setName('allowReorder');
+    collectionWidget_allowReorder.setLowerBound(0);
+    collectionWidget_allowReorder.setUpperBound(1);
+    collectionWidget_allowReorder.setDefaultValueLiteral("true");
+    collectionWidget_allowReorder.setUnsettable(true);
+    collectionWidgetClass.getEStructuralFeatures().push(collectionWidget_allowReorder);
+    UimodelPackage.Literals.COLLECTION_WIDGET__ALLOW_REORDER = collectionWidget_allowReorder;
+
+    // Create addLabel feature
+    const collectionWidget_addLabel = new BasicEAttribute();
+    collectionWidget_addLabel.setName('addLabel');
+    collectionWidget_addLabel.setLowerBound(0);
+    collectionWidget_addLabel.setUpperBound(1);
+    collectionWidgetClass.getEStructuralFeatures().push(collectionWidget_addLabel);
+    UimodelPackage.Literals.COLLECTION_WIDGET__ADD_LABEL = collectionWidget_addLabel;
+
+    // Create emptyText feature
+    const collectionWidget_emptyText = new BasicEAttribute();
+    collectionWidget_emptyText.setName('emptyText');
+    collectionWidget_emptyText.setLowerBound(0);
+    collectionWidget_emptyText.setUpperBound(1);
+    collectionWidgetClass.getEStructuralFeatures().push(collectionWidget_emptyText);
+    UimodelPackage.Literals.COLLECTION_WIDGET__EMPTY_TEXT = collectionWidget_emptyText;
+
+    // Create ListWidget class
+    const listWidgetClass = new BasicEClass();
+    listWidgetClass.setName('ListWidget');
+    listWidgetClass.setAbstract(false);
+    listWidgetClass.setInterface(false);
+    this.getEClassifiers().push(listWidgetClass);
+    listWidgetClass.setEPackage(this);
+    UimodelPackage.Literals.LIST_WIDGET = listWidgetClass;
+
+    // Create itemWidget feature
+    const listWidget_itemWidget = new BasicEReference();
+    listWidget_itemWidget.setContainment(true);
+    listWidget_itemWidget.setName('itemWidget');
+    listWidget_itemWidget.setLowerBound(0);
+    listWidget_itemWidget.setUpperBound(1);
+    listWidgetClass.getEStructuralFeatures().push(listWidget_itemWidget);
+    UimodelPackage.Literals.LIST_WIDGET__ITEM_WIDGET = listWidget_itemWidget;
+
+    // Create SubFormWidget class
+    const subFormWidgetClass = new BasicEClass();
+    subFormWidgetClass.setName('SubFormWidget');
+    subFormWidgetClass.setAbstract(false);
+    subFormWidgetClass.setInterface(false);
+    this.getEClassifiers().push(subFormWidgetClass);
+    subFormWidgetClass.setEPackage(this);
+    UimodelPackage.Literals.SUB_FORM_WIDGET = subFormWidgetClass;
+
+    // Create fields feature
+    const subFormWidget_fields = new BasicEReference();
+    subFormWidget_fields.setContainment(true);
+    subFormWidget_fields.setName('fields');
+    subFormWidget_fields.setLowerBound(0);
+    subFormWidget_fields.setUpperBound(-1);
+    subFormWidgetClass.getEStructuralFeatures().push(subFormWidget_fields);
+    UimodelPackage.Literals.SUB_FORM_WIDGET__FIELDS = subFormWidget_fields;
+
+    // Create createClass feature
+    const subFormWidget_createClass = new BasicEReference();
+    subFormWidget_createClass.setContainment(false);
+    subFormWidget_createClass.setName('createClass');
+    subFormWidget_createClass.setLowerBound(0);
+    subFormWidget_createClass.setUpperBound(1);
+    subFormWidgetClass.getEStructuralFeatures().push(subFormWidget_createClass);
+    UimodelPackage.Literals.SUB_FORM_WIDGET__CREATE_CLASS = subFormWidget_createClass;
+
+    // Create maxDepth feature
+    const subFormWidget_maxDepth = new BasicEAttribute();
+    subFormWidget_maxDepth.setName('maxDepth');
+    subFormWidget_maxDepth.setLowerBound(0);
+    subFormWidget_maxDepth.setUpperBound(1);
+    subFormWidget_maxDepth.setDefaultValueLiteral("3");
+    subFormWidgetClass.getEStructuralFeatures().push(subFormWidget_maxDepth);
+    UimodelPackage.Literals.SUB_FORM_WIDGET__MAX_DEPTH = subFormWidget_maxDepth;
+
     // Create ReferenceLinkWidget class
     const referenceLinkWidgetClass = new BasicEClass();
     referenceLinkWidgetClass.setName('ReferenceLinkWidget');
@@ -1704,6 +1825,9 @@ export class UimodelPackage extends BasicEPackage {
     (UimodelPackage.Literals.GROUP_WIDGET as BasicEClass).getESuperTypes().push(UimodelPackage.Literals.WIDGET_COMPONENT);
     (UimodelPackage.Literals.CONDITIONAL as BasicEClass).getESuperTypes().push(UimodelPackage.Literals.WIDGET_COMPONENT);
     (UimodelPackage.Literals.FOR_EACH as BasicEClass).getESuperTypes().push(UimodelPackage.Literals.WIDGET_COMPONENT);
+    (UimodelPackage.Literals.COLLECTION_WIDGET as BasicEClass).getESuperTypes().push(UimodelPackage.Literals.WIDGET_COMPONENT);
+    (UimodelPackage.Literals.LIST_WIDGET as BasicEClass).getESuperTypes().push(UimodelPackage.Literals.COLLECTION_WIDGET);
+    (UimodelPackage.Literals.SUB_FORM_WIDGET as BasicEClass).getESuperTypes().push(UimodelPackage.Literals.COLLECTION_WIDGET);
     (UimodelPackage.Literals.REFERENCE_LINK_WIDGET as BasicEClass).getESuperTypes().push(UimodelPackage.Literals.WIDGET_COMPONENT);
     (UimodelPackage.Literals.BASE_STYLE as BasicEClass).getESuperTypes().push(UimodelPackage.Literals.STYLE);
     (UimodelPackage.Literals.LAYOUT_STYLE as BasicEClass).getESuperTypes().push(UimodelPackage.Literals.BASE_STYLE);
@@ -1788,6 +1912,15 @@ export class UimodelPackage extends BasicEPackage {
     (UimodelPackage.Literals.FOR_EACH__ITEMS as BasicEReference).setEType(UimodelPackage.Literals.EXPRESSION);
     (UimodelPackage.Literals.FOR_EACH__BODY as BasicEReference).setEType(UimodelPackage.Literals.WIDGET_COMPONENT);
     (UimodelPackage.Literals.FOR_EACH__EMPTY_TEXT as BasicEAttribute).setEType(UimodelPackage.Literals.LOCALIZED_E_STRING);
+    (UimodelPackage.Literals.COLLECTION_WIDGET__ALLOW_ADD as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EBoolean')!);
+    (UimodelPackage.Literals.COLLECTION_WIDGET__ALLOW_REMOVE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EBoolean')!);
+    (UimodelPackage.Literals.COLLECTION_WIDGET__ALLOW_REORDER as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EBoolean')!);
+    (UimodelPackage.Literals.COLLECTION_WIDGET__ADD_LABEL as BasicEAttribute).setEType(UimodelPackage.Literals.LOCALIZED_E_STRING);
+    (UimodelPackage.Literals.COLLECTION_WIDGET__EMPTY_TEXT as BasicEAttribute).setEType(UimodelPackage.Literals.LOCALIZED_E_STRING);
+    (UimodelPackage.Literals.LIST_WIDGET__ITEM_WIDGET as BasicEReference).setEType(UimodelPackage.Literals.WIDGET_COMPONENT);
+    (UimodelPackage.Literals.SUB_FORM_WIDGET__FIELDS as BasicEReference).setEType(UimodelPackage.Literals.WIDGET_COMPONENT);
+    (UimodelPackage.Literals.SUB_FORM_WIDGET__CREATE_CLASS as BasicEReference).setEType(getEcorePackage().getEClassifier('EClass')!);
+    (UimodelPackage.Literals.SUB_FORM_WIDGET__MAX_DEPTH as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EInt')!);
     (UimodelPackage.Literals.REFERENCE_LINK_WIDGET__DISPLAY_EXPRESSION as BasicEReference).setEType(UimodelPackage.Literals.EXPRESSION);
     (UimodelPackage.Literals.REFERENCE_LINK_WIDGET__TARGET_ROUTE as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
     (UimodelPackage.Literals.U_I_MODEL_OVERLAY__NAME as BasicEAttribute).setEType(getEcorePackage().getEClassifier('EString')!);
