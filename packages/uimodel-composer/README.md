@@ -245,6 +245,23 @@ vom `FieldsRenderer` (kein Markup über das Nötigste hinaus):
 </fields>
 ```
 
+## Reiter (`TabView`)
+
+`TabViewComposer` rendert eine bedienbare Reiterleiste
+([#23](https://github.com/eclipse-fennec/emf.ts.ui/issues/23)): `role="tablist"`
+mit einem `role="tab"` je Reiter, `aria-selected`, Pfeiltasten sowie Pos1
+und Ende, und nur der aktive Reiter ist fokussierbar. Beschriftet wird mit
+`group`, sonst dem `name`. Das Markup bleibt schmucklos — gestylt wird
+über `uimodel-tab-bar`, `uimodel-tab`, `uimodel-tab--active` und
+`uimodel-tab-panel`, und wer etwas anderes will, registriert weiterhin
+einen eigenen Container unter dem Schlüssel `TabView`.
+
+Der aktive Reiter lässt sich von außen führen:
+
+```vue
+<TabViewComposer :component="tabView" :model="model" v-model:active-tab="tab" />
+```
+
 ## Validierung
 
 Ein Widget validiert sich über seine `validations`; das Formular prüft mit
