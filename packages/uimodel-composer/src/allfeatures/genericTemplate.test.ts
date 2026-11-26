@@ -6,6 +6,7 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { beforeAll, describe, expect, it } from 'vitest';
 import {
+  BasicEAnnotation,
   BasicEAttribute,
   BasicEClass,
   BasicEPackage,
@@ -92,6 +93,32 @@ describe('generic-default.uimodel.xmi', () => {
     // geerbtes Binding liefert das abgeleitete Label
     expect(resolveBindings(widgets[0], model).values.label).toBe('First Name');
     expect(resolveBindings(widgets[1], model).values.label).toBe('Job Title');
+  });
+
+  it('Label-Binding liest die EAnnotation am Feature (Issue #18)', () => {
+    // Ohne getByKey liefert EList.get('label') still undefined — das Label
+    // fiele dann auf die Namensableitung 'Delivery Date' zurück.
+    const ecore = getEcorePackage();
+    const pkg = new BasicEPackage();
+    pkg.setName('t2');
+    pkg.setNsURI('http://t-generic/annotated');
+    const order = new BasicEClass();
+    order.setName('Order');
+    const attr = new BasicEAttribute();
+    attr.setName('deliveryDate');
+    attr.setEType(ecore.getEString());
+    const annotation = new BasicEAnnotation();
+    annotation.setSource('http://uimodel/1.0');
+    annotation.getDetails().putByKey('label', 'Liefertermin');
+    attr.getEAnnotations().add(annotation);
+    order.getEStructuralFeatures().add(attr);
+    pkg.getEClassifiers().add(order);
+    const orderObject = pkg.getEFactoryInstance()!.create(order);
+
+    const ctx = collectExpansionContext(uiModel as unknown as EObject);
+    const widgets = expandFeatures(order, allFeaturesIn('attributes'), ctx);
+    expect(widgets).toHaveLength(1);
+    expect(resolveBindings(widgets[0], orderObject).values.label).toBe('Liefertermin');
   });
 
   it('geerbte Widget-Defaults: readOnly des derived-Platzhalters', () => {
