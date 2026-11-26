@@ -42,7 +42,7 @@
           body="self.eClass().getName() === 'EAttribute' &amp;&amp; !self.derived"/>
       <bindings property="label">
         <expression language="JS"
-            body="feature.getEAnnotation('http://uimodel/1.0')?.getDetails()?.get('label') ?? feature.name.replace(/([a-z0-9])([A-Z])/g, '$1 $2').replace(/^./, function(c) { return c.toUpperCase(); })"/>
+            body="feature.getEAnnotation('http://uimodel/1.0')?.getDetails()?.getByKey('label') ?? feature.name.replace(/([a-z0-9])([A-Z])/g, '$1 $2').replace(/^./, function(c) { return c.toUpperCase(); })"/>
       </bindings>
       <cases>
         <when language="JS" body="['EBoolean','EBooleanObject'].includes(self.eType?.name)"/>
