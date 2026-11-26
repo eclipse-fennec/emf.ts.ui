@@ -64,6 +64,21 @@ export {
 } from './composables/useComposerRegistry';
 export type { ComposerRegistry } from './composables/useComposerRegistry';
 
+// Validierung auf Formularebene (Issue #20)
+export {
+  useFormValidation,
+  useValidationCollector,
+  FORM_VALIDATION_KEY,
+  VALIDATION_SINK_KEY,
+} from './validation/useFormValidation';
+export type {
+  FormValidationCollector,
+  FormValidationState,
+  ValidationSink,
+} from './validation/useFormValidation';
+export { applyMappers } from './validation/messages';
+export type { ValidationMessage } from './validation/messages';
+
 // Widget-Klasse als Teil der Komponentenwahl (Issue #21)
 export {
   buildWidgetMatchContext,

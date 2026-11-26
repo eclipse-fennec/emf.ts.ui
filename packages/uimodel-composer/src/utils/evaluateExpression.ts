@@ -50,10 +50,14 @@ function wrapEObject(context: EObject): unknown {
 /**
  * Evaluates an Expression against an EObject context.
  * Returns true if the expression is absent (default: visible/valid).
+ *
+ * `extras` bindet zusätzliche Variablen (wie in `evaluateValue`) — JS
+ * sieht sie, OCL und AQL kennen bislang nur `self`.
  */
 export function evaluateBoolean(
   expression: Expression | undefined,
-  context: EObject
+  context: EObject,
+  extras: ExpressionExtras = {}
 ): boolean {
   if (!expression) return true;
 
@@ -64,7 +68,7 @@ export function evaluateBoolean(
       case 'AQL':
         return evaluateAql(expression.body, context);
       case 'JS':
-        return evaluateJs(expression.body, context);
+        return evaluateJs(expression.body, context, extras);
       default:
         console.warn(`[uimodel-composer] Unknown expression language: ${expression.language}`);
         return true;
@@ -98,10 +102,11 @@ function evaluateAql(_body: string, _context: EObject): boolean {
   return true;
 }
 
-function evaluateJs(body: string, context: EObject): boolean {
+function evaluateJs(body: string, context: EObject, extras: ExpressionExtras = {}): boolean {
+  const names = Object.keys(extras);
   // eslint-disable-next-line no-new-func
-  const fn = new Function('self', `"use strict"; return (${body});`);
-  const result = fn(wrapEObject(context));
+  const fn = new Function('self', ...names, `"use strict"; return (${body});`);
+  const result = fn(wrapEObject(context), ...names.map((n) => wrapIfEObject(extras[n])));
   return Boolean(result);
 }
 
