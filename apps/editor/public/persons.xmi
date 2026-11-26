@@ -19,7 +19,11 @@
       lastName="Fischer"
       email="lena.fischer@dim.de"
       phone="0364112345"
-      jobTitle="Software Architect"/>
+      jobTitle="Software Architect"
+      skills="EMF TypeScript Modellgetriebene Entwicklung">
+    <previousAddresses street="Kahlaische Straße 4" city="Jena" zipCode="07745" country="Deutschland"/>
+    <previousAddresses street="Hauptmarkt 2" city="Erfurt" zipCode="99084" country="Deutschland"/>
+  </employees>
   <employees
       xmi:id="p2"
       company="c1"

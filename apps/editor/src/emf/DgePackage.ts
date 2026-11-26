@@ -71,6 +71,19 @@ class DgePackageImpl extends BasicEPackage {
     addrRef.setEType(address);
     addrRef.setContainment(false);
     person.getEStructuralFeatures().add(addrRef);
+    // Person.skills: mehrwertiges Attribut → ListWidget (#24)
+    const skills = new BasicEAttribute();
+    skills.setName('skills');
+    skills.setEType(eString);
+    skills.setUpperBound(-1);
+    person.getEStructuralFeatures().add(skills);
+    // Person.previousAddresses: Containment [0..*] → SubFormWidget (#25)
+    const prevAddrRef = new BasicEReference();
+    prevAddrRef.setName('previousAddresses');
+    prevAddrRef.setEType(address);
+    prevAddrRef.setContainment(true);
+    prevAddrRef.setUpperBound(-1);
+    person.getEStructuralFeatures().add(prevAddrRef);
     // Person.company → Company (non-containment)
     const compRef = new BasicEReference();
     compRef.setName('company');

@@ -33,6 +33,8 @@ import { bumpExpressionTick, trackExpressionTick } from '../utils/reactivity';
 import { isSet } from '../utils/isSet';
 import { useTranslate } from '../i18n/translate';
 import { SUBFORM_DEPTH_KEY } from '../composables/subFormDepth';
+import { EXPANSION_CONTEXT_KEY } from '../allfeatures/context';
+import { collectExpansionContext } from '../allfeatures/expandFeatures';
 import FieldsRenderer from './FieldsRenderer.vue';
 
 const props = defineProps<{
@@ -45,6 +47,32 @@ const translate = useTranslate();
 
 const depth = inject(SUBFORM_DEPTH_KEY, 0);
 provide(SUBFORM_DEPTH_KEY, depth + 1);
+
+/**
+ * Eigener Expansionskontext für das Kind. Die Zuordnungs-Semantik von
+ * AllFeatures — ein Feature erscheint nur einmal — gilt pro Objekt; mit
+ * dem Kontext des umgebenden Formulars nähmen dessen Blöcke dem
+ * Unterformular die Features weg, und das Kind bliebe leer. Overlays
+ * des Hosts (Issue #8) gelten weiter.
+ */
+const outerContext = inject(EXPANSION_CONTEXT_KEY, undefined);
+provide(
+  EXPANSION_CONTEXT_KEY,
+  computed(() => {
+    trackExpressionTick();
+    // Gesammelt wird über die fields, nicht über das Widget selbst: Es
+    // ist an das Containment gebunden und gälte sonst als explizit
+    // belegtes Feature — ein rekursives Unterformular bekäme dann nichts.
+    const blocks = [];
+    const boundFeatures = new Set<EStructuralFeature>();
+    for (const field of props.widget.fields ?? []) {
+      const collected = collectExpansionContext(field as unknown as EObject);
+      blocks.push(...collected.blocks);
+      for (const bound of collected.boundFeatures) boundFeatures.add(bound);
+    }
+    return { blocks, boundFeatures, overlayCases: outerContext?.value?.overlayCases };
+  })
+);
 
 const asWidget = computed(() => props.widget as unknown as WidgetComponent);
 
@@ -115,7 +143,11 @@ const childList = computed<EList<EObject> | undefined>(() => {
   return value && typeof value.size === 'function' ? value : undefined;
 });
 
-const children = computed<EObject[]>(() => (childList.value ? [...childList.value] : []));
+/** Wie beim ListWidget hängt der Inhalt am Tick, nicht an der Referenz. */
+const children = computed<EObject[]>(() => {
+  trackExpressionTick();
+  return childList.value ? [...childList.value] : [];
+});
 
 /** Bereits gemeldete Widgets ohne fields (eine Meldung genügt). */
 const warnedEmpty = new Set<string>();

@@ -60,7 +60,17 @@ const list = computed<EList<unknown> | undefined>(() => {
   return value && typeof (value as EList<unknown>).size === 'function' ? value : undefined;
 });
 
-const items = computed<unknown[]>(() => (list.value ? [...list.value] : []));
+/**
+ * Der **Inhalt** der Liste. Der Tick wird hier erneut getrackt: `list`
+ * liefert bei jeder Änderung dieselbe EList-Instanz, und Vue hält einen
+ * abgeleiteten computed für gültig, solange sich die Referenz der Quelle
+ * nicht ändert. Ohne diese Zeile wächst das Modell, die Anzeige aber
+ * nicht.
+ */
+const items = computed<unknown[]>(() => {
+  trackExpressionTick();
+  return list.value ? [...list.value] : [];
+});
 
 const label = computed(() => {
   const value = config.value.label;
