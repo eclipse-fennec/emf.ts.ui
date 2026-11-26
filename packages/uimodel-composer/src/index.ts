@@ -64,6 +64,23 @@ export {
 } from './composables/useComposerRegistry';
 export type { ComposerRegistry } from './composables/useComposerRegistry';
 
+// Widget-Klasse als Teil der Komponentenwahl (Issue #21)
+export {
+  buildWidgetMatchContext,
+  registerWidgetClass,
+  widgetClassNames,
+  widgetClassOf,
+  WIDGET_CLASS_KEY,
+  WIDGET_CLASSES_KEY,
+  WIDGET_CLASS_PRIORITY,
+  WIDGET_CLASS_WITH_TYPE_PRIORITY,
+  WIDGET_SUPERCLASS_PRIORITY,
+} from './registry/widgetRegistry';
+export type {
+  WidgetRegistrationOptions,
+  WidgetCustomContext,
+} from './registry/widgetRegistry';
+
 // Utilities
 export { resolveStyleChain, resolveStyleList } from './utils/resolveStyleChain';
 export { evaluateBoolean, evaluateValue, registerOclEvaluator } from './utils/evaluateExpression';
