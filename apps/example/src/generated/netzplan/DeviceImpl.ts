@@ -6,7 +6,7 @@
  */
 
 import { BasicEObject } from '@emfts/core';
-import { createContainmentEList, createBasicEList } from '@emfts/core';
+import { createContainmentWithInverseEList, createBasicEList } from '@emfts/core';
 import type { EClass, EStructuralFeature, EList, EReference } from '@emfts/core';
 import type { Port } from './Port.js';
 import type { Mount } from './Mount.js';
@@ -333,7 +333,18 @@ export class DeviceImpl extends BasicEObject implements Device {
 
   get ports(): EList<Port> {
     if (!this._ports) {
-      this._ports = createContainmentEList<any>(this, this.eClass().getEStructuralFeature('ports') as EReference);
+      this._ports = createContainmentWithInverseEList<any>(this, this.eClass().getEStructuralFeature('ports') as EReference, (element: any, owner: any): void => {
+      if (owner) {
+        const previous = element.device;
+        if (previous && previous !== owner) {
+          const previousList = previous.ports;
+          if (previousList && previousList.contains(element)) previousList.remove(element);
+        }
+        element.basicSetDevice?.(owner);
+      } else if (element.device === this) {
+        element.basicSetDevice?.(undefined);
+      }
+    }) as unknown as EList<Port>;
     }
     return this._ports;
   }
@@ -344,6 +355,16 @@ export class DeviceImpl extends BasicEObject implements Device {
 
   set mount(value: Mount) {
     const oldValue = this._mount;
+    if (oldValue !== value) {
+      // containment: the owner becomes the container of the value (#61)
+      if (oldValue) {
+        (oldValue as any).eSetContainer?.(null, null);
+      }
+      if (value) {
+        this.removeFromPreviousContainer(value);
+        (value as any).eSetContainer?.(this, this.eClass().getEStructuralFeature('mount'));
+      }
+    }
     this._mount = value;
     if (this.eDeliver()) {
       this.eNotify({
@@ -359,6 +380,30 @@ export class DeviceImpl extends BasicEObject implements Device {
         getFeatureID: () => DeviceImpl.MOUNT,
         merge: () => false
       });
+    }
+  }
+
+  /**
+   * Remove a value from its previous container before it is contained here,
+   * like Java EMF's eInverseRemove on the old container (#61)
+   */
+  private removeFromPreviousContainer(value: unknown): void {
+    const v = value as any;
+    const oldContainer = v?.eContainer?.();
+    if (!oldContainer || oldContainer === this) {
+      return;
+    }
+    const oldFeature = v.eContainmentFeature?.();
+    if (!oldFeature) {
+      return;
+    }
+    if (oldFeature.isMany()) {
+      const list = oldContainer.eGet(oldFeature);
+      if (list && typeof list.remove === 'function') {
+        list.remove(v);
+      }
+    } else {
+      oldContainer.eUnset(oldFeature);
     }
   }
 
@@ -557,6 +602,7 @@ export class DeviceImpl extends BasicEObject implements Device {
         if (this._ports) this._ports.clear();
         return;
       case DeviceImpl.MOUNT:
+        if (this._mount) (this._mount as any).eSetContainer?.(null, null);
         this._mount = undefined;
         return;
       default:
