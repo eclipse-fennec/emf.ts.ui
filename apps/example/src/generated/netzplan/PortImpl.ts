@@ -210,6 +210,53 @@ export class PortImpl extends BasicEObject implements Port {
   set device(value: Device) {
     const oldValue = this._device;
     this._device = value;
+    if (oldValue !== value) {
+      this.updateInverseDevice(oldValue, value);
+    }
+    if (this.eDeliver()) {
+      this.eNotify({
+        getNotifier: () => this,
+        getEventType: () => 1, // SET
+        getFeature: () => this.eClass().getEStructuralFeature(PortImpl.DEVICE),
+        getOldValue: () => oldValue,
+        getNewValue: () => value,
+        getPosition: () => -1,
+        wasSet: () => true,
+        isTouch: () => false,
+        isReset: () => false,
+        getFeatureID: () => PortImpl.DEVICE,
+        merge: () => false
+      });
+    }
+  }
+
+  /**
+   * Keeps the opposite end of the bidirectional reference in sync after the
+   * field changed from oldValue to value (#63). The field is stored first, so
+   * the other end's hooks find nothing left to do
+   */
+  private updateInverseDevice(oldValue: Device | undefined, value: Device | undefined): void {
+    if (oldValue) {
+      const list = (oldValue as any).ports;
+      if (list && list.contains(this)) list.remove(this);
+    }
+    if (value) {
+      const list = (value as any).ports;
+      if (list && !list.contains(this)) list.add(this);
+    }
+  }
+
+  /**
+   * Sets the value without updating the opposite end - the entry point for the
+   * other end of the bidirectional reference when it maintains the inverse (#63)
+   * @internal
+   */
+  basicSetDevice(value: Device | undefined): void {
+    const oldValue = this._device;
+    if (oldValue === value) {
+      return;
+    }
+    this._device = value as Device;
     if (this.eDeliver()) {
       this.eNotify({
         getNotifier: () => this,
@@ -404,7 +451,11 @@ export class PortImpl extends BasicEObject implements Port {
         if (this._ips) this._ips.clear();
         return;
       case PortImpl.DEVICE:
-        this._device = undefined;
+        {
+          const oldValue = this._device;
+          this._device = undefined;
+          if (oldValue !== undefined) this.updateInverseDevice(oldValue, undefined);
+        }
         return;
       case PortImpl.PEER:
         this._peer = undefined;

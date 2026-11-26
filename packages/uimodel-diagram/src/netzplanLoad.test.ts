@@ -60,6 +60,21 @@ describe('Beispiel-Netzdaten', () => {
     expect(list(net, 'vlans')).toHaveLength(4)
   })
 
+  it('jeder Port kennt sein Gerät über die Rückreferenz', () => {
+    // Device.ports ist Containment mit eOpposite Port.device. Der
+    // generierte Code pflegt die Gegenseite seit @emfts/codegen
+    // 0.0.2-next.14; davor blieb Port.device null, und alles musste über
+    // eContainer() aufsteigen.
+    const ports = list(net, 'devices').flatMap((device) =>
+      list(device, 'ports').map((port) => ({ device, port })),
+    )
+    expect(ports.length).toBeGreaterThan(0)
+    for (const { device, port } of ports) {
+      expect(get(port, 'device'), `Port ${get(port, 'id')} ohne Gerät`).toBe(device)
+      expect(port.eContainer()).toBe(device)
+    }
+  })
+
   it('löst jedes Kabel auf zwei Ports verschiedener Geräte auf', () => {
     for (const link of list(net, 'links')) {
       const a = get(link, 'a') as EObject | null
